@@ -48,7 +48,7 @@ export class TextEditComponent implements OnInit {
     this.selectedText = text;
   }
 
-  // setOthers(): void {
+  setOthers(): void {
   //   for (let i = this.selectedText.id; i < this.paragraph.length; i = i + 2) {
   //     if (this.selectedText.isHidden == true) {
   //       this.paragraph[i].isHidden = true;
@@ -58,9 +58,9 @@ export class TextEditComponent implements OnInit {
   //       this.paragraph[i + 1].isHidden = true;
   //     }
   //   }
-  // }
+  }
 
-  export():void {
+  export(): void {
 
   }
 }
