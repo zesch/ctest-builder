@@ -1,0 +1,42 @@
+<br>
+<br>
+
+<div class="menu">
+  <button (click)="toggleOriginal()">
+      ToggleOriginal
+  </button>
+  <div *ngIf='selectedText' class="menu">
+    <span>
+      {{selectedText.value}}
+    </span>
+    <button (click)="setOthers()">
+      setOthers
+    </button>
+  </div>
+</div>
+
+
+
+
+
+
+<br>
+<br>
+<div class='text unselectable' *ngFor="let text of paragraph" (click)="toggleText(text);onSelect(text)">
+  <span *ngIf='text.isHidden'>{{text.cValue}}{{text.id}}</span>
+  <span *ngIf='!text.isHidden'>{{text.value}}{{text.id}}</span>
+
+</div>
+<br>
+<br>
+
+<div *ngIf='showOriginal'>
+  <div class='text unselectable' *ngFor="let text of paragraph">
+    <span>{{text.value}}{{text.id}}</span>
+
+  </div>
+</div>
+
+<br>
+<br>
+<button (click)="export()">export</button>
