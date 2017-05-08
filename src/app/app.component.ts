@@ -10,6 +10,6 @@ import 'hammerjs';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'C test builder';
+  title = 'C Test Builder';
 
 }

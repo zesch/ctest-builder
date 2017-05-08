@@ -1,8 +1,21 @@
-<h1>
-  {{title}}
-</h1>
-<nav>
-    <a md-raised-button routerLink="/index" routerLinkActive="active">Index</a>
-    <a md-raised-button routerLink="/edit" routerLinkActive="active">Edit</a>
-</nav>
-<router-outlet></router-outlet>
+
+
+
+<div fxFlex>
+  <div fxLayout="row"  >
+    <div fxFlex="20%"> 
+    </div>
+    <div fxFlex="60%">  
+        <h1>
+          {{title}}
+        </h1>
+        <nav>
+            <a md-raised-button routerLink="/index" routerLinkActive="active">Index</a>
+            <a md-raised-button routerLink="/edit" routerLinkActive="active">Edit</a>
+        </nav>
+        <router-outlet></router-outlet>
+    </div>
+    <div fxFlex >          
+    </div>
+  </div>
+</div>
