@@ -14,6 +14,9 @@ export class TextService {
     TextParser.setCTestText(text);
   }
 
+  hideTextService(text: string): string{
+    return TextParser.hideWord(text);
+  }
   constructor() { }
 
 }

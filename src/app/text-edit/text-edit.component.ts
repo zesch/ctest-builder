@@ -60,6 +60,11 @@ export class TextEditComponent implements OnInit {
   //   }
   }
 
+  update(newText: Text): void {
+      this.loggerService.log('update ' + JSON.stringify(newText)  );
+      this.loggerService.log('value ' + newText.value + "  after hide  " + this.textService.hideTextService(newText.value) );
+      this.paragraph[newText.id -1 ].cValue = this.textService.hideTextService(newText.value);
+  }
   export(): void {
 
   }

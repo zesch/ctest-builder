@@ -2,14 +2,19 @@
 <br>
 
 <div class="menu">
-  <button (click)="toggleOriginal()">
-      ToggleOriginal
-  </button>
+  <md-slide-toggle (change) = "toggleOriginal()"
+      >
+    ToggleOriginal
+  </md-slide-toggle>
+  <button md-button (click)="export()">export</button>
   <div *ngIf='selectedText' class="menu">
-    <span>
-      {{selectedText.value}}
-    </span>
-    <button (click)="setOthers()">
+    <md-input-container>
+      <input mdInput 
+      (keyup.enter)="update(selectedText)"
+      (blur)="update(selectedText)" 
+      [(ngModel)]="selectedText.value">
+    </md-input-container>
+    <button md-button (click)="setOthers()">
       setOthers
     </button>
   </div>
@@ -22,9 +27,11 @@
 
 <br>
 <br>
-<div class='text unselectable' *ngFor="let text of paragraph" (click)="toggleText(text);onSelect(text)">
-  <span *ngIf='text.isHidden'>{{text.cValue}}{{text.id}}</span>
-  <span *ngIf='!text.isHidden'>{{text.value}}{{text.id}}</span>
+<div class='text unselectable' *ngFor="let text of paragraph" 
+  (dblclick)="toggleText(text)"
+  (click)="onSelect(text)">
+  <span *ngIf='text.isHidden'>{{text.cValue}}</span>
+  <span *ngIf='!text.isHidden'>{{text.value}}</span>
 
 </div>
 <br>
@@ -39,4 +46,3 @@
 
 <br>
 <br>
-<button (click)="export()">export</button>

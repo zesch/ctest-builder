@@ -17,19 +17,17 @@ export class TextParser {
     private static text = mockText;
 
     static getCTestText(): Text[] {
-        const firstSentence = this.getSentences(this.text)[0];
-        const otherSentences = this.getSentences(this.text).slice(1).join('');
 
-        const words = otherSentences.split(' ');
+        const words = this.text.split(' ');
 
         let res: Text[] = [];
-        let text = {
-            id: 0,
-            value: firstSentence,
-            cValue: firstSentence,
-            isHidden: false
-        };
-        res.push(text);
+        // let text = {
+        //     id: 0,
+        //     value: firstSentence,
+        //     cValue: firstSentence,
+        //     isHidden: false
+        // };
+        // res.push(text);
 
         for (let i = 0; i < words.length; i++) {
             let text = {
@@ -43,7 +41,7 @@ export class TextParser {
         return res;
     }
 
-    private static hideWord(word: string): string {
+    public static hideWord(word: string): string {
         let wordLength = 0;
         for (let i = 0; i < word.length; i++) {
             if (TextParser.allowedCharacters.includes(word.charAt(i))) {

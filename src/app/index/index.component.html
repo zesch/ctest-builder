@@ -1,3 +1,15 @@
-<p>
+ ̰<p>
   index works!
 </p>
+<button md-button>Click me!</button>
+                <div dnd-draggable [dragEnabled]="true">
+                    <div>
+                        <div>Drag Me</div>
+                    </div>
+                </div> 
+                        <div dnd-droppable class="panel panel-info" (onDropSuccess)="simpleDrop=$event">
+            <div >Place to drop</div>
+            <div >
+                <div *ngIf="simpleDrop">Item was dropped here</div>
+            </div>
+        </div>
