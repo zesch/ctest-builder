@@ -2,18 +2,27 @@
 <br>
 
 <div class="menu">
+  <div dnd-draggable [dragEnabled]="true">
+
+        <div class='text'>Drag Me</div>
+
+  </div> 
   <md-slide-toggle (change) = "toggleOriginal()"
       >
     ToggleOriginal
   </md-slide-toggle>
   <button md-button (click)="export()">export</button>
   <div *ngIf='selectedText' class="menu">
-    <md-input-container>
-      <input mdInput 
-      (keyup.enter)="update(selectedText)"
-      (blur)="update(selectedText)" 
-      [(ngModel)]="selectedText.value">
-    </md-input-container>
+
+      <md-input-container *ngFor="let i of solutions">
+        <input mdInput 
+        (keyup.enter)="update(selectedText)"
+        (blur)="update(selectedText)" 
+        [(ngModel)]="selectedText.value[i]">
+      </md-input-container>
+    <button md-button (click)="addSolution()">
+      +
+    </button>
     <button md-button (click)="setOthers()">
       setOthers
     </button>
@@ -31,18 +40,19 @@
   (dblclick)="toggleText(text)"
   (click)="onSelect(text)">
   <span *ngIf='text.isHidden'>{{text.cValue}}</span>
-  <span *ngIf='!text.isHidden'>{{text.value}}</span>
-
+  <span *ngIf='!text.isHidden'>{{text.value[0]}}</span>
+  <span dnd-droppable (onDropSuccess)="simpleDrop=$event"><span > &nbsp;</span></span>
 </div>
 <br>
 <br>
 
 <div *ngIf='showOriginal'>
   <div class='text unselectable' *ngFor="let text of paragraph">
-    <span>{{text.value}}</span>
+    <span *ngFor="let i of solutions">{{text.value[i]}} </span>
 
   </div>
 </div>
 
 <br>
 <br>
+ <div *ngIf="simpleDrop">Item was dropped </div>

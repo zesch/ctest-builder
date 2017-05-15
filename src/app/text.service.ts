@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
-
-import { TextParser } from './text-parser';
 import { Text } from './text';
+import { TextParser } from './text-parser';
+
 
 @Injectable()
 export class TextService {

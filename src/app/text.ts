@@ -1,6 +1,7 @@
-export class Text {
+
+export interface Text {
     id: number;
-    value: string;
-    cValue: string;
+    value: string[]; // [rem, li]
+    cValue: string; // Lo
     isHidden: boolean;
 }

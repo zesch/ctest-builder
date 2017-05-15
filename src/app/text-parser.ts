@@ -30,11 +30,12 @@ export class TextParser {
         // res.push(text);
 
         for (let i = 0; i < words.length; i++) {
+            let wordArray: string[] = [words[i]];
             let text = {
                 id: i + 1,
-                value: words[i],
+                value: wordArray,
                 cValue: this.hideWord(words[i]),
-                isHidden: i % 2 == 0
+                isHidden: i % 2 === 0
             };
             res.push(text);
         }
