@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Text } from '../text';
 import { TextService } from '../text.service';
 import { LoggerService } from '../logger.service';
+import { SubmitTextService } from "app/submit-text.service";
+import { Subscription }   from 'rxjs/Subscription';
 
 @Component({
   selector: 'app-text-edit',
@@ -11,24 +13,36 @@ import { LoggerService } from '../logger.service';
   styleUrls: ['./text-edit.component.css'],
   providers: [TextService, LoggerService]
 })
-export class TextEditComponent implements OnInit {
+export class TextEditComponent implements OnInit, OnDestroy {
   paragraph: Text[];
   selectedText: Text;
   negator: boolean = true;
   showOriginal: Boolean = false;
   hiddenCount: number = 0;
   solutions: number[] = [];
-  simpleDrop: boolean;
+  simpleDrop: number = -1;
+  subscription: Subscription;
+  text: string;
+  error: string;
+  addedText: string;
+  color: string;
+
+
   constructor(private textService: TextService,
     private router: Router,
-    private loggerService: LoggerService
-  ) { }
+    private loggerService: LoggerService,
+    private submitTextService: SubmitTextService
+  ) { 
+  }
 
 
   getParagraph(): void {
     this.textService
       .getParagraph()
-      .then(res => this.paragraph = res);
+      .then(res => {
+        this.paragraph = res;
+
+      });
   }
 
   toggleOriginal() {
@@ -37,8 +51,17 @@ export class TextEditComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.textService.setParagraph("test apple. banana, cat.");
+    this.getSubmitedText();
+    this.textService.setParagraph(this.text);
     this.getParagraph();
+    
+  }
+
+  getSubmitedText(){
+
+    this.text = this.submitTextService.textSource1;
+    this.loggerService.log(this.text + ' text1  ');
+    
   }
 
   toggleText(text): void {
@@ -86,7 +109,46 @@ export class TextEditComponent implements OnInit {
       this.loggerService.log('value ' + newText.value + "  after hide  " + this.textService.hideTextService(newText.value[0]) );
       this.paragraph[newText.id -1 ].cValue = this.textService.hideTextService(newText.value[0]);
   }
-  export(): void {
 
+  add(newText: string, id: number): void{
+      if(newText == null) return;
+      this.loggerService.log('add ' + JSON.stringify(newText)  );
+      let value: string[] = [newText];
+      let text = {
+            id: id + 1,
+            value: value,
+            cValue: this.textService.hideTextService(newText),
+            isHidden: false
+      };
+      this.paragraph.splice(id, 0, text);
+      this.updateTextIds();
+      this.simpleDrop = -1;
+      this.addedText = '';
+  }
+
+  onDropSuccess(id: any){
+    this.loggerService.log(id);
+    this.simpleDrop = id;
+  }
+
+  onDeleteDropSuccess($event: any){
+    this.loggerService.log($event.dragData);
+    this.paragraph.splice($event.dragData - 1,1);
+    this.updateTextIds();
+  }
+
+  export(): void {
+    this.loggerService.log(JSON.stringify(this.paragraph));
+  }
+
+  updateTextIds() {
+    for (let i = 0; i < this.paragraph.length; i++) {
+      this.paragraph[i].id = i + 1;
+    }
+  }
+
+  ngOnDestroy() {
+    // prevent memory leak when component destroyed
+    //this.subscription.unsubscribe();
   }
 }

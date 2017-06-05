@@ -5,7 +5,8 @@
   <div fxLayout="row"  >
     <div fxFlex="20%"> 
     </div>
-    <div fxFlex="60%">  
+    <div fxFlex="60%"> 
+      <md-card class='card'> 
         <h1>
           {{title}}
         </h1>
@@ -14,8 +15,11 @@
             <a md-raised-button routerLink="/edit" routerLinkActive="active">Edit</a>
         </nav>
         <router-outlet></router-outlet>
+        
+      </md-card> 
+
     </div>
-    <div fxFlex >          
+    <div fxFlex="20%" >          
     </div>
   </div>
 </div>

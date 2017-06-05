@@ -2,7 +2,7 @@
 
 
 
-<div  fxFlex>
+<!--<div  fxFlex>
   <div fxLayout="row"  >
     <div  fxFlex="20%"> 
        ̰<p>
@@ -26,4 +26,17 @@
       <button md-button>Click me!</button>      
     </div>
   </div>
+</div>-->
+<br>
+<br><br>  <br><br>
+<div>
+  <form (ngSubmit)="submit()">
+      <md-input-container class="example-full-width">
+        <textarea mdInput placeholder="Text" [(ngModel)]="text" name='text'></textarea>
+      </md-input-container>
+
+      <button md-button type="submit">
+        Submit
+      </button>
+  </form>
 </div>

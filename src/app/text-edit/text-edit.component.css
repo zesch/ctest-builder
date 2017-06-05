@@ -1,8 +1,23 @@
+.paragraph {
+    display: inline-block;
+}
+
 .text {
     display: inline-block;
     border: 1px solid black;
     margin: 3px;
     padding: 3px;
+    
+}
+.previewText {
+    display: inline-block;
+    margin: 3px;
+    padding: 3px;
+}
+.inputContainer{
+    
+    height: 1px;
+    
 }
 
 .unselectable {
@@ -18,4 +33,37 @@
     display: inline;
     margin: 3px;
     padding: 3px;
+}
+
+.dnd-drag-start {
+    -moz-transform:scale(0.6);
+    -webkit-transform:scale(0.6);
+    transform:scale(0.6);
+    opacity:0.4;
+    border: 2px dashed #FFC107;
+}
+
+.dnd-drag-enter {
+    opacity:0.7;
+    border: 2px dashed #FFC107;
+}
+
+.dnd-drag-over {
+    border: 2px dashed #FFC107;
+    background-color: #FFFFFF;
+}
+
+.dnd-sortable-drag {
+  -moz-transform:scale(0.9);
+  -webkit-transform:scale(0.9);
+  transform:scale(0.9);
+  opacity:0.7;
+  border: 1px dashed #FFC107;
+}
+
+.dnd {
+    border: 0.5px solid black;
+    height: 60px;
+    width: 100px;
+    align: right;
 }
