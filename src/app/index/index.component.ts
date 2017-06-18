@@ -11,7 +11,8 @@ import { Router } from '@angular/router';
 })
 export class IndexComponent implements OnInit {
   simpleDrop: boolean;
-  text: string;
+  text: string ='Please put in your text here.  Then hit the "Submit" button below.';
+  clearTextCount: number = 1;
   constructor(private submitTextService: SubmitTextService,
     private router: Router) {
    }
@@ -25,4 +26,13 @@ export class IndexComponent implements OnInit {
     console.log(this.text + ' is recieved');
     this.router.navigate(['/edit']);
   }
+
+  clearText(){
+    if(this.clearTextCount >= 1){
+      this.text = '';
+    }
+    this.clearTextCount = this.clearTextCount - 1;
+  }
+
+  
 }

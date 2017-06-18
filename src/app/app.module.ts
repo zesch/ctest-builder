@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MdButtonModule, MdCheckboxModule, MdInputModule, MdSlideToggleModule, MdCardModule, MdTooltipModule} from '@angular/material';
+import {MdButtonModule, MdCheckboxModule, MdInputModule,MdDialogModule, MdSlideToggleModule, MdCardModule, MdTooltipModule} from '@angular/material';
 import 'hammerjs';
 import {DndModule} from 'ng2-dnd';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -17,6 +17,8 @@ import { TextService } from './text.service';
 import { IndexComponent } from './index/index.component';
 import { SubmitTextService } from 'app/submit-text.service';
 import { HighlightDirective } from './highlight.directive';
+import { TextEditDialogComponent } from './text-edit-dialog/text-edit-dialog.component';
+
 
 
 @NgModule({
@@ -25,6 +27,8 @@ import { HighlightDirective } from './highlight.directive';
     TextEditComponent,
     IndexComponent,
     HighlightDirective,
+    TextEditDialogComponent,
+  
   ],
   imports: [
     BrowserModule,
@@ -32,9 +36,12 @@ import { HighlightDirective } from './highlight.directive';
     HttpModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MdButtonModule, MdCheckboxModule, MdInputModule, MdSlideToggleModule, MdCardModule, MdTooltipModule,
+    MdButtonModule, MdCheckboxModule, MdDialogModule,MdInputModule, MdSlideToggleModule, MdCardModule, MdTooltipModule,
     DndModule.forRoot(),
     FlexLayoutModule
+  ],
+  entryComponents: [
+    TextEditDialogComponent,
   ],
   providers: [TextService, SubmitTextService],
   bootstrap: [AppComponent]

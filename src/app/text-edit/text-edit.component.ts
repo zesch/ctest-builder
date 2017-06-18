@@ -6,6 +6,8 @@ import { TextService } from '../text.service';
 import { LoggerService } from '../logger.service';
 import { SubmitTextService } from "app/submit-text.service";
 import { Subscription }   from 'rxjs/Subscription';
+import { MdDialog,MdDialogRef } from "@angular/material";
+import { TextEditDialogComponent } from "app/text-edit-dialog/text-edit-dialog.component";
 
 @Component({
   selector: 'app-text-edit',
@@ -28,13 +30,26 @@ export class TextEditComponent implements OnInit, OnDestroy {
   color: string;
 
 
+
   constructor(private textService: TextService,
     private router: Router,
     private loggerService: LoggerService,
-    private submitTextService: SubmitTextService
+    private submitTextService: SubmitTextService,
+    public dialog: MdDialog
   ) { 
   }
 
+  goBack() {
+    // let dialogRef = this.dialog.open(TextEditDialogComponent);
+    // dialogRef.afterClosed().subscribe(result => {
+    //   this.loggerService.log(result);
+    //   if(result == 'Yes'){
+    //     this.router.navigate(['/index']);
+    //     this.loggerService.log('YES clicked ' );
+    //   };
+    // });
+     this.router.navigate(['/index']);
+  }
 
   getParagraph(): void {
     this.textService
@@ -137,8 +152,28 @@ export class TextEditComponent implements OnInit, OnDestroy {
     this.updateTextIds();
   }
 
+  createOutputText(){
+    let outputText: string;
+    for(let i = 0; i < this.paragraph.length; i = i + 1){
+      for(let j = 0; j < this.paragraph[i].value.length; j = j + 1){
+        outputText = outputText + this.paragraph[i].value[j] + ' ';
+      }
+    }
+    return outputText;
+  }
+
   export(): void {
-    this.loggerService.log(JSON.stringify(this.paragraph));
+    this.loggerService.log(this.createOutputText());
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(this.createOutputText()));
+    element.setAttribute('download', 'c-test');
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
   }
 
   updateTextIds() {
@@ -152,3 +187,4 @@ export class TextEditComponent implements OnInit, OnDestroy {
     //this.subscription.unsubscribe();
   }
 }
+

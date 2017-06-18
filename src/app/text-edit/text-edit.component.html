@@ -1,6 +1,10 @@
 
 
-
+<div>
+  <nav>
+      <a md-raised-button (click)='goBack()'>Back</a>
+  </nav>
+</div>
 
 <br>
 <br>
@@ -19,12 +23,12 @@
           <span *ngIf='!text.isHidden'>{{text.value[0]}}</span>
         </div>
          <div *ngIf="simpleDrop == text.id" class='text unselectable'>
-          <md-input-container class='inputContainer'>
+          <!--<md-input-container class='inputContainer'>-->
             <input #textInput mdInput class="input"
             (keyup.enter)="textInput.blur()"
             (blur)="add(addedText,text.id)" 
             [(ngModel)]="addedText">
-          </md-input-container>
+          <!--</md-input-container>-->
         </div>
         <span dnd-droppable (onDropSuccess)="onDropSuccess(text.id)" [dropZones]="['zone1']"><span > &nbsp;&nbsp;&nbsp;&nbsp;</span></span>
       </div>
@@ -40,34 +44,29 @@
 
     <div fxFlex >      
       <div class="menu">
-        <div dnd-draggable [dragEnabled]="true" [dropZones]="['zone1']" class='dnd' >
-
-              <div  mdTooltip="Tooltip!">Drag Me</div>
-
+        <button md-button (click)="export()">Export</button>
+        <button md-button (click)="setOthers()">Set Others</button>
+        <div dnd-draggable [dragEnabled]="true" [dropZones]="['zone1']" class='text' >
+          <div  mdTooltip="Drag inbetween words to insert a new word!"><span>New word</span></div>
         </div> 
-        <div dnd-droppable (onDropSuccess)="onDeleteDropSuccess($event)" [dropZones]="['zone2']" class='dnd'>
-          <div>Drop to delete</div>
+        <div dnd-droppable (onDropSuccess)="onDeleteDropSuccess($event)" [dropZones]="['zone2']" class=''>
+          <div mdTooltip="Drop here to delete"><img src="assets/trash.jpg"></div>
         </div>
         <br>
-        <md-slide-toggle (change) = "toggleOriginal()"
-            >
+        <md-slide-toggle (change) = "toggleOriginal()">
           Check preview
         </md-slide-toggle>
-        <button md-button (click)="setOthers()">
-            setOthers
-          </button>
-        <div *ngIf='selectedText' class="menu">
 
+        <div *ngIf='selectedText' class="menu">
             <md-input-container *ngFor="let i of solutions">
               <input #solutionInput mdInput 
               (keyup.enter)="solutionInput.blur()"
               (blur)="update(selectedText)" 
               [(ngModel)]="selectedText.value[i]">
             </md-input-container>
-          <button md-button (click)="addSolution()">
+          <button mdTooltip="Add an alternative solution" md-button (click)="addSolution()">
             +
           </button>
-          <button md-button (click)="export()">export</button>
         </div>
       </div>
     </div>
