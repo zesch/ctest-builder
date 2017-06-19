@@ -26,3 +26,11 @@ Before running the tests make sure you are serving the app via `ng serve`.
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+
+## run on server with http-server
+http-server dist/ -p 8000 > ./output.log &
+
+## Post on github page
+ng build --prod --base-href https://zesch.github.io/ctest-builder/
+ngh
