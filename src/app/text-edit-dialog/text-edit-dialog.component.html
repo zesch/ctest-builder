@@ -1,6 +1,6 @@
-<h1 md-dialog-title>Dialog</h1>
-<div md-dialog-content>What would you like to do?</div>
+<h1 md-dialog-title>Go Back</h1>
+<div md-dialog-content>All data will be lost, do you want to continue?</div>
 <div md-dialog-actions>
-  <button md-button md-dialog-close="Option 1">Option 1</button>
-  <button md-button md-dialog-close="ffff 2">Option 2</button>
+  <button md-button (click)="dialogRef.close('No')">No</button>
+  <button md-button (click)="dialogRef.close('Yes')">Yes</button>
 </div>

@@ -36,19 +36,17 @@ export class TextEditComponent implements OnInit, OnDestroy {
     private loggerService: LoggerService,
     private submitTextService: SubmitTextService,
     public dialog: MdDialog
-  ) { 
-  }
+  ) { }
 
   goBack() {
-    // let dialogRef = this.dialog.open(TextEditDialogComponent);
-    // dialogRef.afterClosed().subscribe(result => {
-    //   this.loggerService.log(result);
-    //   if(result == 'Yes'){
-    //     this.router.navigate(['/index']);
-    //     this.loggerService.log('YES clicked ' );
-    //   };
-    // });
-     this.router.navigate(['/index']);
+    let dialogRef = this.dialog.open(TextEditDialogComponent);
+    dialogRef.afterClosed().subscribe(res => {
+      if(res == 'Yes'){
+        this.router.navigate(['/index']);
+      };
+    });
+
+     
   }
 
   getParagraph(): void {
@@ -153,11 +151,23 @@ export class TextEditComponent implements OnInit, OnDestroy {
   }
 
   createOutputText(){
-    let outputText: string;
+    let outputText = "";
+    for(let i = 0; i < this.paragraph.length; i = i + 1){
+      if(this.paragraph[i].isHidden === true){
+        outputText = outputText + this.paragraph[i].cValue + ' ';
+      }else{
+        outputText = outputText + this.paragraph[i].value[0] + ' ';
+      }
+    }
+    outputText = outputText + '\n \n';
     for(let i = 0; i < this.paragraph.length; i = i + 1){
       for(let j = 0; j < this.paragraph[i].value.length; j = j + 1){
-        outputText = outputText + this.paragraph[i].value[j] + ' ';
+        outputText = outputText + this.paragraph[i].value[j];
+        if(this.paragraph[i].value.length > 1 && j != this.paragraph[i].value.length - 1 ){
+          outputText = outputText + '/';
+        }
       }
+      outputText = outputText + ' ';
     }
     return outputText;
   }

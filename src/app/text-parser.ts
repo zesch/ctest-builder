@@ -18,7 +18,16 @@ export class TextParser {
 
     static getCTestText(): Text[] {
 
-        const words = this.text.split(' ');
+        let words = this.text.split(' ');
+        for (let i = 0; i < words.length; i++) {
+            if (words[i].trim() === '') {
+                words.splice(i, 1);
+            } else if (words[i].charAt(words[i].length - 1) === '.') {
+                words[i] = words[i].substr(0, words[i].length - 1);
+                words.splice(i + 1, 0, '.');
+                i++;
+            }
+        }
 
         let res: Text[] = [];
         // let text = {
