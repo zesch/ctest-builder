@@ -2,7 +2,7 @@
 
 <div>
   <nav>
-      <a md-raised-button (click)='goBack()'>Back</a>
+      
   </nav>
 </div>
 
@@ -14,15 +14,26 @@
 
  <div  fxFlex>
   <div fxLayout="row"  >
-    <div  fxFlex="80%"> 
+    <md-card fxFlex="80%" class = 'displayBox'> 
       <div class='paragraph' *ngFor="let text of paragraph" 
         (dblclick)="toggleText(text)"
-        (click)="onSelect(text)">
-        <div  class='text unselectable' dnd-draggable [dragEnabled]="true" [dragData]="text.id" [dropZones]="['zone2']">
+        (click)="onSelect(text)"
+        #textBox>
+        <div  *ngIf = '!(selectedText.id == text.id && selectedText)'  class='text unselectable' dnd-draggable [dragEnabled]="true" [dragData]="text.id" [dropZones]="['zone2']">
           <span *ngIf='text.isHidden'>{{text.cValue}}</span>
           <span *ngIf='!text.isHidden'>{{text.value[0]}}</span>
         </div>
-         <div *ngIf="simpleDrop == text.id" class='text unselectable'>
+        
+        <div *ngIf = 'selectedText.id == text.id && selectedText' class='text selected' >
+          <input #changeTextInput mdInput 
+              (keyup.enter)="changeTextInput.blur()"
+              (blur)="update(selectedText)" 
+              [(ngModel)]="selectedText.value[0]"
+              >
+        </div>
+        
+
+        <div *ngIf="simpleDrop == text.id" class='text unselectable'>
           <!--<md-input-container class='inputContainer'>-->
             <input #textInput mdInput class="input"
             (keyup.enter)="textInput.blur()"
@@ -39,35 +50,45 @@
           <!--<span *ngFor="let i of solutions">{{text.value[i]}}</span>-->
           <span *ngFor="let solution of text.value">{{solution}}</span>
         </div>
-      </div>
-    </div>
+      </div> 
+    </md-card>
 
     <div fxFlex >      
-      <div class="menu">
-        <button md-button (click)="export()">Export</button>
-        <button md-button (click)="setOthers()">Set Others</button>
-        <div dnd-draggable [dragEnabled]="true" [dropZones]="['zone1']" class='text' >
-          <div  mdTooltip="Drag inbetween words to insert a new word!"><span>New word</span></div>
-        </div> 
-        <div dnd-droppable (onDropSuccess)="onDeleteDropSuccess($event)" [dropZones]="['zone2']" class=''>
-          <div mdTooltip="Drop here to delete"><img src="assets/trash.jpg"></div>
-        </div>
-        <br>
-        <md-slide-toggle (change) = "toggleOriginal()">
-          Check preview
-        </md-slide-toggle>
-
-        <div *ngIf='selectedText' class="menu">
+      <div class="menu" fxLayout="column" >
+        <md-card *ngIf='selectedText' class="menu">
+          <md-card-subtitle>Current token</md-card-subtitle>
             <md-input-container *ngFor="let i of solutions">
               <input #solutionInput mdInput 
               (keyup.enter)="solutionInput.blur()"
               (blur)="update(selectedText)" 
               [(ngModel)]="selectedText.value[i]">
             </md-input-container>
-          <button mdTooltip="Add an alternative solution" md-button (click)="addSolution()">
+          <button mdTooltip="Add an alternative solution" md-raised-button (click)="addSolution()">
             +
           </button>
-        </div>
+        </md-card>
+        <br>
+        <md-card>
+          <div dnd-draggable [dragEnabled]="true" [dropZones]="['zone1']" class='text' >
+            <div  mdTooltip="Drag inbetween words to insert a new word!"><span>New word</span></div>
+          </div> 
+          <div dnd-droppable (onDropSuccess)="onDeleteDropSuccess($event)" [dropZones]="['zone2']" class=''>
+            <div mdTooltip="Drop here to delete"><img src="assets/trash.jpg"></div>
+          </div>
+        </md-card>
+        <br>
+        <md-card> 
+          <button md-raised-button (click)='goBack()'>Cancel</button>
+          <button md-raised-button (click)="setOthers()">Reformat</button>
+          <button md-raised-button (click)="export()">Export</button>
+          
+          <br>
+          <md-slide-toggle (change) = "toggleOriginal()">
+            Check preview
+          </md-slide-toggle>
+        </md-card>
+
+
       </div>
     </div>
   </div>

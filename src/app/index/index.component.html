@@ -32,10 +32,10 @@
 <div>
   <form (ngSubmit)="submit()">
       <md-input-container class="example-full-width">
-        <textarea (focus)='clearText()' mdInput placeholder="Text" [(ngModel)]="text" name='text' rows='20'></textarea>
+        <textarea (focus)='clearText()' mdInput placeholder="Text" [(ngModel)]="text" name='text' rows='30'></textarea>
       </md-input-container>
 
-      <button md-button type="submit">
+      <button md-raised-button type="submit">
         Submit
       </button>
   </form>

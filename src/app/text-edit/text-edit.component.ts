@@ -17,6 +17,7 @@ import { TextEditDialogComponent } from "app/text-edit-dialog/text-edit-dialog.c
 })
 export class TextEditComponent implements OnInit, OnDestroy {
   paragraph: Text[];
+  
   selectedText: Text;
   negator: boolean = true;
   showOriginal: Boolean = false;
@@ -37,6 +38,16 @@ export class TextEditComponent implements OnInit, OnDestroy {
     private submitTextService: SubmitTextService,
     public dialog: MdDialog
   ) { }
+
+  setNullSelectedtext(){
+    let emptyStringArr: string[] = [' '];
+    this.selectedText = {
+            id: 0,
+            value: emptyStringArr,
+            cValue: ' ',
+            isHidden: false
+        }
+  }
 
   goBack() {
     let dialogRef = this.dialog.open(TextEditDialogComponent);
@@ -67,7 +78,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
     this.getSubmitedText();
     this.textService.setParagraph(this.text);
     this.getParagraph();
-    
+    this.setNullSelectedtext();
   }
 
   getSubmitedText(){
@@ -121,7 +132,8 @@ export class TextEditComponent implements OnInit, OnDestroy {
       this.loggerService.log('update ' + JSON.stringify(newText)  );
       this.loggerService.log('value ' + newText.value + "  after hide  " + this.textService.hideTextService(newText.value[0]) );
       this.paragraph[newText.id -1 ].cValue = this.textService.hideTextService(newText.value[0]);
-  }
+      this.setNullSelectedtext();
+  } 
 
   add(newText: string, id: number): void{
       if(newText == null) return;

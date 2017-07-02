@@ -9,6 +9,12 @@
     padding: 3px;
     
 }
+.text.selected{
+    display: inline-block;
+    border: 1px solid #FFB40F;
+    margin: 3px;
+    padding: 3px;
+}
 .previewText {
     display: inline-block;
     margin: 3px;
@@ -64,4 +70,9 @@
 .dnd {
     border: 0.5px solid black;
     align: right;
+}
+
+.displayBox{
+    overflow-y: auto;
+    height:770px;
 }
