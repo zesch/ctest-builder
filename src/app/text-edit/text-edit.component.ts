@@ -42,7 +42,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
   setNullSelectedtext(){
     let emptyStringArr: string[] = [' '];
     this.selectedText = {
-            id: 0,
+            id: -1,
             value: emptyStringArr,
             cValue: ' ',
             isHidden: false
@@ -129,10 +129,11 @@ export class TextEditComponent implements OnInit, OnDestroy {
   }
 
   update(newText: Text): void {
-      this.loggerService.log('update ' + JSON.stringify(newText)  );
+      
       this.loggerService.log('value ' + newText.value + "  after hide  " + this.textService.hideTextService(newText.value[0]) );
-      this.paragraph[newText.id -1 ].cValue = this.textService.hideTextService(newText.value[0]);
+      this.paragraph[newText.id].cValue = this.textService.hideTextService(newText.value[0]);
       this.setNullSelectedtext();
+      this.loggerService.log('update ' + JSON.stringify(newText)  );
   } 
 
   add(newText: string, id: number): void{

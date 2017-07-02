@@ -15,14 +15,18 @@ export class TextParser {
 
     private static allowedCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOLPQRSTUVWXYZÖÄÜöäüß';
     private static text = mockText;
+    private static symbols = '.,?!;';
 
     static getCTestText(): Text[] {
+        const firstSentences = this.getSentences(this.text).slice(0, 1);
+        console.log(firstSentences);
+        const otherSentences = this.getSentences(this.text).slice(1).join('');
+        let words = otherSentences.split(' ');
 
-        let words = this.text.split(' ');
         for (let i = 0; i < words.length; i++) {
             if (words[i].trim() === '') {
                 words.splice(i, 1);
-            } else if (words[i].charAt(words[i].length - 1) === '.') {
+            } else if (TextParser.symbols.includes(words[i].charAt(words[i].length - 1))) {
                 words[i] = words[i].substr(0, words[i].length - 1);
                 words.splice(i + 1, 0, '.');
                 i++;
@@ -30,13 +34,14 @@ export class TextParser {
         }
 
         let res: Text[] = [];
-        // let text = {
-        //     id: 0,
-        //     value: firstSentence,
-        //     cValue: firstSentence,
-        //     isHidden: false
-        // };
-        // res.push(text);
+        
+        let firstSentence = {
+            id: 0,
+            value: firstSentences,
+            cValue: firstSentences[0],
+            isHidden: false
+        };
+        res.push(firstSentence);
 
         for (let i = 0; i < words.length; i++) {
             let wordArray: string[] = [words[i]];
@@ -48,6 +53,11 @@ export class TextParser {
             };
             res.push(text);
         }
+
+
+        for (let i = 0; i < res.length; i++)
+            if (res[i].value[0].trim() === '')
+                res.splice(i , 1);
         return res;
     }
 
@@ -59,6 +69,9 @@ export class TextParser {
             }
         }
 
+        if(wordLength === 1){
+            return word;
+        }
         let res = '';
         let charsToShow = wordLength / 2;
         for (let i = 0; i < word.length; i++) {
@@ -159,7 +172,7 @@ export class TextParser {
         let quoteState = QuoteState.NORMAL;
 
         for (let pos = 0; pos < text.length; pos++) {
-            let chr = text.charAt(pos);
+            const chr = text.charAt(pos);
 
             switch (quoteState) {
                 case QuoteState.NORMAL:
@@ -167,7 +180,7 @@ export class TextParser {
 
                     if (this.isStop(chr)) {
                         ans.push(sentence);
-                        sentence = "";
+                        sentence = '';
                     } else if (this.isQuoteStart(chr)) {
                         quoteState = QuoteState.INSIDE;
                     }
@@ -185,7 +198,7 @@ export class TextParser {
                         ans.push(sentence);
                         sentence = chr;
                         quoteState = QuoteState.NORMAL;
-                    } else if (chr.trim() === "") {
+                    } else if (chr.trim() === '') {
                         sentence += chr;
                     } else if (this.isQuoteStart(chr)) {
                         ans.push(sentence);
@@ -200,7 +213,7 @@ export class TextParser {
             }
         }
 
-        if (sentence.trim() === "") {
+        if (sentence.trim() === '') {
             ans.push(sentence);
         }
         return ans;
