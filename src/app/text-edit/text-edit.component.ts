@@ -6,8 +6,9 @@ import { TextService } from '../text.service';
 import { LoggerService } from '../logger.service';
 import { SubmitTextService } from "app/submit-text.service";
 import { Subscription }   from 'rxjs/Subscription';
-import { MdDialog,MdDialogRef } from "@angular/material";
+import { MdDialog,MdDialogRef, MdSnackBar} from "@angular/material";
 import { TextEditDialogComponent } from "app/text-edit-dialog/text-edit-dialog.component";
+import { ReformatDialogComponent } from "app/reformat-dialog/reformat-dialog.component";
 
 @Component({
   selector: 'app-text-edit',
@@ -29,14 +30,16 @@ export class TextEditComponent implements OnInit, OnDestroy {
   error: string;
   addedText: string;
   color: string;
-
+  gapCount: number;
+  totalCount: number;
 
 
   constructor(private textService: TextService,
     private router: Router,
     private loggerService: LoggerService,
     private submitTextService: SubmitTextService,
-    public dialog: MdDialog
+    public dialog: MdDialog,
+    public snackBar: MdSnackBar
   ) { }
 
   goBack() {
@@ -50,13 +53,54 @@ export class TextEditComponent implements OnInit, OnDestroy {
      
   }
 
+  reformat() {
+    let dialogRef = this.dialog.open(ReformatDialogComponent);
+    dialogRef.afterClosed().subscribe(res => {
+      for(let i = 1; i < this.paragraph.length; i++){
+        this.paragraph[i].isHidden = false;
+      }
+    this.setGaps(res);
+    this.countStatistics();
+    });
+
+     
+  }
+
+  setGaps(res): void{
+    let count = res + 1;
+
+    if(this.paragraph.length < res){
+      this.snackBar.open('desired gap number is less than total words!',null,{
+        duration:2000,
+      })
+    }else{
+      for (let i = 1; i < this.paragraph.length; i = i + Math.floor(this.paragraph.length/res) - 1) {
+        this.paragraph[i].isHidden = true;
+        --count;
+        if(--count < 1) break;
+      }
+    }
+  }
+
   getParagraph(): void {
     this.textService
       .getParagraph()
       .then(res => {
         this.paragraph = res;
 
+        //TODO these 2 should be onit, but causing problems, maybe because of this async call
+        this.setGaps(20);
+        this.countStatistics();
       });
+  }
+
+  countStatistics(){
+      this.gapCount = 0;
+      this.totalCount = 0;
+      for(let i = 0; i < this.paragraph.length; i++){
+        this.totalCount++;
+        if(!this.textService.isSymbolsService(this.paragraph[i].value[0]) && this.paragraph[i].isHidden === true) this.gapCount++;
+      }
   }
 
   toggleOriginal() {
@@ -69,6 +113,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
     this.textService.setParagraph(this.text);
     this.getParagraph();
     this.selectedText = null;
+    
   }
 
   getSubmitedText(){
@@ -81,6 +126,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
   toggleText(text): void {
     this.loggerService.log('click - ' + JSON.stringify(text));
     text.isHidden = !text.isHidden;
+    this.countStatistics();
   }
 
   onSelect(text: Text): void {
@@ -100,14 +146,17 @@ export class TextEditComponent implements OnInit, OnDestroy {
   }
 
   setOthers(): void {
-    for (let i = this.selectedText.id; i < this.paragraph.length; i = i + 2) {
-      if (this.selectedText.isHidden == true) {
-        this.paragraph[i].isHidden = true;
-        this.paragraph[i + 1].isHidden = false;
-      } else {
-        this.paragraph[i].isHidden = false;
-        this.paragraph[i + 1].isHidden = true;
-      }
+    // for (let i = this.selectedText.id; i < this.paragraph.length; i = i + 2) {
+    //   if (this.selectedText.isHidden == true) {
+    //     this.paragraph[i].isHidden = true;
+    //     this.paragraph[i + 1].isHidden = false;
+    //   } else {
+    //     this.paragraph[i].isHidden = false;
+    //     this.paragraph[i + 1].isHidden = true;
+    //   }
+    // }
+    for (let i = 1; i < this.paragraph.length; i = i + 2){
+      this.paragraph[i].isHidden = true;
     }
   }
 
@@ -116,6 +165,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
     //this.paragraph[this.selectedText.id].value.push(newSolution);
     this.solutions.push(this.solutions[this.solutions.length - 1] + 1);
     // this.loggerService.log(this.paragraph[this.selectedText.id].value);
+    this.countStatistics();
   }
 
   update(newText: Text): void {
@@ -124,6 +174,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
       this.paragraph[newText.id].cValue = this.textService.hideTextService(newText.value[0]);
       this.selectedText = null;
       this.loggerService.log('update ' + JSON.stringify(newText)  );
+      this.countStatistics();
   } 
 
   add(newText: string, id: number): void{
@@ -141,7 +192,8 @@ export class TextEditComponent implements OnInit, OnDestroy {
       this.simpleDrop = -1;
       this.addedText = '';
       this.selectedText = null;
-  }
+      this.countStatistics();
+  }//TODO when adding a new word, the bug still exists of setting wrong index: when double click it toggles the previous one, when add, its adds to next index
 
   onDropSuccess(id: any){
     this.loggerService.log(id);
@@ -203,6 +255,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
 
   debug(){
     console.log(this.paragraph);
+    this.snackBar.open('haha');
   }
 }
 

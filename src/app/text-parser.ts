@@ -53,7 +53,7 @@ export class TextParser {
                 id: i + 1,
                 value: wordArray,
                 cValue: this.hideWord(words[i]),
-                isHidden: i % 2 === 0
+                isHidden: false
             };
             res.push(text);
         }
@@ -90,6 +90,9 @@ export class TextParser {
         this.text = newText;
     }
 
+    static isSymbols(text: string): boolean{
+        return TextParser.symbols.includes(text);
+    }
     // static getArray(): Text[] {
     //     let paragraph = TextParser.getParagraph();
     //     let cTest = TextParser.getCTest();

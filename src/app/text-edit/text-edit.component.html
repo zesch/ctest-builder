@@ -79,13 +79,17 @@
         <br>
         <md-card> 
           <button md-raised-button (click)='goBack()'>Cancel</button>
-          <button md-raised-button (click)="setOthers()">Reformat</button>
+          <button md-raised-button (click)="reformat()">Reformat</button>
           <button md-raised-button (click)="export()">Export</button>
-          <!--<button md-raised-button (click)="debug()">debug</button>-->
+          <button md-raised-button (click)="debug()">debug</button>
           <br>
           <md-slide-toggle (change) = "toggleOriginal()">
             Check preview
           </md-slide-toggle>
+        </md-card>
+        <md-card>
+          gaps: {{gapCount}} <br>
+          total words: {{totalCount}}
         </md-card>
 
 

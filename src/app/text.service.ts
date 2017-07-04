@@ -17,6 +17,10 @@ export class TextService {
   hideTextService(text: string): string{
     return TextParser.hideWord(text);
   }
+
+  isSymbolsService(text: string): boolean{
+    return TextParser.isSymbols(text);
+  }
   constructor() { }
 
 }
