@@ -26,12 +26,15 @@ export class TextParser {
         for (let i = 0; i < words.length; i++) {
             if (words[i].trim() === '') {
                 words.splice(i, 1);
+                i--;
             } else if (TextParser.symbols.includes(words[i].charAt(words[i].length - 1))) {
                 words[i] = words[i].substr(0, words[i].length - 1);
                 words.splice(i + 1, 0, '.');
                 i++;
             }
         }
+
+
 
         let res: Text[] = [];
         
@@ -44,6 +47,7 @@ export class TextParser {
         res.push(firstSentence);
 
         for (let i = 0; i < words.length; i++) {
+
             let wordArray: string[] = [words[i]];
             let text = {
                 id: i + 1,
@@ -53,11 +57,6 @@ export class TextParser {
             };
             res.push(text);
         }
-
-
-        for (let i = 0; i < res.length; i++)
-            if (res[i].value[0].trim() === '')
-                res.splice(i , 1);
         return res;
     }
 

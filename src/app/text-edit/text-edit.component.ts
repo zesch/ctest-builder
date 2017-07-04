@@ -39,16 +39,6 @@ export class TextEditComponent implements OnInit, OnDestroy {
     public dialog: MdDialog
   ) { }
 
-  setNullSelectedtext(){
-    let emptyStringArr: string[] = [' '];
-    this.selectedText = {
-            id: -1,
-            value: emptyStringArr,
-            cValue: ' ',
-            isHidden: false
-        }
-  }
-
   goBack() {
     let dialogRef = this.dialog.open(TextEditDialogComponent);
     dialogRef.afterClosed().subscribe(res => {
@@ -78,7 +68,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
     this.getSubmitedText();
     this.textService.setParagraph(this.text);
     this.getParagraph();
-    this.setNullSelectedtext();
+    this.selectedText = null;
   }
 
   getSubmitedText(){
@@ -125,14 +115,14 @@ export class TextEditComponent implements OnInit, OnDestroy {
     this.loggerService.log(this.selectedText.id);
     //this.paragraph[this.selectedText.id].value.push(newSolution);
     this.solutions.push(this.solutions[this.solutions.length - 1] + 1);
-    this.loggerService.log(this.paragraph[this.selectedText.id].value);
+    // this.loggerService.log(this.paragraph[this.selectedText.id].value);
   }
 
   update(newText: Text): void {
-      
+      //TODO user may put in cvalue manually
       this.loggerService.log('value ' + newText.value + "  after hide  " + this.textService.hideTextService(newText.value[0]) );
       this.paragraph[newText.id].cValue = this.textService.hideTextService(newText.value[0]);
-      this.setNullSelectedtext();
+      this.selectedText = null;
       this.loggerService.log('update ' + JSON.stringify(newText)  );
   } 
 
@@ -146,10 +136,11 @@ export class TextEditComponent implements OnInit, OnDestroy {
             cValue: this.textService.hideTextService(newText),
             isHidden: false
       };
-      this.paragraph.splice(id, 0, text);
+      this.paragraph.splice(id + 1, 0, text);
       this.updateTextIds();
       this.simpleDrop = -1;
       this.addedText = '';
+      this.selectedText = null;
   }
 
   onDropSuccess(id: any){
@@ -208,6 +199,10 @@ export class TextEditComponent implements OnInit, OnDestroy {
   ngOnDestroy() {
     // prevent memory leak when component destroyed
     //this.subscription.unsubscribe();
+  }
+
+  debug(){
+    console.log(this.paragraph);
   }
 }
 

@@ -19,12 +19,12 @@
         (dblclick)="toggleText(text)"
         (click)="onSelect(text)"
         #textBox>
-        <div  *ngIf = '!(selectedText.id == text.id && selectedText)'  class='text unselectable' dnd-draggable [dragEnabled]="true" [dragData]="text.id" [dropZones]="['zone2']">
+        <div  *ngIf = '!(selectedText && selectedText.id == text.id && simpleDrop == -1)'  class='text unselectable' dnd-draggable [dragEnabled]="true" [dragData]="text.id" [dropZones]="['zone2']">
           <span *ngIf='text.isHidden'>{{text.cValue}}</span>
           <span *ngIf='!text.isHidden'>{{text.value[0]}}</span>
         </div>
         
-        <div *ngIf = 'selectedText.id == text.id && selectedText' class='text selected' >
+        <div *ngIf = 'selectedText && selectedText.id == text.id && simpleDrop == -1' class='text selected' >
           <input #changeTextInput mdInput 
               (keyup.enter)="changeTextInput.blur()"
               (blur)="update(selectedText)" 
@@ -81,7 +81,7 @@
           <button md-raised-button (click)='goBack()'>Cancel</button>
           <button md-raised-button (click)="setOthers()">Reformat</button>
           <button md-raised-button (click)="export()">Export</button>
-          
+          <!--<button md-raised-button (click)="debug()">debug</button>-->
           <br>
           <md-slide-toggle (change) = "toggleOriginal()">
             Check preview
