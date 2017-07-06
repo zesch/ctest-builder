@@ -57,11 +57,16 @@
       <div class="menu" fxLayout="column" >
         <md-card *ngIf='selectedText' class="menu">
           <md-card-subtitle>Current token</md-card-subtitle>
-            <md-input-container *ngFor="let i of solutions">
-              <input #solutionInput mdInput 
-              (keyup.enter)="solutionInput.blur()"
-              (blur)="update(selectedText)" 
-              [(ngModel)]="selectedText.value[i]">
+            <md-input-container *ngFor="let i of solutions" fxLayout="column">
+              <div fxLayout="row"> 
+                <input fxFlex #solutionInput mdInput size="15"
+                (keyup.enter)="solutionInput.blur()"
+                (blur)="update(selectedText)" 
+                [(ngModel)]="selectedText.value[i]">
+                <button fxFlex='7%' size="3" mdTooltip="Delete this solution" (click)="deleteSolution(i)">
+                  x
+                </button> 
+              </div>
             </md-input-container>
           <button mdTooltip="Add an alternative solution" md-raised-button (click)="addSolution()">
             +

@@ -161,6 +161,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
   }
 
   addSolution(): void{
+    //add an empty input bar for solution array
     this.loggerService.log(this.selectedText.id);
     //this.paragraph[this.selectedText.id].value.push(newSolution);
     this.solutions.push(this.solutions[this.solutions.length - 1] + 1);
@@ -168,11 +169,19 @@ export class TextEditComponent implements OnInit, OnDestroy {
     this.countStatistics();
   }
 
+
+  deleteSolution(id: number):void{
+    
+    this.selectedText.value.splice(id, 1);
+    this.solutions.pop();
+    this.countStatistics();
+  }
+
   update(newText: Text): void {
       //TODO user may put in cvalue manually
       this.loggerService.log('value ' + newText.value + "  after hide  " + this.textService.hideTextService(newText.value[0]) );
       this.paragraph[newText.id].cValue = this.textService.hideTextService(newText.value[0]);
-      this.selectedText = null;
+      //this.selectedText = null;
       this.loggerService.log('update ' + JSON.stringify(newText)  );
       this.countStatistics();
   } 
