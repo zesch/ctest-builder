@@ -19,18 +19,18 @@
         (dblclick)="toggleText(text)"
         (click)="onSelect(text)"
         #textBox>
-        <div  *ngIf = '!(selectedText && selectedText.id == text.id && simpleDrop == -1)'  class='text unselectable' dnd-draggable [dragEnabled]="true" [dragData]="text.id" [dropZones]="['zone2']">
+        <div  class='text unselectable' [style.border]="selectedText && selectedText.id === text.id && simpleDrop == -1? '1px solid #FFB40F' : '1px solid black'" dnd-draggable [dragEnabled]="true" [dragData]="text.id" [dropZones]="['zone2']">
           <span *ngIf='text.isHidden'>{{text.cValue}}</span>
           <span *ngIf='!text.isHidden'>{{text.value[0]}}</span>
         </div>
         
-        <div *ngIf = 'selectedText && selectedText.id == text.id && simpleDrop == -1' class='text selected' >
+        <!--<div *ngIf = 'selectedText && selectedText.id == text.id && simpleDrop == -1' class='text selected' >
           <input #changeTextInput mdInput 
               (keyup.enter)="changeTextInput.blur()"
               (blur)="update(selectedText)" 
               [(ngModel)]="selectedText.value[0]"
               >
-        </div>
+        </div>-->
         
 
         <div *ngIf="simpleDrop == text.id" class='text unselectable'>

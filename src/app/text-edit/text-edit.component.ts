@@ -99,7 +99,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
       this.totalCount = 0;
       for(let i = 0; i < this.paragraph.length; i++){
         this.totalCount++;
-        if(!this.textService.isSymbolsService(this.paragraph[i].value[0]) && this.paragraph[i].isHidden === true) this.gapCount++;
+        if((!this.textService.isSymbolsService(this.paragraph[i].value[0])) && this.paragraph[i].isHidden === true) this.gapCount++;
       }
   }
 
@@ -244,7 +244,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
 
   updateTextIds() {
     for (let i = 0; i < this.paragraph.length; i++) {
-      this.paragraph[i].id = i + 1;
+      this.paragraph[i].id = i;
     }
   }
 
