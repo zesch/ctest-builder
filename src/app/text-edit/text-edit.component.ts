@@ -171,9 +171,14 @@ export class TextEditComponent implements OnInit, OnDestroy {
 
 
   deleteSolution(id: number):void{
-    
-    this.selectedText.value.splice(id, 1);
-    this.solutions.pop();
+    if(this.selectedText.value.length > 1){
+      this.selectedText.value.splice(id, 1);
+      this.solutions.pop();
+    }else{
+      this.snackBar.open('Can not delete the only solution!',null,{
+        duration:2000,
+      })
+    }
     this.countStatistics();
   }
 
