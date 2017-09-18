@@ -41,7 +41,14 @@ export class TextEditComponent implements OnInit, OnDestroy {
     public dialog: MdDialog,
     public snackBar: MdSnackBar
   ) { }
-
+  
+  ngOnInit() {
+    this.getSubmitedText();
+    this.textService.setParagraph(this.text);
+    this.getParagraph();
+    this.selectedText = null;
+  }
+  
   goBack() {
     let dialogRef = this.dialog.open(TextEditDialogComponent);
     dialogRef.afterClosed().subscribe(res => {
@@ -83,6 +90,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
   }
 
   getParagraph(): void {
+    
     this.textService
       .getParagraph()
       .then(res => {
@@ -91,7 +99,10 @@ export class TextEditComponent implements OnInit, OnDestroy {
         //TODO these 2 should be onit, but causing problems, maybe because of this async call
         this.setGaps(20);
         this.countStatistics();
+        
       });
+
+    
   }
 
   countStatistics(){
@@ -108,13 +119,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
     this.showOriginal = !this.showOriginal;
   }
 
-  ngOnInit() {
-    this.getSubmitedText();
-    this.textService.setParagraph(this.text);
-    this.getParagraph();
-    this.selectedText = null;
 
-  }
 
   getSubmitedText(){
 

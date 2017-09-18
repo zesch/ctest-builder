@@ -1,15 +1,16 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
+import { HttpModule }    from '@angular/http';
 import { RouterModule } from '@angular/router';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MdButtonModule, MdCheckboxModule, MdInputModule, MdDialogModule, MdSlideToggleModule, MdCardModule, MdTooltipModule, MdSnackBarModule } from '@angular/material';
 import 'hammerjs';
-import {DndModule} from 'ng2-dnd';
+import { DndModule } from 'ng2-dnd';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
 import { AppRoutingModule } from './app-routing/app-routing.module';
+import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 
 import { AppComponent } from './app.component';
 import { TextEditComponent } from './text-edit/text-edit.component';
@@ -19,6 +20,7 @@ import { SubmitTextService } from 'app/submit-text.service';
 import { HighlightDirective } from './highlight.directive';
 import { TextEditDialogComponent } from './text-edit-dialog/text-edit-dialog.component';
 import { ReformatDialogComponent } from './reformat-dialog/reformat-dialog.component';
+import { InMemDataService } from 'app/in-mem-data.service';
 
 
 
@@ -30,20 +32,21 @@ import { ReformatDialogComponent } from './reformat-dialog/reformat-dialog.compo
     HighlightDirective,
     TextEditDialogComponent,
     ReformatDialogComponent,
-  
+
   ],
   imports: [
     BrowserModule,
     FormsModule,
     HttpModule,
+    InMemoryWebApiModule.forRoot(InMemDataService),
     AppRoutingModule,
     BrowserAnimationsModule,
-    MdButtonModule, MdCheckboxModule, MdDialogModule,MdInputModule,MdSnackBarModule, MdSlideToggleModule, MdCardModule, MdTooltipModule,
+    MdButtonModule, MdCheckboxModule, MdDialogModule, MdInputModule, MdSnackBarModule, MdSlideToggleModule, MdCardModule, MdTooltipModule,
     DndModule.forRoot(),
     FlexLayoutModule
   ],
   entryComponents: [
-    TextEditDialogComponent,ReformatDialogComponent,
+    TextEditDialogComponent, ReformatDialogComponent,
   ],
   providers: [TextService, SubmitTextService],
   bootstrap: [AppComponent]
