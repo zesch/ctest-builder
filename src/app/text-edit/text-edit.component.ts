@@ -4,11 +4,11 @@ import { Router } from '@angular/router';
 import { Text } from '../text';
 import { TextService } from '../text.service';
 import { LoggerService } from '../logger.service';
-import { SubmitTextService } from "app/submit-text.service";
+import { SubmitTextService } from 'app/submit-text.service';
 import { Subscription }   from 'rxjs/Subscription';
-import { MdDialog,MdDialogRef, MdSnackBar} from "@angular/material";
-import { TextEditDialogComponent } from "app/text-edit-dialog/text-edit-dialog.component";
-import { ReformatDialogComponent } from "app/reformat-dialog/reformat-dialog.component";
+import { MdDialog,MdDialogRef, MdSnackBar} from '@angular/material';
+import { TextEditDialogComponent } from 'app/text-edit-dialog/text-edit-dialog.component';
+import { ReformatDialogComponent } from 'app/reformat-dialog/reformat-dialog.component';
 
 @Component({
   selector: 'app-text-edit',
@@ -18,7 +18,7 @@ import { ReformatDialogComponent } from "app/reformat-dialog/reformat-dialog.com
 })
 export class TextEditComponent implements OnInit, OnDestroy {
   paragraph: Text[];
-  
+
   selectedText: Text;
   negator: boolean = true;
   showOriginal: Boolean = false;
@@ -50,7 +50,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
       };
     });
 
-     
+
   }
 
   reformat() {
@@ -63,7 +63,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
     this.countStatistics();
     });
 
-     
+
   }
 
   setGaps(res): void{
@@ -113,14 +113,14 @@ export class TextEditComponent implements OnInit, OnDestroy {
     this.textService.setParagraph(this.text);
     this.getParagraph();
     this.selectedText = null;
-    
+
   }
 
   getSubmitedText(){
 
     this.text = this.submitTextService.textSource1;
     this.loggerService.log(this.text + ' text1  ');
-    
+
   }
 
   toggleText(text): void {
@@ -184,12 +184,12 @@ export class TextEditComponent implements OnInit, OnDestroy {
 
   update(newText: Text): void {
       //TODO user may put in cvalue manually
-      this.loggerService.log('value ' + newText.value + "  after hide  " + this.textService.hideTextService(newText.value[0]) );
+      this.loggerService.log('value ' + newText.value + '  after hide  ' + this.textService.hideTextService(newText.value[0]) );
       this.paragraph[newText.id].cValue = this.textService.hideTextService(newText.value[0]);
       //this.selectedText = null;
       this.loggerService.log('update ' + JSON.stringify(newText)  );
       this.countStatistics();
-  } 
+  }
 
   add(newText: string, id: number): void{
       if(newText == null) return;
@@ -221,7 +221,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
   }
 
   createOutputText(){
-    let outputText = "";
+    let outputText = '';
     for(let i = 0; i < this.paragraph.length; i = i + 1){
       if(this.paragraph[i].isHidden === true){
         outputText = outputText + this.paragraph[i].cValue + ' ';
