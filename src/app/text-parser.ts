@@ -1,5 +1,9 @@
 import { mockText } from './mock-text';
 import { Text } from './text';
+import { Token } from 'app/token';
+
+
+
 
 enum QuoteState {
     NORMAL, INSIDE, EXITTING
@@ -13,46 +17,35 @@ export class TextParser {
 
     // static PARAGRAPH: String[] = ['apple', 'banana', 'cat'];
 
+    constructor() {}
+    
+    ngOnInit() {
+
+    }
+
+       
     private static allowedCharacters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOLPQRSTUVWXYZÖÄÜöäüß';
     private static text = mockText;
+    private static tokenizedText: Token[] = [];
     private static symbols = '.,?!;';
 
-    static getCTestText(): Text[] {
-        const firstSentences = this.getSentences(this.text).slice(0, 1);
-        console.log(firstSentences);
-        const otherSentences = this.getSentences(this.text).slice(1).join('');
-        let words = otherSentences.split(' ');
-
-        for (let i = 0; i < words.length; i++) {
-            if (words[i].trim() === '') {
-                words.splice(i, 1);
-                i--;
-            } else if (TextParser.symbols.includes(words[i].charAt(words[i].length - 1))) {
-                words[i] = words[i].substr(0, words[i].length - 1);
-                words.splice(i + 1, 0, '.');
-                i++;
-            }
-        }
+    //------------------ take a Token[] and parse------------------------
+    public static setCTestText(newTokenizedText: Token[]): void{
+        TextParser.tokenizedText = newTokenizedText;
+    }
 
 
+    public static getCTestText(): Text[] {
 
         let res: Text[] = [];
-        
-        let firstSentence = {
-            id: 0,
-            value: firstSentences,
-            cValue: firstSentences[0],
-            isHidden: false
-        };
-        res.push(firstSentence);
 
-        for (let i = 0; i < words.length; i++) {
+        for (let i = 0; i < TextParser.tokenizedText.length; i++) {
 
-            let wordArray: string[] = [words[i]];
+            let wordArray: string[] = [TextParser.tokenizedText[i].value];
             let text = {
-                id: i + 1,
+                id: i,
                 value: wordArray,
-                cValue: this.hideWord(words[i]),
+                cValue: TextParser.hideWord(TextParser.tokenizedText[i].value, i),
                 isHidden: false
             };
             res.push(text);
@@ -60,7 +53,7 @@ export class TextParser {
         return res;
     }
 
-    public static hideWord(word: string): string {
+    public static hideWord(word: string, offset: number): string {
         let wordLength = 0;
         for (let i = 0; i < word.length; i++) {
             if (TextParser.allowedCharacters.includes(word.charAt(i))) {
@@ -72,7 +65,7 @@ export class TextParser {
             return word;
         }
         let res = '';
-        let charsToShow = wordLength / 2;
+        let charsToShow = wordLength - offset;
         for (let i = 0; i < word.length; i++) {
             if (!TextParser.allowedCharacters.includes(word.charAt(i))) {
                 res += word.charAt(i);
@@ -85,10 +78,88 @@ export class TextParser {
         }
         return res;
     }
+    //------------------------------------------------------------------
 
-    static setCTestText(newText): void {
-        this.text = newText;
-    }
+
+
+
+    //------------------ take a string and parse------------------------
+
+    // static getCTestText(): Text[] {
+    //     const firstSentences = this.getSentences(this.text).slice(0, 1);
+    //     const otherSentences = this.getSentences(this.text).slice(1).join('');
+    //     let words = otherSentences.split(' ');
+
+    //     for (let i = 0; i < words.length; i++) {
+    //         if (words[i].trim() === '') {
+    //             words.splice(i, 1);
+    //             i--;
+    //         } else if (TextParser.symbols.includes(words[i].charAt(words[i].length - 1))) {
+    //             words[i] = words[i].substr(0, words[i].length - 1);
+    //             words.splice(i + 1, 0, '.');
+    //             i++;
+    //         }
+    //     }
+
+
+
+    //     let res: Text[] = [];
+        
+    //     let firstSentence = {
+    //         id: 0,
+    //         value: firstSentences,
+    //         cValue: firstSentences[0],
+    //         isHidden: false
+    //     };
+    //     res.push(firstSentence);
+
+    //     for (let i = 0; i < words.length; i++) {
+
+    //         let wordArray: string[] = [words[i]];
+    //         let text = {
+    //             id: i + 1,
+    //             value: wordArray,
+    //             cValue: this.hideWord(words[i]),
+    //             isHidden: false
+    //         };
+    //         res.push(text);
+    //     }
+    //     return res;
+    // }
+
+    // public static hideWord(word: string): string {
+    //     let wordLength = 0;
+    //     for (let i = 0; i < word.length; i++) {
+    //         if (TextParser.allowedCharacters.includes(word.charAt(i))) {
+    //             wordLength++;
+    //         }
+    //     }
+
+    //     if(wordLength === 1){
+    //         return word;
+    //     }
+    //     let res = '';
+    //     let charsToShow = wordLength / 2;
+    //     for (let i = 0; i < word.length; i++) {
+    //         if (!TextParser.allowedCharacters.includes(word.charAt(i))) {
+    //             res += word.charAt(i);
+    //         } else if (charsToShow >= 1) {
+    //             res += word.charAt(i);
+    //             charsToShow--;
+    //         } else {
+    //             res += '_';
+    //         }
+    //     }
+    //     return res;
+    // }
+
+    // static setCTestText(newText): void {
+    //     this.text = newText;
+    // }
+
+    //------------------------------------------------------------------
+
+
 
     static isSymbols(text: string): boolean{
         return TextParser.symbols.includes(text);

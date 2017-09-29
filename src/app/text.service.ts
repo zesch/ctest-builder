@@ -5,21 +5,22 @@ import 'rxjs/add/operator/toPromise';
 
 
 import { Text } from './text';
+import { Token } from './token';
 import { TextParser } from './text-parser';
 
 
 @Injectable()
 export class TextService {
 
-  private url = 'api/texts'; 
+  private url = 'api/tokens'; 
   constructor(private http: Http) { }
 
 
   // using web api
-  getParagraph(): Promise<Text[]>{
+  getApiResult(): Promise<Token[]>{
     return this.http.get(this.url)
     .toPromise()
-    .then(response => response.json().data as Text[])
+    .then(response => response.json().data as Token[])
     .catch(this.handleError);
   }
 
@@ -33,17 +34,16 @@ export class TextService {
 
 
 //in memory parser
-
-  // getParagraph(): Promise<Text[]>{
-  //   return Promise.resolve(TextParser.getCTestText());
-  // }
-
-  setParagraph(text: string): void {
-    TextParser.setCTestText(text);
+  setParagraph(tokenized: Token[]): void {
+    TextParser.setCTestText(tokenized);
   }
 
-  hideTextService(text: string): string{
-    return TextParser.hideWord(text);
+  getParagraph(): Promise<Text[]>{
+    return Promise.resolve(TextParser.getCTestText());
+  }
+
+  hideTextService(text: string, offset: number): string{
+    return TextParser.hideWord(text, offset);
   }
 
   isSymbolsService(text: string): boolean{

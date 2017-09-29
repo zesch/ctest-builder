@@ -7,16 +7,15 @@ export class InMemDataService implements InMemoryDbService {
   constructor() { }
 
   createDb() {
-    const texts = [
-      { id: 0,  value: ["First"], cValue: "Fi___", isHidden: false},
-      { id: 1,  value: ["Second"], cValue: "Fi___", isHidden: false},
-      { id: 2,  value: ["Third"], cValue: "Fi___", isHidden: false},
-      { id: 3,  value: ["Fourth"], cValue: "Fi___", isHidden: false},
-      { id: 4,  value: ["Fifth"], cValue: "Fi___", isHidden: false},
-      { id: 5,  value: ["Sixth"], cValue: "Fi___", isHidden: false},
-      { id: 6,  value: ["Seventh"], cValue: "Fi___", isHidden: false},
+    const tokens = [
+      { id: 0,  value: "First", altValue: ['firstAlt'], offset: 3, isGap: false, isSpecial: false},
+      { id: 1,  value: "Second", altValue: ['secondAlt'],offset: 4,  isGap: false, isSpecial: false},
+      { id: 2,  value: "Third", altValue: ['thridAlt'], offset: 3, isGap: false, isSpecial: false},
+      { id: 3,  value: "Fourth", altValue: ['fourthAlt'], offset: 4, isGap: false, isSpecial: false},
+      { id: 4,  value: "Fifth", altValue: ['fifthAlt'], offset: 3, isGap: false, isSpecial: false},
+      { id: 5,  value: "Sixth", altValue: ['sixthAlt'], offset: 3, isGap: false, isSpecial: false},
+      { id: 6,  value: "Seventh", altValue: ['seventhAlt'], offset: 4, isGap: false, isSpecial: false},
     ];
-    return {texts};
+    return {tokens};
   }
-
 }

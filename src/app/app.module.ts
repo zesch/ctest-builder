@@ -9,6 +9,7 @@ import 'hammerjs';
 import { DndModule } from 'ng2-dnd';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
+import {Ng2Webstorage} from 'ng2-webstorage';
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 
@@ -24,6 +25,7 @@ import { InMemDataService } from 'app/in-mem-data.service';
 
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,6 +38,7 @@ import { InMemDataService } from 'app/in-mem-data.service';
   ],
   imports: [
     BrowserModule,
+    Ng2Webstorage,
     FormsModule,
     HttpModule,
     InMemoryWebApiModule.forRoot(InMemDataService),

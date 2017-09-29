@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { Text } from '../text';
+import { Token } from 'app/token';
 import { TextService } from '../text.service';
 import { LoggerService } from '../logger.service';
 import { SubmitTextService } from 'app/submit-text.service';
@@ -9,6 +10,9 @@ import { Subscription }   from 'rxjs/Subscription';
 import { MdDialog,MdDialogRef, MdSnackBar} from '@angular/material';
 import { TextEditDialogComponent } from 'app/text-edit-dialog/text-edit-dialog.component';
 import { ReformatDialogComponent } from 'app/reformat-dialog/reformat-dialog.component';
+
+import {LocalStorageService, SessionStorageService} from 'ng2-webstorage';
+
 
 @Component({
   selector: 'app-text-edit',
@@ -18,7 +22,7 @@ import { ReformatDialogComponent } from 'app/reformat-dialog/reformat-dialog.com
 })
 export class TextEditComponent implements OnInit, OnDestroy {
   paragraph: Text[];
-
+  tokenizedFromApi: Token[];
   selectedText: Text;
   negator: boolean = true;
   showOriginal: Boolean = false;
@@ -35,17 +39,20 @@ export class TextEditComponent implements OnInit, OnDestroy {
 
 
   constructor(private textService: TextService,
+
     private router: Router,
     private loggerService: LoggerService,
     private submitTextService: SubmitTextService,
     public dialog: MdDialog,
-    public snackBar: MdSnackBar
+    public snackBar: MdSnackBar,
+    private sesStorage:SessionStorageService
   ) { }
   
   ngOnInit() {
     this.getSubmitedText();
-    this.textService.setParagraph(this.text);
+    
     this.getParagraph();
+    //console.log("*********" + this.textService.getApiResult());
     this.selectedText = null;
   }
   
@@ -90,7 +97,20 @@ export class TextEditComponent implements OnInit, OnDestroy {
   }
 
   getParagraph(): void {
+    // first get the result of Token[] from API 
+    this.textService
+    .getApiResult()
+    .then(res => {
+      this.tokenizedFromApi = res;
+    });
     
+    //send the tokenized text to back
+    console.log(this.tokenizedFromApi);
+
+    //this.textService.setParagraph(this.tokenizedFromApi);
+    this.sesStorage.store('test', JSON.stringify(this.tokenizedFromApi));
+
+    // and get the parsed version from back
     this.textService
       .getParagraph()
       .then(res => {
@@ -102,7 +122,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
         
       });
 
-    
+
   }
 
   countStatistics(){
@@ -120,12 +140,9 @@ export class TextEditComponent implements OnInit, OnDestroy {
   }
 
 
-
   getSubmitedText(){
-
+    //getting the text input from front page as a string and stores in this.text
     this.text = this.submitTextService.textSource1;
-    this.loggerService.log(this.text + ' text1  ');
-
   }
 
   toggleText(text): void {
@@ -189,8 +206,8 @@ export class TextEditComponent implements OnInit, OnDestroy {
 
   update(newText: Text): void {
       //TODO user may put in cvalue manually
-      this.loggerService.log('value ' + newText.value + '  after hide  ' + this.textService.hideTextService(newText.value[0]) );
-      this.paragraph[newText.id].cValue = this.textService.hideTextService(newText.value[0]);
+      this.loggerService.log('value ' + newText.value + '  after hide  ' + this.textService.hideTextService(newText.value[0], 3) );
+      this.paragraph[newText.id].cValue = this.textService.hideTextService(newText.value[0], 3);
       //this.selectedText = null;
       this.loggerService.log('update ' + JSON.stringify(newText)  );
       this.countStatistics();
@@ -203,7 +220,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
       let text = {
             id: id + 1,
             value: value,
-            cValue: this.textService.hideTextService(newText),
+            cValue: this.textService.hideTextService(newText, 3),
             isHidden: false
       };
       this.paragraph.splice(id + 1, 0, text);
@@ -273,7 +290,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
   }
 
   debug(){
-    console.log(this.paragraph);
+    console.log(this.sesStorage.retrieve('test'));
     this.snackBar.open('haha');
   }
 }
