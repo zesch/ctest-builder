@@ -110,6 +110,10 @@ export class TextEditComponent implements OnInit, OnDestroy {
     this.solutions = this.countSolutions(token);
   }
 
+  updateGap(token: Token): void{
+    this.gappedTokens[token.id] = this.textService.hideTextService(token.value,token.offset);
+  }
+
   goBack() {
     let dialogRef = this.dialog.open(TextEditDialogComponent);
     dialogRef.afterClosed().subscribe(res => {

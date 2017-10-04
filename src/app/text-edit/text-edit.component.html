@@ -69,6 +69,14 @@
           <button mdTooltip="Add an alternative solution" md-raised-button (click)="addSolution()">
             +
           </button>
+          <md-input-container fxLayout="column">
+            <div fxLayout="row"> 
+              <input fxFlex #gapIndexInput mdInput size="15"
+              (keyup.enter)="gapIndexInput.blur()"
+              (blur)="updateGap(selectedToken)" 
+              [(ngModel)]="selectedToken.offset">
+            </div>
+          </md-input-container>
         </md-card>
         <br>
         <md-card>
