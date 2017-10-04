@@ -27,7 +27,6 @@ export class TextEditComponent implements OnInit, OnDestroy {
 
   selectedToken: Token;
   negator: boolean = true;
-  showOriginal: Boolean = false;
   hiddenCount: number = 0;
   solutions: number[] = [];
   simpleDrop: number = -1;
@@ -38,7 +37,8 @@ export class TextEditComponent implements OnInit, OnDestroy {
   color: string;
   gapCount: number;
   totalCount: number;
-  currentGapsRecord: boolean[];
+  currentGapsRecord: boolean[] = [];
+  showingOriginal: boolean= false;
 
 
   constructor(private textService: TextService,
@@ -96,12 +96,11 @@ export class TextEditComponent implements OnInit, OnDestroy {
 
   gapToken(){
     this.gappedTokens = this.textService.gapService(this.tokenizedFromApi);
-    console.log(this.gappedTokens);
   }
 
   toggleText(token: Token): void {
     this.loggerService.log('click - ' + JSON.stringify(token));
-    token.isGap = !token.isGap;
+    if(!token.isSpecial) token.isGap = !token.isGap;
     this.countStatistics();
   }
 
@@ -161,8 +160,19 @@ export class TextEditComponent implements OnInit, OnDestroy {
   }
 
   toggleOriginal() {
-    this.loggerService.log('show Original ' + this.showOriginal);
-    this.showOriginal = !this.showOriginal;
+    if(!this.showingOriginal){
+      for(let i = 0; i < this.tokenizedFromApi.length; i++){
+        this.currentGapsRecord.push( this.tokenizedFromApi[i].isGap);
+        this.tokenizedFromApi[i].isGap = false;
+      }
+      this.showingOriginal = !this.showingOriginal;
+    }else{
+      for(let i = 0; i < this.tokenizedFromApi.length; i++){
+        this.tokenizedFromApi[i].isGap = this.currentGapsRecord[i];
+      }
+      this.currentGapsRecord = [];  
+      this.showingOriginal = !this.showingOriginal;    
+    }
   }
 
 
@@ -297,8 +307,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
   debug(){
     console.log('%%tokens from API %%',this.tokenizedFromApi);
     this.snackBar.open('haha');
-    console.log('%%hide word service %%', this.textService.hideTextService('apple',2));
-    this.gapToken();
+    console.log('currentgapmap',this.currentGapsRecord);
   }
 }
 
