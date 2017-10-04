@@ -34,13 +34,13 @@ export class TextService {
 
 
 //in memory parser
-  setParagraph(tokenized: Token[]): void {
-    TextParser.setCTestText(tokenized);
-  }
+  // setParagraph(tokenized: Token[]): void {
+  //   TextParser.setCTestText(tokenized);
+  // }
 
-  getParagraph(): Promise<Text[]>{
-    return Promise.resolve(TextParser.getCTestText());
-  }
+  // getParagraph(): Promise<Text[]>{
+  //   return Promise.resolve(TextParser.getCTestText());
+  // }
 
   hideTextService(text: string, offset: number): string{
     return TextParser.hideWord(text, offset);
@@ -50,5 +50,8 @@ export class TextService {
     return TextParser.isSymbols(text);
   }
 
+  gapService(tokens: Token[]): string[]{
+    return TextParser.gapTokens(tokens);
+  }
 
 }

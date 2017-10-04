@@ -23,7 +23,9 @@ import {LocalStorageService, SessionStorageService} from 'ng2-webstorage';
 export class TextEditComponent implements OnInit, OnDestroy {
   paragraph: Text[];
   tokenizedFromApi: Token[];
-  selectedText: Text;
+  gappedTokens: string[];
+
+  selectedToken: Token;
   negator: boolean = true;
   showOriginal: Boolean = false;
   hiddenCount: number = 0;
@@ -36,6 +38,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
   color: string;
   gapCount: number;
   totalCount: number;
+  currentGapsRecord: boolean[];
 
 
   constructor(private textService: TextService,
@@ -50,12 +53,64 @@ export class TextEditComponent implements OnInit, OnDestroy {
   
   ngOnInit() {
     this.getSubmitedText();
-    
+    //TODO post to back
     this.getParagraph();
-    //console.log("*********" + this.textService.getApiResult());
-    this.selectedText = null;
+
+    this.selectedToken = null;
   }
   
+  getSubmitedText(){
+    //getting the text input from front page as a string and stores in this.text
+    this.text = this.submitTextService.textSource1;
+  }
+
+  getParagraph(): void {
+    // first get the result of Token[] from API 
+    this.textService
+    .getApiResult()
+    .then(res => {
+      this.tokenizedFromApi = res;
+      this.gapToken();
+    });
+    
+    //send the tokenized text to back
+    //console.log('%%%%',this.tokenizedFromApi);
+
+    //this.textService.setParagraph(this.tokenizedFromApi);
+    this.sesStorage.store('test', JSON.stringify(this.tokenizedFromApi));
+
+    // and get the parsed version from back
+    // this.textService
+    //   .getParagraph()
+    //   .then(res => {
+    //     this.paragraph = res;
+
+    //     //TODO these 2 should be onit, but causing problems, maybe because of this async call
+    //     this.setGaps(20);
+    //     this.countStatistics();
+        
+    //   });
+    
+
+  }
+
+  gapToken(){
+    this.gappedTokens = this.textService.gapService(this.tokenizedFromApi);
+    console.log(this.gappedTokens);
+  }
+
+  toggleText(token: Token): void {
+    this.loggerService.log('click - ' + JSON.stringify(token));
+    token.isGap = !token.isGap;
+    this.countStatistics();
+  }
+
+  onSelect(token: Token): void {
+    this.selectedToken = token;
+    // this.selectedText.value[1] = 'apple';
+    this.solutions = this.countSolutions(token);
+  }
+
   goBack() {
     let dialogRef = this.dialog.open(TextEditDialogComponent);
     dialogRef.afterClosed().subscribe(res => {
@@ -63,15 +118,14 @@ export class TextEditComponent implements OnInit, OnDestroy {
         this.router.navigate(['/index']);
       };
     });
-
-
   }
 
+  //TODO not working
   reformat() {
     let dialogRef = this.dialog.open(ReformatDialogComponent);
     dialogRef.afterClosed().subscribe(res => {
-      for(let i = 1; i < this.paragraph.length; i++){
-        this.paragraph[i].isHidden = false;
+      for(let i = 1; i < this.tokenizedFromApi.length; i++){
+        this.tokenizedFromApi[i].isGap = false;
       }
     this.setGaps(res);
     this.countStatistics();
@@ -96,41 +150,13 @@ export class TextEditComponent implements OnInit, OnDestroy {
     }
   }
 
-  getParagraph(): void {
-    // first get the result of Token[] from API 
-    this.textService
-    .getApiResult()
-    .then(res => {
-      this.tokenizedFromApi = res;
-    });
-    
-    //send the tokenized text to back
-    console.log(this.tokenizedFromApi);
-
-    //this.textService.setParagraph(this.tokenizedFromApi);
-    this.sesStorage.store('test', JSON.stringify(this.tokenizedFromApi));
-
-    // and get the parsed version from back
-    this.textService
-      .getParagraph()
-      .then(res => {
-        this.paragraph = res;
-
-        //TODO these 2 should be onit, but causing problems, maybe because of this async call
-        this.setGaps(20);
-        this.countStatistics();
-        
-      });
-
-
-  }
 
   countStatistics(){
       this.gapCount = 0;
       this.totalCount = 0;
-      for(let i = 0; i < this.paragraph.length; i++){
+      for(let i = 0; i < this.tokenizedFromApi.length; i++){
         this.totalCount++;
-        if((!this.textService.isSymbolsService(this.paragraph[i].value[0])) && this.paragraph[i].isHidden === true) this.gapCount++;
+        if(this.tokenizedFromApi[i].isGap === true) this.gapCount++;
       }
   }
 
@@ -140,27 +166,14 @@ export class TextEditComponent implements OnInit, OnDestroy {
   }
 
 
-  getSubmitedText(){
-    //getting the text input from front page as a string and stores in this.text
-    this.text = this.submitTextService.textSource1;
-  }
 
-  toggleText(text): void {
-    this.loggerService.log('click - ' + JSON.stringify(text));
-    text.isHidden = !text.isHidden;
-    this.countStatistics();
-  }
 
-  onSelect(text: Text): void {
-    this.selectedText = text;
-    // this.selectedText.value[1] = 'apple';
-    this.solutions = this.countSolutions(text);
-  }
 
-  countSolutions(text): number[]{
+
+  countSolutions(token: Token): number[]{
     let res: number[] = [];
     let i: number = 0;
-    while(text.value[i] != null){
+    while(token.altValue[i] != null){
       res.push(i);
       i++;
     }
@@ -184,7 +197,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
 
   addSolution(): void{
     //add an empty input bar for solution array
-    this.loggerService.log(this.selectedText.id);
+    this.loggerService.log(this.selectedToken.id);
     //this.paragraph[this.selectedText.id].value.push(newSolution);
     this.solutions.push(this.solutions[this.solutions.length - 1] + 1);
     // this.loggerService.log(this.paragraph[this.selectedText.id].value);
@@ -193,8 +206,8 @@ export class TextEditComponent implements OnInit, OnDestroy {
 
 
   deleteSolution(id: number):void{
-    if(this.selectedText.value.length > 1){
-      this.selectedText.value.splice(id, 1);
+    if(this.selectedToken.altValue.length > 1){
+      this.selectedToken.altValue.splice(id, 1);
       this.solutions.pop();
     }else{
       this.snackBar.open('Can not delete the only solution!',null,{
@@ -204,30 +217,23 @@ export class TextEditComponent implements OnInit, OnDestroy {
     this.countStatistics();
   }
 
-  update(newText: Text): void {
-      //TODO user may put in cvalue manually
-      this.loggerService.log('value ' + newText.value + '  after hide  ' + this.textService.hideTextService(newText.value[0], 3) );
-      this.paragraph[newText.id].cValue = this.textService.hideTextService(newText.value[0], 3);
-      //this.selectedText = null;
-      this.loggerService.log('update ' + JSON.stringify(newText)  );
-      this.countStatistics();
-  }
-
   add(newText: string, id: number): void{
       if(newText == null) return;
       this.loggerService.log('add ' + JSON.stringify(newText)  );
-      let value: string[] = [newText];
-      let text = {
+      let altValue: string[] = [];
+      let newToken = {
             id: id + 1,
-            value: value,
-            cValue: this.textService.hideTextService(newText, 3),
-            isHidden: false
+            value: newText,
+            altValue: altValue,
+            offset: 3,
+            isGap: false,
+            isSpecial: false
       };
-      this.paragraph.splice(id + 1, 0, text);
+      this.tokenizedFromApi.splice(id + 1, 0, newToken);
       this.updateTextIds();
       this.simpleDrop = -1;
       this.addedText = '';
-      this.selectedText = null;
+      this.selectedToken = null;
       this.countStatistics();
   }//TODO when adding a new word, the bug still exists of setting wrong index: when double click it toggles the previous one, when add, its adds to next index
 
@@ -237,8 +243,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
   }
 
   onDeleteDropSuccess($event: any){
-    this.loggerService.log($event.dragData);
-    this.paragraph.splice($event.dragData - 1,1);
+    this.tokenizedFromApi.splice($event.dragData,1);
     this.updateTextIds();
   }
 
@@ -279,8 +284,8 @@ export class TextEditComponent implements OnInit, OnDestroy {
   }
 
   updateTextIds() {
-    for (let i = 0; i < this.paragraph.length; i++) {
-      this.paragraph[i].id = i;
+    for (let i = 0; i < this.tokenizedFromApi.length; i++) {
+      this.tokenizedFromApi[i].id = i;
     }
   }
 
@@ -290,8 +295,10 @@ export class TextEditComponent implements OnInit, OnDestroy {
   }
 
   debug(){
-    console.log(this.sesStorage.retrieve('test'));
+    console.log('%%tokens from API %%',this.tokenizedFromApi);
     this.snackBar.open('haha');
+    console.log('%%hide word service %%', this.textService.hideTextService('apple',2));
+    this.gapToken();
   }
 }
 

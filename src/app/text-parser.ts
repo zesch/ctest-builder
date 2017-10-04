@@ -29,27 +29,21 @@ export class TextParser {
     private static tokenizedText: Token[] = [];
     private static symbols = '.,?!;';
 
-    //------------------ take a Token[] and parse------------------------
-    public static setCTestText(newTokenizedText: Token[]): void{
-        TextParser.tokenizedText = newTokenizedText;
-    }
 
 
-    public static getCTestText(): Text[] {
 
-        let res: Text[] = [];
+    //------------------ take a Token[] and return string[] of gaps----------------
 
-        for (let i = 0; i < TextParser.tokenizedText.length; i++) {
 
-            let wordArray: string[] = [TextParser.tokenizedText[i].value];
-            let text = {
-                id: i,
-                value: wordArray,
-                cValue: TextParser.hideWord(TextParser.tokenizedText[i].value, i),
-                isHidden: false
-            };
-            res.push(text);
-        }
+    public static gapTokens(tokens: Token[]): string[] {
+        let res = new Array(tokens.length);
+
+        tokens.forEach(element => {
+            res[element.id] = TextParser.hideWord(element.value, element.offset);
+        });
+
+
+
         return res;
     }
 
@@ -65,7 +59,7 @@ export class TextParser {
             return word;
         }
         let res = '';
-        let charsToShow = wordLength - offset;
+        let charsToShow = offset;
         for (let i = 0; i < word.length; i++) {
             if (!TextParser.allowedCharacters.includes(word.charAt(i))) {
                 res += word.charAt(i);
@@ -78,6 +72,68 @@ export class TextParser {
         }
         return res;
     }
+    //------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+    //------------------ take a Token[] and parse------------------------
+    // public static setCTestText(newTokenizedText: Token[]): void{
+    //     TextParser.tokenizedText = newTokenizedText;
+    // }
+
+
+    // public static getCTestText(): Text[] {
+
+    //     let res: Text[] = [];
+
+    //     for (let i = 0; i < TextParser.tokenizedText.length; i++) {
+
+    //         let wordArray: string[] = [TextParser.tokenizedText[i].value];
+    //         let text = {
+    //             id: i,
+    //             value: wordArray,
+    //             cValue: TextParser.hideWord(TextParser.tokenizedText[i].value, i),
+    //             isHidden: false
+    //         };
+    //         res.push(text);
+    //     }
+    //     return res;
+    // }
+
+    // public static hideWord(word: string, offset: number): string {
+    //     let wordLength = 0;
+    //     for (let i = 0; i < word.length; i++) {
+    //         if (TextParser.allowedCharacters.includes(word.charAt(i))) {
+    //             wordLength++;
+    //         }
+    //     }
+
+    //     if(wordLength === 1){
+    //         return word;
+    //     }
+    //     let res = '';
+    //     let charsToShow = offset;
+    //     for (let i = 0; i < word.length; i++) {
+    //         if (!TextParser.allowedCharacters.includes(word.charAt(i))) {
+    //             res += word.charAt(i);
+    //         } else if (charsToShow >= 1) {
+    //             res += word.charAt(i);
+    //             charsToShow--;
+    //         } else {
+    //             res += '_';
+    //         }
+    //     }
+    //     return res;
+    // }
     //------------------------------------------------------------------
 
 

@@ -15,13 +15,13 @@
  <div  fxFlex>
   <div fxLayout="row"  >
     <md-card fxFlex="80%" class = 'displayBox'> 
-      <div class='paragraph' *ngFor="let text of paragraph" 
-        (dblclick)="toggleText(text)"
-        (click)="onSelect(text)"
+      <div class='paragraph' *ngFor="let token of tokenizedFromApi" 
+        (dblclick)="toggleText(token)"
+        (click)="onSelect(token)"
         #textBox>
-        <div  class='text unselectable' [style.border]="selectedText && selectedText.id === text.id && simpleDrop == -1? '1px solid #FFB40F' : '1px solid black'" dnd-draggable [dragEnabled]="true" [dragData]="text.id" [dropZones]="['zone2']">
-          <span *ngIf='text.isHidden'>{{text.cValue}}</span>
-          <span *ngIf='!text.isHidden'>{{text.value[0]}}</span>
+        <div  class='text unselectable' [style.border]="selectedToken && selectedToken.id === token.id && simpleDrop == -1? '1px solid #FFB40F' : '1px solid black'" dnd-draggable [dragEnabled]="true" [dragData]="token.id" [dropZones]="['zone2']">
+          <span *ngIf='token.isGap'>{{gappedTokens[token.id]}}</span>
+          <span *ngIf='!token.isGap'>{{token.value}}</span>
         </div>
         
         <!--<div *ngIf = 'selectedText && selectedText.id == text.id && simpleDrop == -1' class='text selected' >
@@ -33,36 +33,34 @@
         </div>-->
         
 
-        <div *ngIf="simpleDrop == text.id" class='text unselectable'>
+        <div *ngIf="simpleDrop == token.id" class='text unselectable'>
           <!--<md-input-container class='inputContainer'>-->
             <input #textInput mdInput class="input"
             (keyup.enter)="textInput.blur()"
-            (blur)="add(addedText,text.id)" 
+            (blur)="add(addedText,token.id)" 
             [(ngModel)]="addedText">
           <!--</md-input-container>-->
         </div>
-        <span dnd-droppable (onDropSuccess)="onDropSuccess(text.id)" [dropZones]="['zone1']"><span > &nbsp;&nbsp;&nbsp;&nbsp;</span></span>
+        <span dnd-droppable (onDropSuccess)="onDropSuccess(token.id)" [dropZones]="['zone1']"><span > &nbsp;&nbsp;&nbsp;&nbsp;</span></span>
       </div>
 
       <br><br><br>
-      <div *ngIf='showOriginal'>
+      <!-- <div *ngIf='showOriginal'>
         <div class='previewText unselectable' *ngFor="let text of paragraph">
-          <!--<span *ngFor="let i of solutions">{{text.value[i]}}</span>-->
+          //<span *ngFor="let i of solutions">{{text.value[i]}}</span>
           <span *ngFor="let solution of text.value">{{solution}}</span>
         </div>
-      </div> 
+      </div>  -->
     </md-card>
 
     <div fxFlex >      
       <div class="menu" fxLayout="column" >
-        <md-card *ngIf='selectedText' class="menu">
+        <md-card *ngIf='selectedToken' class="menu">
           <md-card-subtitle>Current token</md-card-subtitle>
             <md-input-container *ngFor="let i of solutions" fxLayout="column">
               <div fxLayout="row"> 
                 <input fxFlex #solutionInput mdInput size="15"
-                (keyup.enter)="solutionInput.blur()"
-                (blur)="update(selectedText)" 
-                [(ngModel)]="selectedText.value[i]">
+                [(ngModel)]="selectedToken.altValue[i]">
                 <button fxFlex='7%' size="3" mdTooltip="Delete this solution" (click)="deleteSolution(i)">
                   x
                 </button> 
