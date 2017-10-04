@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule }    from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MdButtonModule, MdCheckboxModule, MdInputModule, MdDialogModule, MdSlideToggleModule, MdCardModule, MdTooltipModule, MdSnackBarModule } from '@angular/material';
+import { MdButtonModule, MatSliderModule, MdCheckboxModule, MdInputModule, MdDialogModule, MdSlideToggleModule, MdCardModule, MdTooltipModule, MdSnackBarModule } from '@angular/material';
 import 'hammerjs';
 import { DndModule } from 'ng2-dnd';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -44,7 +44,7 @@ import { InMemDataService } from 'app/in-mem-data.service';
     InMemoryWebApiModule.forRoot(InMemDataService),
     AppRoutingModule,
     BrowserAnimationsModule,
-    MdButtonModule, MdCheckboxModule, MdDialogModule, MdInputModule, MdSnackBarModule, MdSlideToggleModule, MdCardModule, MdTooltipModule,
+    MdButtonModule,MatSliderModule, MdCheckboxModule, MdDialogModule, MdInputModule, MdSnackBarModule, MdSlideToggleModule, MdCardModule, MdTooltipModule,
     DndModule.forRoot(),
     FlexLayoutModule
   ],
