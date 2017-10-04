@@ -22,3 +22,6 @@ ng serve
 ng build --prod --base-href https://zesch.github.io/ctest-builder/
 ngh
 ```
+
+## scp to server
+```scp -r -P 42922 dist wang@134.91.18.133:~/```
