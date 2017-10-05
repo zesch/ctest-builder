@@ -5,6 +5,7 @@ This project requires Node 6.9.0 or higher, together with NPM 3 or higher. And A
 
 ## Angular CLI
 ```npm install -g @angular/cli```
+```npm install ng2-webstorage```
 
 ## Localhosting
 ```
