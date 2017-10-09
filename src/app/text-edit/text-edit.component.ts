@@ -38,7 +38,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
   gapCount: number;
   totalCount: number;
   currentGapsRecord: boolean[] = [];
-  showingOriginal: boolean= false;
+  showingOriginal: boolean= false; // if this is true then its in preview mode
 
 
   constructor(private textService: TextService,
@@ -100,7 +100,14 @@ export class TextEditComponent implements OnInit, OnDestroy {
 
   toggleText(token: Token): void {
     this.loggerService.log('click - ' + JSON.stringify(token));
-    if(!token.isSpecial) token.isGap = !token.isGap;
+    if(!this.showingOriginal){
+      if(!token.isSpecial) token.isGap = !token.isGap;
+    }else{
+      this.snackBar.open('cannot toggle gap while in Preview Mode',null,{
+        duration:2000,
+      })
+    }
+
     this.countStatistics();
   }
 

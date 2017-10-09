@@ -22,6 +22,7 @@
         <div  class='text unselectable' [style.border]="selectedToken && selectedToken.id === token.id && simpleDrop == -1? '1px solid #FFB40F' : '1px solid black'" dnd-draggable [dragEnabled]="true" [dragData]="token.id" [dropZones]="['zone2']">
           <span *ngIf='token.isGap'>{{gappedTokens[token.id]}}</span>
           <span *ngIf='!token.isGap'>{{token.value}}</span>
+          <span *ngIf='showingOriginal' ><span style="color:#355a99" *ngFor='let alt of token.altValue'>/{{alt}} </span></span>
         </div>
         
         <!--<div *ngIf = 'selectedText && selectedText.id == text.id && simpleDrop == -1' class='text selected' >
