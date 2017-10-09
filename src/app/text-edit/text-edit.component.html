@@ -58,6 +58,9 @@
       <div class="menu" fxLayout="column" >
         <md-card *ngIf='selectedToken' class="menu">
           <md-card-subtitle>Current token</md-card-subtitle>
+            <md-slide-toggle [checked]="selectedToken.isSpecial" [disabled]="selectedToken.isGap" (change) = "toggleSpecial()">
+              Make it special
+            </md-slide-toggle>
             <md-input-container *ngFor="let i of solutions" fxLayout="column">
               <div fxLayout="row"> 
                 <input fxFlex #solutionInput mdInput size="15"

@@ -134,6 +134,10 @@ export class TextEditComponent implements OnInit, OnDestroy {
     });
   }
 
+  toggleSpecial(){
+    this.selectedToken.isSpecial = !this.selectedToken.isSpecial;
+  }
+
   //TODO not working
   reformat() {
     let dialogRef = this.dialog.open(ReformatDialogComponent);
