@@ -14,6 +14,6 @@ import { SubmitTextService } from "app/submit-text.service";
   
 })
 export class AppComponent {
-  title = 'C Test Builder';
+  title = 'C Test Builder v1.00';
 
 }
