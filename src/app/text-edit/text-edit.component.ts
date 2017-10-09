@@ -101,7 +101,13 @@ export class TextEditComponent implements OnInit, OnDestroy {
   toggleText(token: Token): void {
     this.loggerService.log('click - ' + JSON.stringify(token));
     if(!this.showingOriginal){
-      if(!token.isSpecial) token.isGap = !token.isGap;
+      if(!token.isSpecial){
+        token.isGap = !token.isGap
+      }else{
+        this.snackBar.open('cannot toggle gap when the token is special',null,{
+          duration:2000,
+        })      
+      } ;
     }else{
       this.snackBar.open('cannot toggle gap while in Preview Mode',null,{
         duration:2000,

@@ -58,20 +58,32 @@
       <div class="menu" fxLayout="column" >
         <md-card *ngIf='selectedToken' class="menu">
           <md-card-subtitle>Current token</md-card-subtitle>
-            <md-input-container *ngFor="let solution of solutions; let i = index; trackBy:trackByIndex;" fxLayout="column">
-              <div fxLayout="row"> 
-                <input fxFlex #solutionInput mdInput size="15"
-                (keyup.enter)="solutionInput.blur()"
-                (blur)="solution2Token()" 
-                [(ngModel)]="solutions[i]">
-                <button fxFlex='7%' size="3" mdTooltip="Delete this solution" (click)="deleteSolution(i)">
-                  x
-                </button> 
-              </div>
-            </md-input-container>
+          <span fxLayout="row">Token: {{selectedToken.value}}</span>
+          <span fxLayout="row">Gapped: {{gappedTokens[selectedToken.id]}}</span>
+          <span fxLayout="row">&nbsp;</span>
+          <md-slide-toggle fxLayout="row" [checked]="selectedToken.isGap" [disabled]="selectedToken.isSpecial" (change) = "toggleText(selectedToken)">
+              Toggle gap
+          </md-slide-toggle>
+
+          <span fxLayout="row">&nbsp;</span>
+          <md-card-subtitle>Alternative solutions</md-card-subtitle>
+          <md-input-container *ngFor="let solution of solutions; let i = index; trackBy:trackByIndex;" fxLayout="column">
+          <div fxLayout="row"> 
+            <input fxFlex #solutionInput mdInput size="15"
+            (keyup.enter)="solutionInput.blur()"
+            (blur)="solution2Token()" 
+            [(ngModel)]="solutions[i]">
+            <button fxFlex='7%' size="3" mdTooltip="Delete this solution" (click)="deleteSolution(i)">
+              x
+            </button> 
+          </div>
+          </md-input-container>
           <button mdTooltip="Add an alternative solution" md-raised-button (click)="addSolution()">
             +
           </button>
+
+          <span fxLayout="row">&nbsp;</span>
+          <md-card-subtitle>Change gap index</md-card-subtitle>
           <div fxLayout="column">
             <div fxLayout="row"> 
               <md-slider fxFlex  min="1" [max]="selectedToken.value.length" step="1" thumbLabel [value]="selectedToken.offset" (input)="sliderInput($event)"></md-slider>
@@ -81,7 +93,7 @@
               [(ngModel)]="selectedToken.offset">
             </div>
           </div>
-          <md-slide-toggle [checked]="selectedToken.isSpecial" [disabled]="selectedToken.isGap" (change) = "toggleSpecial()">
+          <md-slide-toggle mdTooltip="Cannot make it special when it is gapped" [checked]="selectedToken.isSpecial" [disabled]="selectedToken.isGap" (change) = "toggleSpecial()">
             Make it special
           </md-slide-toggle>
         </md-card>
