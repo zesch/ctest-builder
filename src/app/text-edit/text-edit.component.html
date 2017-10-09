@@ -58,13 +58,12 @@
       <div class="menu" fxLayout="column" >
         <md-card *ngIf='selectedToken' class="menu">
           <md-card-subtitle>Current token</md-card-subtitle>
-            <md-slide-toggle [checked]="selectedToken.isSpecial" [disabled]="selectedToken.isGap" (change) = "toggleSpecial()">
-              Make it special
-            </md-slide-toggle>
-            <md-input-container *ngFor="let i of solutions" fxLayout="column">
+            <md-input-container *ngFor="let solution of solutions; let i = index; trackBy:trackByIndex;" fxLayout="column">
               <div fxLayout="row"> 
                 <input fxFlex #solutionInput mdInput size="15"
-                [(ngModel)]="selectedToken.altValue[i]">
+                (keyup.enter)="solutionInput.blur()"
+                (blur)="solution2Token()" 
+                [(ngModel)]="solutions[i]">
                 <button fxFlex='7%' size="3" mdTooltip="Delete this solution" (click)="deleteSolution(i)">
                   x
                 </button> 
@@ -82,6 +81,9 @@
               [(ngModel)]="selectedToken.offset">
             </div>
           </div>
+          <md-slide-toggle [checked]="selectedToken.isSpecial" [disabled]="selectedToken.isGap" (change) = "toggleSpecial()">
+            Make it special
+          </md-slide-toggle>
         </md-card>
         <br>
         <md-card>

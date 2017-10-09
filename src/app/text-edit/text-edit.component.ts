@@ -28,7 +28,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
   selectedToken: Token;
   negator: boolean = true;
   hiddenCount: number = 0;
-  solutions: number[] = [];
+  solutions: string[] = [];
   simpleDrop: number = -1;
   subscription: Subscription;
   text: string;
@@ -199,16 +199,22 @@ export class TextEditComponent implements OnInit, OnDestroy {
 
 
 
-  countSolutions(token: Token): number[]{
-    let res: number[] = [];
+  countSolutions(token: Token): string[]{
+    let res: string[] = [];
+    res.push(token.value);
     let i: number = 0;
     while(token.altValue[i] != null){
-      res.push(i);
+      res.push(token.altValue[i]);
       i++;
     }
     return res;
   }
 
+  trackByIndex(index: number, obj: any): any {
+    return index;
+  //https://stackoverflow.com/questions/40314732/angular-2-2-way-binding-with-ngmodel-in-ngfor
+  //it is used to bind ngmodel in a ngfor. without this it will lose focus on each keystroke.
+  }
   setOthers(): void {
     // for (let i = this.selectedText.id; i < this.paragraph.length; i = i + 2) {
     //   if (this.selectedText.isHidden == true) {
@@ -225,25 +231,39 @@ export class TextEditComponent implements OnInit, OnDestroy {
   }
 
   addSolution(): void{
-    //add an empty input bar for solution array
-    this.loggerService.log(this.selectedToken.id);
-    //this.paragraph[this.selectedText.id].value.push(newSolution);
-    this.solutions.push(this.solutions[this.solutions.length - 1] + 1);
+    this.solutions.push('');
     // this.loggerService.log(this.paragraph[this.selectedText.id].value);
     this.countStatistics();
   }
 
 
   deleteSolution(id: number):void{
-    if(this.selectedToken.altValue.length > 1){
-      this.selectedToken.altValue.splice(id, 1);
-      this.solutions.pop();
+
+    if(id == 0 ){
+      if(this.selectedToken.altValue.length >= 1){
+        this.selectedToken.value = this.selectedToken.altValue[0];
+        this.selectedToken.altValue.splice(0, 1);
+        this.solutions.splice(id, 1);
+      }else{
+        this.snackBar.open('Can not delete the only solution!',null,{
+          duration:2000,
+        })
+      }
     }else{
-      this.snackBar.open('Can not delete the only solution!',null,{
-        duration:2000,
-      })
+      this.selectedToken.altValue.splice(id - 1, 1);
+      this.solutions.splice(id, 1);
     }
     this.countStatistics();
+  }
+
+  solution2Token(){
+    this.selectedToken.value = this.solutions[0];
+    let i: number = 0;
+    while(this.solutions[i + 1] != null){
+      this.selectedToken.altValue[i] = this.solutions[i + 1];
+      i++;
+    }
+    this.updateGap(this.selectedToken);
   }
 
   add(newText: string, id: number): void{
@@ -326,7 +346,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
   debug(){
     console.log('%%tokens from API %%',this.tokenizedFromApi);
     this.snackBar.open('haha');
-    console.log('currentgapmap',this.currentGapsRecord);
+    console.log('solutions',this.solutions);
   }
 }
 
