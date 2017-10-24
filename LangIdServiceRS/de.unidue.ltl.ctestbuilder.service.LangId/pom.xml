@@ -1,0 +1,41 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>de.unidue.ltl.ctestbuilder.service</groupId>
+  <artifactId>de.unidue.ltl.ctestbuilder.service.LangId</artifactId>
+  <packaging>war</packaging>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>de.unidue.ltl.ctestbuilder.service.LangId Maven Webapp</name>
+  <url>http://maven.apache.org</url>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+      <version>4.8.1</version>
+    </dependency>
+    <dependency>
+    	<groupId>com.sun.jersey</groupId>
+    	<artifactId>jersey-server</artifactId>
+    	<version>1.19.4</version>
+    </dependency>
+    <dependency>
+    	<groupId>com.sun.jersey</groupId>
+    	<artifactId>jersey-servlet</artifactId>
+    	<version>1.19.4</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.apache.tomcat</groupId>
+    	<artifactId>servlet-api</artifactId>
+    	<version>6.0.53</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.knallgrau.utils</groupId>
+    	<artifactId>textcat</artifactId>
+    	<version>1.0.1</version>
+    </dependency>
+  </dependencies>
+  <build>
+    <finalName>de.unidue.ltl.ctestbuilder.service.LangId</finalName>
+  </build>
+</project>
