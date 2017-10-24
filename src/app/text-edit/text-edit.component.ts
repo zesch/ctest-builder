@@ -67,7 +67,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
   getParagraph(): void {
     // first get the result of Token[] from API 
     this.textService
-    .getApiResult()
+    .getApiResult(this.text)
     .then(res => {
       this.tokenizedFromApi = res;
       this.gapToken();
@@ -353,6 +353,8 @@ export class TextEditComponent implements OnInit, OnDestroy {
     console.log('%%tokens from API %%',this.tokenizedFromApi);
     this.snackBar.open('haha');
     console.log('solutions',this.solutions);
+
+
   }
 }
 

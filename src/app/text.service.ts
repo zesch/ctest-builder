@@ -13,20 +13,28 @@ import { TextParser } from './text-parser';
 export class TextService {
 
   private url = 'api/tokens'; 
+  private url2 = 'http://localhost:8080/demo/webapi/myresource';
   constructor(private http: Http) { }
 
 
   // using web api
-  getApiResult(): Promise<Token[]>{
-    return this.http.get(this.url)
-    .toPromise()
-    .then(response => response.json().data as Token[])
-    .catch(this.handleError);
-  }
+  // getApiResult(): Promise<Token[]>{
+  //   return this.http.get(this.url)
+  //   .toPromise()
+  //   .then(response => response.json().data as Token[])
+  //   .catch(this.handleError);
+  // }
 
   private handleError(error: any): Promise<any> {
     console.error('An error occurred', error); // for demo purposes only
     return Promise.reject(error.message || error);
+  }
+
+  getApiResult(text: string): Promise<Token[]>{
+    return this.http.post(this.url2,text)
+    .toPromise()
+    .then(response => response.json() as Token[])
+    .catch(this.handleError);
   }
 
 

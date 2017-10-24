@@ -41,7 +41,7 @@ import { InMemDataService } from 'app/in-mem-data.service';
     Ng2Webstorage,
     FormsModule,
     HttpModule,
-    InMemoryWebApiModule.forRoot(InMemDataService),
+    //InMemoryWebApiModule.forRoot(InMemDataService),
     AppRoutingModule,
     BrowserAnimationsModule,
     MdButtonModule,MatSliderModule, MdCheckboxModule, MdDialogModule, MdInputModule, MdSnackBarModule, MdSlideToggleModule, MdCardModule, MdTooltipModule,
