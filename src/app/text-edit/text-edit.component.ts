@@ -32,6 +32,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
   simpleDrop: number = -1;
   subscription: Subscription;
   text: string;
+  lanID: string;
   error: string;
   addedText: string;
   color: string;
@@ -62,12 +63,13 @@ export class TextEditComponent implements OnInit, OnDestroy {
   getSubmitedText(){
     //getting the text input from front page as a string and stores in this.text
     this.text = this.submitTextService.textSource1;
+    this.lanID = this.submitTextService.LanID;
   }
 
   getParagraph(): void {
     // first get the result of Token[] from API 
     this.textService
-    .getApiResult(this.text)
+    .getApiResult(this.text, this.lanID)
     .then(res => {
       this.tokenizedFromApi = res;
       this.gapToken();
@@ -351,8 +353,8 @@ export class TextEditComponent implements OnInit, OnDestroy {
 
   debug(){
     console.log('%%tokens from API %%',this.tokenizedFromApi);
-    this.snackBar.open('haha');
-    console.log('solutions',this.solutions);
+    // this.snackBar.open('haha');
+    //console.log('solutions',this.solutions);
 
 
   }

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Headers, Http } from '@angular/http';
+import { Headers, Http, RequestOptions } from '@angular/http';
+import { HttpParams } from '@angular/common/http';
 
 import 'rxjs/add/operator/toPromise';
 
@@ -7,6 +8,8 @@ import 'rxjs/add/operator/toPromise';
 import { Text } from './text';
 import { Token } from './token';
 import { TextParser } from './text-parser';
+import { HttpHeaders } from '@angular/common/http';
+
 
 
 @Injectable()
@@ -30,8 +33,16 @@ export class TextService {
     return Promise.reject(error.message || error);
   }
 
-  getApiResult(text: string): Promise<Token[]>{
-    return this.http.post(this.url2,text)
+  getApiResult(text: string, lanId:string): Promise<Token[]>{
+
+    let headers      = new Headers({ 'Content-Type': 'application/json' });
+    let options       = new RequestOptions({ headers: headers });
+    let body = {"text": text, "LanID": "en"}
+
+
+    return this.http.post(this.url2, text, {
+      params: {LanID: lanId}
+    })
     .toPromise()
     .then(response => response.json() as Token[])
     .catch(this.handleError);

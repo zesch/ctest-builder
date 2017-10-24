@@ -34,7 +34,13 @@
       <md-input-container class="example-full-width">
         <textarea (focus)='clearText()' mdInput placeholder="Text" [(ngModel)]="text" name='text' rows='30'></textarea>
       </md-input-container>
-
+      <form>  
+        <md-select placeholder="Language" [(ngModel)]="selectedLanId" name="language">
+          <md-option *ngFor="let language of languages" [value]="language.value">
+            {{language.viewValue}}
+          </md-option>
+        </md-select>
+      </form>
       <button md-raised-button type="submit">
         Submit
       </button>
