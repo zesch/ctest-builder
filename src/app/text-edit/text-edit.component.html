@@ -64,7 +64,9 @@
           <md-slide-toggle fxLayout="row" [checked]="selectedToken.isGap" [disabled]="selectedToken.isSpecial" (change) = "toggleText(selectedToken)">
               Toggle gap
           </md-slide-toggle>
-
+          <md-slide-toggle mdTooltip="Cannot make it special when it is gapped" [checked]="selectedToken.isSpecial" [disabled]="selectedToken.isGap" (change) = "toggleSpecial()">
+            Make it special
+          </md-slide-toggle>
           <span fxLayout="row">&nbsp;</span>
           <md-card-subtitle>Alternative solutions</md-card-subtitle>
           <md-input-container *ngFor="let solution of solutions; let i = index; trackBy:trackByIndex;" fxLayout="column">
@@ -93,9 +95,7 @@
               [(ngModel)]="selectedToken.offset">
             </div>
           </div>
-          <md-slide-toggle mdTooltip="Cannot make it special when it is gapped" [checked]="selectedToken.isSpecial" [disabled]="selectedToken.isGap" (change) = "toggleSpecial()">
-            Make it special
-          </md-slide-toggle>
+
         </md-card>
         <br>
         <md-card>

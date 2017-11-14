@@ -29,20 +29,36 @@
 </div>-->
 <br>
 <br><br>  <br><br>
-<div>
-  <form (ngSubmit)="submit()">
-      <md-input-container class="example-full-width">
-        <textarea (focus)='clearText()' mdInput placeholder="Text" [(ngModel)]="text" name='text' rows='30'></textarea>
-      </md-input-container>
-      <form>  
-        <md-select placeholder="Language" [(ngModel)]="selectedLanId" name="language">
-          <md-option *ngFor="let language of languages" [value]="language.value">
-            {{language.viewValue}}
-          </md-option>
-        </md-select>
+
+<md-tab-group>
+    <md-tab label="New text input">
+      <div>
+          <form (ngSubmit)="submit()">
+              <md-input-container class="example-full-width">
+                <textarea (focus)='clearText()' mdInput placeholder="Text" [(ngModel)]="text" name='text' rows='30'></textarea>
+              </md-input-container>
+              <form>  
+                <md-select placeholder="Language" [(ngModel)]="selectedLanId" name="language">
+                  <md-option *ngFor="let language of languages" [value]="language.value">
+                    {{language.viewValue}}
+                  </md-option>
+                </md-select>
+              </form>
+              <br>
+              <button md-raised-button type="submit">
+                Submit
+              </button>
+          </form>
+        </div>
+    </md-tab>
+    <md-tab label="Import from existing file">
+      <form (ngSubmit)="import($event)">
+          <input type="file" >
+          <button md-raised-button type="submit">
+              Import
+            </button>
       </form>
-      <button md-raised-button type="submit">
-        Submit
-      </button>
-  </form>
-</div>
+      
+
+    </md-tab>
+  </md-tab-group>

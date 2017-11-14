@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { SubmitTextService } from "app/submit-text.service";
 import { Router } from '@angular/router';
-import {MatSelectModule} from '@angular/material';
+import {MatSelectModule, MatTabsModule} from '@angular/material';
 
 @Component({
   selector: 'app-index',
@@ -12,6 +12,8 @@ import {MatSelectModule} from '@angular/material';
 export class IndexComponent implements OnInit {
   simpleDrop: boolean;
   text: string ='Please put in your text here.  Then hit the "Submit" button below.';
+  importedJSON: string = '';
+
 
   clearTextCount: number = 1;
   selectedLanId: string = 'en';
@@ -32,7 +34,7 @@ export class IndexComponent implements OnInit {
 
   submit(){
     
-    this.submitTextService.submitText1(this.text, this.selectedLanId );
+    this.submitTextService.submitText1(this.text, this.selectedLanId);
     console.log(this.text + ' is recieved');
     this.router.navigate(['/edit']);
   }
@@ -44,5 +46,29 @@ export class IndexComponent implements OnInit {
     this.clearTextCount = this.clearTextCount - 1;
   }
 
-  
+  uploadListener($event){
+    console.log($event);
+    this.readFile($event.target["0"]);
+    
+  }
+
+  readFile(input: any){
+    var file: File = input.files[0];
+    var myReader:FileReader = new FileReader();
+    myReader.onloadstart = (e) =>{
+      console.log('upload start');
+    }
+    myReader.onloadend = (e) => {
+      console.log("end",myReader.result);
+      this.submitTextService.submitReimported(myReader.result);
+      this.router.navigate(['/edit']);
+    };
+
+    myReader.readAsText(file);
+  }
+
+  import($event){
+    this.uploadListener($event);
+    
+  }
 }

@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule }    from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSelectModule, MdButtonModule, MatSliderModule, MdCheckboxModule, MdInputModule, MdDialogModule, MdSlideToggleModule, MdCardModule, MdTooltipModule, MdSnackBarModule } from '@angular/material';
+import { MatTabsModule, MatSelectModule, MdButtonModule, MatSliderModule, MdCheckboxModule, MdInputModule, MdDialogModule, MdSlideToggleModule, MdCardModule, MdTooltipModule, MdSnackBarModule } from '@angular/material';
 import 'hammerjs';
 import { DndModule } from 'ng2-dnd';
 import { FlexLayoutModule } from '@angular/flex-layout';
@@ -22,6 +22,7 @@ import { HighlightDirective } from './highlight.directive';
 import { TextEditDialogComponent } from './text-edit-dialog/text-edit-dialog.component';
 import { ReformatDialogComponent } from './reformat-dialog/reformat-dialog.component';
 import { InMemDataService } from 'app/in-mem-data.service';
+import { ExportDialogComponent } from './export-dialog/export-dialog.component';
 
 
 
@@ -34,6 +35,7 @@ import { InMemDataService } from 'app/in-mem-data.service';
     HighlightDirective,
     TextEditDialogComponent,
     ReformatDialogComponent,
+    ExportDialogComponent,
 
   ],
   imports: [
@@ -41,15 +43,15 @@ import { InMemDataService } from 'app/in-mem-data.service';
     Ng2Webstorage,
     FormsModule,
     HttpModule,
-    //InMemoryWebApiModule.forRoot(InMemDataService),
+    // InMemoryWebApiModule.forRoot(InMemDataService),
     AppRoutingModule,
     BrowserAnimationsModule,
-    MatSelectModule,MdButtonModule,MatSliderModule, MdCheckboxModule, MdDialogModule, MdInputModule, MdSnackBarModule, MdSlideToggleModule, MdCardModule, MdTooltipModule,
+    MatTabsModule, MatSelectModule, MdButtonModule, MatSliderModule, MdCheckboxModule, MdDialogModule, MdInputModule, MdSnackBarModule, MdSlideToggleModule, MdCardModule, MdTooltipModule,
     DndModule.forRoot(),
-    FlexLayoutModule
+    FlexLayoutModule,
   ],
   entryComponents: [
-    TextEditDialogComponent, ReformatDialogComponent,
+    TextEditDialogComponent, ReformatDialogComponent, ExportDialogComponent,
   ],
   providers: [TextService, SubmitTextService],
   bootstrap: [AppComponent]

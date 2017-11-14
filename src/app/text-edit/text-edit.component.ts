@@ -12,6 +12,7 @@ import { TextEditDialogComponent } from 'app/text-edit-dialog/text-edit-dialog.c
 import { ReformatDialogComponent } from 'app/reformat-dialog/reformat-dialog.component';
 
 import {LocalStorageService, SessionStorageService} from 'ng2-webstorage';
+import { ExportDialogComponent } from 'app/export-dialog/export-dialog.component';
 
 
 @Component({
@@ -21,10 +22,10 @@ import {LocalStorageService, SessionStorageService} from 'ng2-webstorage';
   providers: [TextService, LoggerService]
 })
 export class TextEditComponent implements OnInit, OnDestroy {
+  importedTokens: Token[];
   paragraph: Text[];
   tokenizedFromApi: Token[];
   gappedTokens: string[];
-
   selectedToken: Token;
   negator: boolean = true;
   hiddenCount: number = 0;
@@ -55,7 +56,12 @@ export class TextEditComponent implements OnInit, OnDestroy {
   ngOnInit() {
     this.getSubmitedText();
     //TODO post to back
-    this.getParagraph();
+    // if(this.isNewText){
+    //   this.getParagraph();     
+    // }else{
+    //   this.tokenizedFromApi = this.importedTokens;
+    // }
+    
 
     this.selectedToken = null;
   }
@@ -64,6 +70,16 @@ export class TextEditComponent implements OnInit, OnDestroy {
     //getting the text input from front page as a string and stores in this.text
     this.text = this.submitTextService.textSource1;
     this.lanID = this.submitTextService.LanID;
+    // this.submitTextService.isNewText?
+    //   this.getParagraph():
+    //   this.tokenizedFromApi = JSON.parse(this.submitTextService.tokens);
+
+    if(this.submitTextService.isNewText){
+      this.getParagraph();
+    }else{
+      this.tokenizedFromApi = JSON.parse(this.submitTextService.tokens);
+      this.gapToken();      
+    }
   }
 
   getParagraph(): void {
@@ -305,39 +321,26 @@ export class TextEditComponent implements OnInit, OnDestroy {
   }
 
   createOutputText(){
-    let outputText = '';
-    for(let i = 0; i < this.paragraph.length; i = i + 1){
-      if(this.paragraph[i].isHidden === true){
-        outputText = outputText + this.paragraph[i].cValue + ' ';
-      }else{
-        outputText = outputText + this.paragraph[i].value[0] + ' ';
-      }
-    }
-    outputText = outputText + '\n \n';
-    for(let i = 0; i < this.paragraph.length; i = i + 1){
-      for(let j = 0; j < this.paragraph[i].value.length; j = j + 1){
-        outputText = outputText + this.paragraph[i].value[j];
-        if(this.paragraph[i].value.length > 1 && j != this.paragraph[i].value.length - 1 ){
-          outputText = outputText + '/';
-        }
-      }
-      outputText = outputText + ' ';
-    }
+    let outputText = JSON.stringify(this.tokenizedFromApi);
     return outputText;
   }
 
   export(): void {
-    this.loggerService.log(this.createOutputText());
-    var element = document.createElement('a');
-    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(this.createOutputText()));
-    element.setAttribute('download', 'c-test');
+    // this.loggerService.log(this.createOutputText());
+    // var element = document.createElement('a');
+    // element.setAttribute('href', 'data:text/json;charset=utf-8,' + encodeURIComponent(this.createOutputText()));
+    // element.setAttribute('download', 'c-test.json');
 
-    element.style.display = 'none';
-    document.body.appendChild(element);
+    // element.style.display = 'none';
+    // document.body.appendChild(element);
 
-    element.click();
+    // element.click();
 
-    document.body.removeChild(element);
+    // document.body.removeChild(element);
+
+    let dialogRef = this.dialog.open(ExportDialogComponent,{
+      data:{json : JSON.stringify(this.tokenizedFromApi)}
+    });
   }
 
   updateTextIds() {
@@ -355,7 +358,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
     console.log('%%tokens from API %%',this.tokenizedFromApi);
     // this.snackBar.open('haha');
     //console.log('solutions',this.solutions);
-
+    console.log('%%tokens from imported %%',JSON.parse(this.submitTextService.tokens));
 
   }
 }
