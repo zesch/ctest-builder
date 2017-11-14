@@ -11,7 +11,7 @@ import {MatSelectModule, MatTabsModule} from '@angular/material';
 })
 export class IndexComponent implements OnInit {
   simpleDrop: boolean;
-  text: string ='Please put in your text here.  Then hit the "Submit" button below.';
+  text: string ='Please put in your text here. Then hit the "Submit" button below.';
   importedJSON: string = '';
 
 

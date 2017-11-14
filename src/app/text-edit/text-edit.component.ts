@@ -62,23 +62,33 @@ export class TextEditComponent implements OnInit, OnDestroy {
     //   this.tokenizedFromApi = this.importedTokens;
     // }
     
-
+    console.log("inited");
     this.selectedToken = null;
   }
   
   getSubmitedText(){
-    //getting the text input from front page as a string and stores in this.text
-    this.text = this.submitTextService.textSource1;
-    this.lanID = this.submitTextService.LanID;
+ 
+
     // this.submitTextService.isNewText?
     //   this.getParagraph():
     //   this.tokenizedFromApi = JSON.parse(this.submitTextService.tokens);
 
-    if(this.submitTextService.isNewText){
-      this.getParagraph();
-    }else{
-      this.tokenizedFromApi = JSON.parse(this.submitTextService.tokens);
-      this.gapToken();      
+    try {
+      if(this.submitTextService.isNewText){
+        //getting the text input from front page as a string and stores in this.text
+        this.text = this.submitTextService.textSource1;
+        this.lanID = this.submitTextService.LanID;
+        this.getParagraph();
+        console.log('is new text', this.tokenizedFromApi);
+      }else{  
+        this.tokenizedFromApi = JSON.parse(this.submitTextService.tokens);
+        this.gapToken();   
+        console.log('is not new text', this.tokenizedFromApi);
+        
+      }
+      this.countStatistics();
+    } catch (error) {
+      console.log(error);
     }
   }
 
@@ -153,6 +163,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
     let dialogRef = this.dialog.open(TextEditDialogComponent);
     dialogRef.afterClosed().subscribe(res => {
       if(res == 'Yes'){
+        this.submitTextService.isNewText = false;
         this.router.navigate(['/index']);
       };
     });
