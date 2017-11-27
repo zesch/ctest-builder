@@ -16,7 +16,7 @@ import { HttpHeaders } from '@angular/common/http';
 export class TextService {
 
   private url = 'api/tokens'; 
-  private url2 = 'http://localhost:8080/demo/webapi/myresource';
+  private url2 = 'http://134.91.18.133:9000/demo/webapi/myresource';
   constructor(private http: Http) { }
 
 

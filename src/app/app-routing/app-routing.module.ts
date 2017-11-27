@@ -7,8 +7,8 @@ import { TextEditComponent } from '../text-edit/text-edit.component';
 
 
 const routes: Routes = [
-  { path: '', redirectTo: '/index', pathMatch: 'full' },
-  { path: 'index',  component: IndexComponent },
+  { path: '', redirectTo: '/index.html', pathMatch: 'full' },
+  { path: 'index.html',  component: IndexComponent },
   { path: 'edit', component: TextEditComponent },
 ];
 

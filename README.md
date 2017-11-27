@@ -28,3 +28,29 @@ ngh
 
 ## scp to server
 ```scp -r -P 42922 dist wang@134.91.18.133:~/```
+
+
+##Docker operations in server
+```//create container
+docker run -it --rm -p 9000:8080 tomcat:9.0 tail /dev/null -f
+
+//go in to the container bash
+docker exec -it e146c4089a86 /bin/bash
+
+
+//preparation
+cd conf
+vim tomcat-users.xml
+https://stackoverflow.com/a/39462403/2948417
+
+
+//start tomcat
+cd bin
+./startup.sh
+```
+
+## Deploy to server
+* Compile client side ```ng build --prod --base-href http://134.91.18.133:9000/demo/```
+* Copy to server side under src/main/webapp
+* Export as WAR
+* Deploy with tomcat manager panel

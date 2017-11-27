@@ -164,7 +164,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
     dialogRef.afterClosed().subscribe(res => {
       if(res == 'Yes'){
         this.submitTextService.isNewText = false;
-        this.router.navigate(['/index']);
+        this.router.navigate(['/index.html'],{skipLocationChange: true});
       };
     });
   }

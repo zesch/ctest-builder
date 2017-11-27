@@ -36,7 +36,7 @@ export class IndexComponent implements OnInit {
     
     this.submitTextService.submitText1(this.text, this.selectedLanId);
     console.log(this.text + ' is recieved');
-    this.router.navigate(['/edit']);
+    this.router.navigate(['/edit'],{skipLocationChange: true});
   }
 
   clearText(){
