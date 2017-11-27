@@ -30,7 +30,7 @@ ngh
 ```scp -r -P 42922 dist wang@134.91.18.133:~/```
 
 
-##Docker operations in server
+## Docker operations in server
 ```//create container
 docker run -it --rm -p 9000:8080 tomcat:9.0 tail /dev/null -f
 
