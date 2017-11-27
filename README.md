@@ -31,7 +31,8 @@ ngh
 
 
 ## Docker operations in server
-```//create container
+```
+//create container
 docker run -it --rm -p 9000:8080 tomcat:9.0 tail /dev/null -f
 
 //go in to the container bash
