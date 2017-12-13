@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { SubmitTextService } from "app/submit-text.service";
 import { Router } from '@angular/router';
 import {MatSelectModule, MatTabsModule} from '@angular/material';
+import { TextService } from 'app/text.service';
 
 @Component({
   selector: 'app-index',
@@ -26,7 +27,8 @@ export class IndexComponent implements OnInit {
 
 
   constructor(private submitTextService: SubmitTextService,
-    private router: Router) {
+    private router: Router,
+    private textService: TextService) {
    }
 
   ngOnInit() {
@@ -71,4 +73,18 @@ export class IndexComponent implements OnInit {
     this.uploadListener($event);
     
   }
+
+  inputChange(event: any){
+    this.getLangId(event.target.value);
+  }
+
+  getLangId(currentText: string){
+    this.textService.getLangId(currentText)
+    .then(res => {
+      this.selectedLanId = res;
+    });
+  }
+
+
+
 }

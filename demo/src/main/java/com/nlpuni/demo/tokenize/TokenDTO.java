@@ -1,4 +1,4 @@
-package com.nlpuni.demo;
+package com.nlpuni.demo.tokenize;
 
 public class TokenDTO {
 	private Integer id;

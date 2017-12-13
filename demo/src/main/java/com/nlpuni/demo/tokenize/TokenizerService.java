@@ -1,4 +1,4 @@
-package com.nlpuni.demo;
+package com.nlpuni.demo.tokenize;
 
 import java.util.ArrayList;
 import java.util.List;

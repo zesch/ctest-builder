@@ -35,7 +35,7 @@
       <div>
           <form (ngSubmit)="submit()">
               <md-input-container class="example-full-width">
-                <textarea (focus)='clearText()' mdInput placeholder="Text" [(ngModel)]="text" name='text' rows='30'></textarea>
+                <textarea (focus)='clearText()' mdInput placeholder="Text" [(ngModel)]="text" name='text' rows='30' (input)="inputChange($event)"> </textarea>
               </md-input-container>
               <form>  
                 <md-select placeholder="Language" [(ngModel)]="selectedLanId" name="language">

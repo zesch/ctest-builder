@@ -18,6 +18,8 @@ export class TextService {
   private url = 'api/tokens'; 
   private url2 = 'http://134.91.18.133:9000/demo/webapi/myresource';
   private urlLocal = 'http://localhost:8080/demo/webapi/myresource';
+  private urlLangId = 'http://134.91.18.133:9000/demo/webapi/langId';
+  private urlLangIdLocal = 'http://localhost:8080/demo/webapi/langId';
   constructor(private http: Http) { }
 
 
@@ -50,6 +52,13 @@ export class TextService {
   }
 
 
+  getLangId(text: string): Promise<string>{
+    
+    return this.http.post(this.urlLangId, text)
+    .toPromise()
+    .then(res => res.text() as string)
+    .catch(this.handleError);
+  }
 
 
 
