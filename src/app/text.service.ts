@@ -17,6 +17,7 @@ export class TextService {
 
   private url = 'api/tokens'; 
   private url2 = 'http://134.91.18.133:9000/demo/webapi/myresource';
+  private urlLocal = 'http://localhost:8080/demo/webapi/myresource';
   constructor(private http: Http) { }
 
 
@@ -39,7 +40,7 @@ export class TextService {
     let options       = new RequestOptions({ headers: headers });
     let body = {"text": text, "LanID": "en"}
 
-
+//edit the url here to toggle between local dev server and prod server
     return this.http.post(this.url2, text, {
       params: {LanID: lanId}
     })

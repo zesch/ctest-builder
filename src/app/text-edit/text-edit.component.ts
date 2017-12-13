@@ -319,6 +319,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
       this.addedText = '';
       this.selectedToken = null;
       this.countStatistics();
+      this.gapToken();
   }//TODO when adding a new word, the bug still exists of setting wrong index: when double click it toggles the previous one, when add, its adds to next index
 
   onDropSuccess(id: any){
@@ -329,6 +330,8 @@ export class TextEditComponent implements OnInit, OnDestroy {
   onDeleteDropSuccess($event: any){
     this.tokenizedFromApi.splice($event.dragData,1);
     this.updateTextIds();
+    this.gapToken();
+    
   }
 
   createOutputText(){
@@ -369,8 +372,8 @@ export class TextEditComponent implements OnInit, OnDestroy {
     console.log('%%tokens from API %%',this.tokenizedFromApi);
     // this.snackBar.open('haha');
     //console.log('solutions',this.solutions);
-    console.log('%%tokens from imported %%',JSON.parse(this.submitTextService.tokens));
-
+    // console.log('%%tokens from imported %%',JSON.parse(this.submitTextService.tokens));
+    console.log('gapped tokens array', this.gappedTokens);
   }
 }
 
