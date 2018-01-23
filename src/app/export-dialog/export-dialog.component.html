@@ -1,22 +1,22 @@
-<h1 md-dialog-title>Export As</h1>
-<div md-dialog-content> 
-  <md-input-container>
-    <input mdInput placeholder="Title" [(ngModel)]="title" name="title">
-  </md-input-container>
+<h1 mat-dialog-title>Export As</h1>
+<div mat-dialog-content>
+  <mat-input-container>
+    <input matInput placeholder="Title" [(ngModel)]="title" name="title">
+  </mat-input-container>
   <br>
 
-  <form>  
-    <md-select placeholder="Format" [(ngModel)]="formatSelected" name="format">
-        <md-option *ngFor="let format of formats" [value]="format.value">
+  <form>
+    <mat-select placeholder="Format" [(ngModel)]="formatSelected" name="format">
+        <mat-option *ngFor="let format of formats" [value]="format.value">
             {{format.viewValue}}
-          </md-option>
-    </md-select>
-    
+          </mat-option>
+    </mat-select>
+
   </form>
 
 
 </div>
-<div md-dialog-actions>
-  <button md-button (click)="export()">Export</button>
-  <button md-button (click)="dialogRef.close()">Exit</button>
+<div mat-dialog-actions>
+  <button mat-button (click)="export()">Export</button>
+  <button mat-button (click)="dialogRef.close()">Exit</button>
 </div>

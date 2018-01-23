@@ -2,24 +2,24 @@
 
 
 <div fxFlex>
-  <div fxLayout="row"  >
-    <div fxFlex="20%"> 
+  <div fxLayout="row" >
+    <div fxFlex="20%">
     </div>
-    <div fxFlex="60%"> 
-      <md-card class='card'> 
+    <div fxFlex="60%">
+      <mat-card class='card'>
         <h1>
           {{title}}
         </h1>
         <!--<nav>
-            <a md-raised-button routerLink="/index" routerLinkActive="active">Index</a>
-            <a md-raised-button routerLink="/edit" routerLinkActive="active">Edit</a>
+            <a mat-raised-button routerLink="/index" routerLinkActive="active">Index</a>
+            <a mat-raised-button routerLink="/edit" routerLinkActive="active">Edit</a>
         </nav>-->
         <router-outlet></router-outlet>
-        
-      </md-card> 
+
+      </mat-card>
 
     </div>
-    <div fxFlex="20%" >          
+    <div fxFlex="20%" >
     </div>
   </div>
 </div>

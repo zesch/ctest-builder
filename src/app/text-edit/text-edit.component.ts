@@ -6,12 +6,12 @@ import { Token } from 'app/token';
 import { TextService } from '../text.service';
 import { LoggerService } from '../logger.service';
 import { SubmitTextService } from 'app/submit-text.service';
-import { Subscription }   from 'rxjs/Subscription';
-import { MdDialog,MdDialogRef, MdSnackBar} from '@angular/material';
+import { Subscription } from 'rxjs/Subscription';
+import { MatDialog,MatDialogRef, MatSnackBar} from '@angular/material';
 import { TextEditDialogComponent } from 'app/text-edit-dialog/text-edit-dialog.component';
 import { ReformatDialogComponent } from 'app/reformat-dialog/reformat-dialog.component';
 
-import {LocalStorageService, SessionStorageService} from 'ng2-webstorage';
+import {LocalStorageService, SessionStorageService} from 'ngx-webstorage';
 import { ExportDialogComponent } from 'app/export-dialog/export-dialog.component';
 
 
@@ -48,26 +48,26 @@ export class TextEditComponent implements OnInit, OnDestroy {
     private router: Router,
     private loggerService: LoggerService,
     private submitTextService: SubmitTextService,
-    public dialog: MdDialog,
-    public snackBar: MdSnackBar,
+    public dialog: MatDialog,
+    public snackBar: MatSnackBar,
     private sesStorage:SessionStorageService
   ) { }
-  
+
   ngOnInit() {
     this.getSubmitedText();
     //TODO post to back
     // if(this.isNewText){
-    //   this.getParagraph();     
+    //   this.getParagraph();
     // }else{
     //   this.tokenizedFromApi = this.importedTokens;
     // }
-    
+
     console.log("inited");
     this.selectedToken = null;
   }
-  
+
   getSubmitedText(){
- 
+
 
     // this.submitTextService.isNewText?
     //   this.getParagraph():
@@ -80,11 +80,11 @@ export class TextEditComponent implements OnInit, OnDestroy {
         this.lanID = this.submitTextService.LanID;
         this.getParagraph();
         console.log('is new text', this.tokenizedFromApi);
-      }else{  
+      }else{
         this.tokenizedFromApi = JSON.parse(this.submitTextService.tokens);
-        this.gapToken();   
+        this.gapToken();
         console.log('is not new text', this.tokenizedFromApi);
-        
+
       }
       this.countStatistics();
     } catch (error) {
@@ -93,14 +93,14 @@ export class TextEditComponent implements OnInit, OnDestroy {
   }
 
   getParagraph(): void {
-    // first get the result of Token[] from API 
+    // first get the result of Token[] from API
     this.textService
     .getApiResult(this.text, this.lanID)
     .then(res => {
       this.tokenizedFromApi = res;
       this.gapToken();
     });
-    
+
     //send the tokenized text to back
     //console.log('%%%%',this.tokenizedFromApi);
 
@@ -116,9 +116,9 @@ export class TextEditComponent implements OnInit, OnDestroy {
     //     //TODO these 2 should be onit, but causing problems, maybe because of this async call
     //     this.setGaps(20);
     //     this.countStatistics();
-        
+
     //   });
-    
+
 
   }
 
@@ -134,7 +134,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
       }else{
         this.snackBar.open('cannot toggle gap when the token is special',null,{
           duration:2000,
-        })      
+        })
       } ;
     }else{
       this.snackBar.open('cannot toggle gap while in Preview Mode',null,{
@@ -224,8 +224,8 @@ export class TextEditComponent implements OnInit, OnDestroy {
       for(let i = 0; i < this.tokenizedFromApi.length; i++){
         this.tokenizedFromApi[i].isGap = this.currentGapsRecord[i];
       }
-      this.currentGapsRecord = [];  
-      this.showingOriginal = !this.showingOriginal;    
+      this.currentGapsRecord = [];
+      this.showingOriginal = !this.showingOriginal;
     }
   }
 
@@ -331,7 +331,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
     this.tokenizedFromApi.splice($event.dragData,1);
     this.updateTextIds();
     this.gapToken();
-    
+
   }
 
   createOutputText(){

@@ -4,12 +4,12 @@
 
 <!--<div  fxFlex>
   <div fxLayout="row"  >
-    <div  fxFlex="20%"> 
+    <div  fxFlex="20%">
        ̰<p>
         index works!
-      </p>  
+      </p>
     </div>
-    <div  fxFlex="60%">  
+    <div  fxFlex="60%">
         <div dnd-draggable [dragEnabled]="true">
             <div>
                 <div>Drag Me</div>
@@ -22,43 +22,43 @@
           </div>
         </div>
     </div>
-    <div  fxFlex >      
-      <button md-button>Click me!</button>      
+    <div  fxFlex >
+      <button md-button>Click me!</button>
     </div>
   </div>
 </div>-->
 <br>
 <br><br>  <br><br>
 
-<md-tab-group>
-    <md-tab label="New text input">
+<mat-tab-group>
+    <mat-tab label="New text input">
       <div>
           <form (ngSubmit)="submit()">
-              <md-input-container class="example-full-width">
-                <textarea (focus)='clearText()' mdInput placeholder="Text" [(ngModel)]="text" name='text' rows='30' (input)="inputChange($event)"> </textarea>
-              </md-input-container>
-              <form>  
-                <md-select placeholder="Language" [(ngModel)]="selectedLanId" name="language">
-                  <md-option *ngFor="let language of languages" [value]="language.value">
+              <mat-input-container class="example-full-width">
+                <textarea (focus)='clearText()' matInput placeholder="Text" [(ngModel)]="text" name='text' rows='30' (input)="inputChange($event)"> </textarea>
+              </mat-input-container>
+              <form>
+                <mat-select placeholder="Language" [(ngModel)]="selectedLanId" name="language">
+                  <mat-option *ngFor="let language of languages" [value]="language.value">
                     {{language.viewValue}}
-                  </md-option>
-                </md-select>
+                  </mat-option>
+                </mat-select>
               </form>
               <br>
-              <button md-raised-button type="submit">
+              <button mat-raised-button type="submit">
                 Submit
               </button>
           </form>
         </div>
-    </md-tab>
-    <md-tab label="Import from existing file">
+    </mat-tab>
+    <mat-tab label="Import from existing file">
       <form (ngSubmit)="import($event)">
           <input type="file" >
-          <button md-raised-button type="submit">
+          <button mat-raised-button type="submit">
               Import
             </button>
       </form>
-      
 
-    </md-tab>
-  </md-tab-group>
+
+    </mat-tab>
+  </mat-tab-group>

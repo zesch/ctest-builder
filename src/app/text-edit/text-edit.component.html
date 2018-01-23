@@ -2,7 +2,7 @@
 
 <div>
   <nav>
-      
+
   </nav>
 </div>
 
@@ -13,9 +13,9 @@
 
 
  <div  fxFlex>
-  <div fxLayout="row"  >
-    <md-card fxFlex="80%" class = 'displayBox'> 
-      <div class='paragraph' *ngFor="let token of tokenizedFromApi" 
+  <div fxLayout="row">
+    <mat-card fxFlex="80%" class = 'displayBox'>
+      <div class='paragraph' *ngFor="let token of tokenizedFromApi"
         (dblclick)="toggleText(token)"
         (click)="onSelect(token)"
         #textBox>
@@ -24,23 +24,23 @@
           <span *ngIf='!token.isGap'>{{token.value}}</span>
           <span *ngIf='showingOriginal' ><span style="color:#355a99" *ngFor='let alt of token.altValue'>/{{alt}} </span></span>
         </div>
-        
+
         <!--<div *ngIf = 'selectedText && selectedText.id == text.id && simpleDrop == -1' class='text selected' >
-          <input #changeTextInput mdInput 
+          <input #changeTextInput mdInput
               (keyup.enter)="changeTextInput.blur()"
-              (blur)="update(selectedText)" 
+              (blur)="update(selectedText)"
               [(ngModel)]="selectedText.value[0]"
               >
         </div>-->
-        
+
 
         <div *ngIf="simpleDrop == token.id" class='text unselectable'>
-          <!--<md-input-container class='inputContainer'>-->
-            <input #textInput mdInput class="input"
+          <!--<mat-input-container class='inputContainer'>-->
+            <input #textInput matInput class="input"
             (keyup.enter)="textInput.blur()"
-            (blur)="add(addedText,token.id)" 
+            (blur)="add(addedText,token.id)"
             [(ngModel)]="addedText">
-          <!--</md-input-container>-->
+          <!--</mat-input-container>-->
         </div>
         <span dnd-droppable (onDropSuccess)="onDropSuccess(token.id)" [dropZones]="['zone1']"><span > &nbsp;&nbsp;&nbsp;&nbsp;</span></span>
       </div>
@@ -52,75 +52,75 @@
           <span *ngFor="let solution of text.value">{{solution}}</span>
         </div>
       </div>  -->
-    </md-card>
+    </mat-card>
 
-    <div fxFlex >      
+    <div fxFlex >
       <div class="menu" fxLayout="column" >
-        <md-card *ngIf='selectedToken' class="menu">
-          <md-card-subtitle>Current token</md-card-subtitle>
+        <mat-card *ngIf='selectedToken' class="menu">
+          <mat-card-subtitle>Current token</mat-card-subtitle>
           <span fxLayout="row">Token: {{selectedToken.value}}</span>
           <span fxLayout="row">Gapped: {{gappedTokens[selectedToken.id]}}</span>
           <span fxLayout="row">&nbsp;</span>
-          <md-slide-toggle fxLayout="row" [checked]="selectedToken.isGap" [disabled]="selectedToken.isSpecial" (change) = "toggleText(selectedToken)">
+          <mat-slide-toggle fxLayout="row" [checked]="selectedToken.isGap" [disabled]="selectedToken.isSpecial" (change) = "toggleText(selectedToken)">
               Toggle gap
-          </md-slide-toggle>
-          <md-slide-toggle mdTooltip="Cannot make it special when it is gapped" [checked]="selectedToken.isSpecial" [disabled]="selectedToken.isGap" (change) = "toggleSpecial()">
+          </mat-slide-toggle>
+          <mat-slide-toggle matTooltip="Cannot make it special when it is gapped" [checked]="selectedToken.isSpecial" [disabled]="selectedToken.isGap" (change) = "toggleSpecial()">
             Make it special
-          </md-slide-toggle>
+          </mat-slide-toggle>
           <span fxLayout="row">&nbsp;</span>
-          <md-card-subtitle>Alternative solutions</md-card-subtitle>
-          <md-input-container *ngFor="let solution of solutions; let i = index; trackBy:trackByIndex;" fxLayout="column">
-          <div fxLayout="row"> 
-            <input fxFlex #solutionInput mdInput size="15"
+          <mat-card-subtitle>Alternative solutions</mat-card-subtitle>
+          <mat-input-container *ngFor="let solution of solutions; let i = index; trackBy:trackByIndex;" fxLayout="column">
+          <div fxLayout="row">
+            <input fxFlex #solutionInput matInput size="15"
             (keyup.enter)="solutionInput.blur()"
-            (blur)="solution2Token()" 
+            (blur)="solution2Token()"
             [(ngModel)]="solutions[i]">
-            <button fxFlex='7%' size="3" mdTooltip="Delete this solution" (click)="deleteSolution(i)">
+            <button fxFlex='7%' size="3" matTooltip="Delete this solution" (click)="deleteSolution(i)">
               x
-            </button> 
+            </button>
           </div>
-          </md-input-container>
-          <button mdTooltip="Add an alternative solution" md-raised-button (click)="addSolution()">
+          </mat-input-container>
+          <button matTooltip="Add an alternative solution" mat-raised-button (click)="addSolution()">
             +
           </button>
 
           <span fxLayout="row">&nbsp;</span>
-          <md-card-subtitle>Change gap index</md-card-subtitle>
+          <mat-card-subtitle>Change gap index</mat-card-subtitle>
           <div fxLayout="column">
-            <div fxLayout="row"> 
-              <md-slider fxFlex  min="1" [max]="selectedToken.value.length" step="1" thumbLabel [value]="selectedToken.offset" (input)="sliderInput($event)"></md-slider>
-              <input fxFlex  #gapIndexInput mdInput size="2"
+            <div fxLayout="row">
+              <mat-slider fxFlex  min="1" [max]="selectedToken.value.length" step="1" thumbLabel [value]="selectedToken.offset" (input)="sliderInput($event)"></mat-slider>
+              <input fxFlex  #gapIndexInput matInput size="2"
               (keyup.enter)="gapIndexInput.blur()"
-              (blur)="updateGap(selectedToken)" 
+              (blur)="updateGap(selectedToken)"
               [(ngModel)]="selectedToken.offset">
             </div>
           </div>
 
-        </md-card>
+        </mat-card>
         <br>
-        <md-card>
+        <mat-card>
           <div dnd-draggable [dragEnabled]="true" [dropZones]="['zone1']" class='text' >
-            <div  mdTooltip="Drag inbetween words to insert a new word!"><span>New word</span></div>
+            <div  matTooltip="Drag inbetween words to insert a new word!"><span>New word</span></div>
           </div> 
           <div dnd-droppable (onDropSuccess)="onDeleteDropSuccess($event)" [dropZones]="['zone2']" class=''>
-            <div mdTooltip="Drop here to delete"><img src="assets/trash.jpg"></div>
+            <div matTooltip="Drop here to delete"><img src="assets/trash.jpg"></div>
           </div>
-        </md-card>
+        </mat-card>
         <br>
-        <md-card> 
-          <button md-raised-button (click)='goBack()'>Cancel</button>
-          <button md-raised-button (click)="reformat()">Reformat</button>
-          <button md-raised-button (click)="export()">Export</button>
-          <button md-raised-button (click)="debug()">debug</button>
+        <mat-card>
+          <button mat-raised-button (click)='goBack()'>Cancel</button>
+          <button mat-raised-button (click)="reformat()">Reformat</button>
+          <button mat-raised-button (click)="export()">Export</button>
+          <button mat-raised-button (click)="debug()">debug</button>
           <br>
-          <md-slide-toggle (change) = "toggleOriginal()">
+          <mat-slide-toggle (change) = "toggleOriginal()">
             Check preview
-          </md-slide-toggle>
-        </md-card>
-        <md-card>
+          </mat-slide-toggle>
+        </mat-card>
+        <mat-card>
           gaps: {{gapCount}} <br>
           total words: {{totalCount}}
-        </md-card>
+        </mat-card>
 
 
       </div>

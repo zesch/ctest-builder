@@ -1,15 +1,17 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule }    from '@angular/http';
+import { HttpModule } from '@angular/http';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatTabsModule, MatSelectModule, MdButtonModule, MatSliderModule, MdCheckboxModule, MdInputModule, MdDialogModule, MdSlideToggleModule, MdCardModule, MdTooltipModule, MdSnackBarModule } from '@angular/material';
+import {
+  MatTabsModule, MatSelectModule, MatButtonModule, MatSliderModule, MatCheckboxModule, MatInputModule,
+  MatDialogModule, MatSlideToggleModule, MatCardModule, MatTooltipModule, MatSnackBarModule, MATERIAL_COMPATIBILITY_MODE
+} from '@angular/material';
 import 'hammerjs';
 import { DndModule } from 'ng2-dnd';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
-import {Ng2Webstorage} from 'ng2-webstorage';
 import { AppRoutingModule } from './app-routing/app-routing.module';
 import { InMemoryWebApiModule } from 'angular-in-memory-web-api';
 
@@ -23,8 +25,7 @@ import { TextEditDialogComponent } from './text-edit-dialog/text-edit-dialog.com
 import { ReformatDialogComponent } from './reformat-dialog/reformat-dialog.component';
 import { InMemDataService } from 'app/in-mem-data.service';
 import { ExportDialogComponent } from './export-dialog/export-dialog.component';
-
-
+// import {Ng2Webstorage} from "ngx-webstorage";
 
 
 @NgModule({
@@ -40,20 +41,20 @@ import { ExportDialogComponent } from './export-dialog/export-dialog.component';
   ],
   imports: [
     BrowserModule,
-    Ng2Webstorage,
+    // Ng2Webstorage,
     FormsModule,
     HttpModule,
     // InMemoryWebApiModule.forRoot(InMemDataService),
     AppRoutingModule,
     BrowserAnimationsModule,
-    MatTabsModule, MatSelectModule, MdButtonModule, MatSliderModule, MdCheckboxModule, MdDialogModule, MdInputModule, MdSnackBarModule, MdSlideToggleModule, MdCardModule, MdTooltipModule,
+    MatTabsModule, MatSelectModule, MatButtonModule, MatSliderModule, MatCheckboxModule, MatDialogModule, MatInputModule, MatSnackBarModule, MatSlideToggleModule, MatCardModule, MatTooltipModule,
     DndModule.forRoot(),
     FlexLayoutModule,
   ],
   entryComponents: [
     TextEditDialogComponent, ReformatDialogComponent, ExportDialogComponent,
   ],
-  providers: [TextService, SubmitTextService],
+  providers: [TextService, SubmitTextService, {provide: MATERIAL_COMPATIBILITY_MODE, useValue: true},],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

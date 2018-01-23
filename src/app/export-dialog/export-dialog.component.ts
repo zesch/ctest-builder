@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MdDialog, MdDialogRef ,MD_DIALOG_DATA} from '@angular/material';
+import { MatDialog, MatDialogRef ,MAT_DIALOG_DATA} from '@angular/material';
 import * as jsPDF from 'jspdf'
 
 @Component({
@@ -10,8 +10,8 @@ import * as jsPDF from 'jspdf'
 export class ExportDialogComponent implements OnInit {
 
 
-  constructor(public dialogRef: MdDialogRef<ExportDialogComponent>, 
-    @Inject(MD_DIALOG_DATA) public data: any) { }
+  constructor(public dialogRef: MatDialogRef<ExportDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit() {
   }
@@ -30,24 +30,24 @@ export class ExportDialogComponent implements OnInit {
 
     console.log(this.formatSelected, this.title);
 
-    switch(this.formatSelected) { 
-      case 'json': { 
+    switch(this.formatSelected) {
+      case 'json': {
          this.export2json();
-         break; 
-      } 
-      case 'txt': { 
+         break;
+      }
+      case 'txt': {
          this.export2txt();
-         break; 
-      } 
-      case 'pdf': { 
+         break;
+      }
+      case 'pdf': {
         this.export2pdf();
-        break; 
-     } 
-      default: { 
-         //statements; 
-         break; 
-      } 
-   } 
+        break;
+     }
+      default: {
+         //statements;
+         break;
+      }
+   }
   }
 
 
