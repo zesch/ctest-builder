@@ -3,13 +3,13 @@
  "http://java.sun.com/dtd/web-app_2_3.dtd" >
 
 <web-app>
-  <display-name>de.unidue.ltl.ctestbuilder.service.LangId</display-name>
+  <display-name>de.unidue.ltl.ctestbuilder.service.GapScheme</display-name>
 <servlet >
 	<servlet-name>Language Identification Service</servlet-name>
 	<servlet-class>com.sun.jersey.spi.container.servlet.ServletContainer</servlet-class>
 	<init-param>
 		<param-name>com.sun.jersey.config.property.packages</param-name>
-		<param-value>de.unidue.ltl.ctestbuilder.service.LangId</param-value>
+		<param-value>de.unidue.ltl.ctestbuilder.service.gapscheme</param-value>
 	</init-param>
 	<load-on-startup>1</load-on-startup>
 </servlet>

@@ -1,4 +1,4 @@
-package de.unidue.ltl.ctestbuilder.service.LangId;
+package de.unidue.ltl.ctestbuilder.service.gapscheme;
 
 
 import java.io.BufferedReader;
@@ -7,13 +7,13 @@ import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLConnection;
   
-public class Client {
+public class GapClient {
 
 	public static void main(String[] args) {
-		String string = "This is a test.";
+		String string = "This is a test. It contains a short document.";
  
 		try {
-			URL url = new URL("http://localhost:8080/de.unidue.ltl.ctestbuilder.service.LangId/rest/classify");
+			URL url = new URL("http://localhost:8080/de.unidue.ltl.ctestbuilder.service.GapScheme/rest/gapify");
 			URLConnection connection = url.openConnection();
 			connection.setDoOutput(true);
 			connection.setRequestProperty("Content-Type", "text/plain");
