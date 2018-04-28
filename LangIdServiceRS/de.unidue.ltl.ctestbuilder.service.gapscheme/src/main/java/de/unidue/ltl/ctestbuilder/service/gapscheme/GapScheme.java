@@ -5,6 +5,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -18,6 +19,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
+import testDifficulty.core.CTestObject;
 
 @Path("/")
 public class GapScheme {
@@ -43,19 +45,12 @@ public class GapScheme {
 	@Path("/gapify")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.TEXT_PLAIN)
-	public Response createGapScheme(String docText) {
+	public Response createGapScheme(String docText, @QueryParam("language") String language) {
 		
 		try {
-			JCas jcas = tokenizer.newJCas();
-			jcas.setDocumentText(docText);
-	        tokenizer.process(jcas);
-	        
-	        for (Sentence s : JCasUtil.select(jcas, Sentence.class)) {
-	        	for (Token t : JCasUtil.selectCovered(jcas,  Token.class, s)) {
-	        		System.out.println(t.getCoveredText());
-	        	}
-	        	System.out.println();
-	        }
+			
+			makeGaps(docText, language);
+			
 		} catch (ResourceInitializationException e) {
 			e.printStackTrace();
 		} catch (AnalysisEngineProcessException e) {
@@ -63,5 +58,26 @@ public class GapScheme {
 		}
         
 		return Response.status(200).entity("").build();
+	}
+	
+	private void makeGaps(String docText, String language) 
+			throws ResourceInitializationException, AnalysisEngineProcessException
+	{
+		JCas jcas = tokenizer.newJCas();
+		jcas.setDocumentText(docText);
+        tokenizer.process(jcas);
+        
+        CTestObject ctest = new CTestObject(language);
+        
+        int nrOfGaps = 0;
+        int sentenceOffset = 0;
+        
+        for (Sentence s : JCasUtil.select(jcas, Sentence.class)) {
+        	for (Token t : JCasUtil.selectCovered(jcas,  Token.class, s)) {
+        		System.out.println(t.getCoveredText());
+        	}
+        	System.out.println();
+        	sentenceOffset++;
+        }
 	}
 }

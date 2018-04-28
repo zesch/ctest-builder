@@ -13,7 +13,7 @@ public class GapClient {
 		String string = "This is a test. It contains a short document.";
  
 		try {
-			URL url = new URL("http://localhost:8080/de.unidue.ltl.ctestbuilder.service.GapScheme/rest/gapify");
+			URL url = new URL("http://localhost:8080/de.unidue.ltl.ctestbuilder.service.GapScheme/rest/gapify?language=en");
 			URLConnection connection = url.openConnection();
 			connection.setDoOutput(true);
 			connection.setRequestProperty("Content-Type", "text/plain");
