@@ -20,6 +20,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import testDifficulty.core.CTestObject;
+import testDifficulty.core.CTestToken;
 
 @Path("/")
 public class GapScheme {
@@ -71,13 +72,24 @@ public class GapScheme {
         
         int nrOfGaps = 0;
         int sentenceOffset = 0;
+        int tokenOffset = 0;
+        
         
         for (Sentence s : JCasUtil.select(jcas, Sentence.class)) {
         	for (Token t : JCasUtil.selectCovered(jcas,  Token.class, s)) {
-        		System.out.println(t.getCoveredText());
+        		CTestToken cToken = new CTestToken(t.getCoveredText());
+        		if (sentenceOffset > 0) {	// do not gap first sentence
+        			if (tokenOffset % 2 == 0) {
+        				cToken.setGap(true);
+        				nrOfGaps++;
+        			}
+        		}
+        		ctest.addToken(cToken);	
+        		tokenOffset++;
         	}
-        	System.out.println();
         	sentenceOffset++;
         }
+        System.out.println(ctest.toString());
+        System.out.println(nrOfGaps);
 	}
 }
