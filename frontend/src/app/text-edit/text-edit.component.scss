@@ -1,0 +1,43 @@
+.config_card{
+    align-items: center !important;
+}
+.report_card{
+    &__preview{
+        margin-top: auto;
+        margin-bottom: auto;
+    }
+}
+.text_editor {
+    &__make_bold {
+        font-weight: 600;
+    }
+    &__word {
+        margin: 10px;
+        padding: 10px;
+        color: rgba(0, 0, 0, .87);
+        display: inline-block;
+    }
+    &__main {
+        min-height: 270px;
+    }
+    &__right {
+        place-content: flex-start !important;
+        &__new_word{
+            background-color: initial;
+            border: 1px solid rgba(0,0,0,.87) ;
+        }
+
+        &__close{
+            cursor: pointer;
+        }
+        mat-card {
+            min-height: 50px;
+        }
+        &__empty_word {
+            font-size: 17px;
+        }
+    }
+}
+
+.highlightme { background-color:#FFFF00; }
+.delete{cursor: pointer; padding-left: 26px;}

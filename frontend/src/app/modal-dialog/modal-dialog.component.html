@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>{{data.title}}</h1>
+<div mat-dialog-content>
+  <p *ngIf="data.content">{{data.content}}?</p>
+  <mat-form-field *ngIf="data.file" >
+    <input matInput [placeholder]="data.file.placeholder" [(ngModel)]="data.file.title">
+  </mat-form-field>
+  <mat-form-field *ngIf="data.options">
+      <mat-select [placeholder]="data.options.title" [(ngModel)]="data.options.selectedValue" name="format">
+        <mat-option *ngFor="let opt of data.options.values" [value]="opt">
+          {{opt}}
+        </mat-option>
+      </mat-select>
+  </mat-form-field>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">{{data.no}}</button>
+  <button mat-button [mat-dialog-close]="data.yes" (click)="onYesHandler()" cdkFocusInitial>{{data.yes}}</button>
+</div>

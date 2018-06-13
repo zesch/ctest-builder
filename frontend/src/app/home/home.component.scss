@@ -1,0 +1,29 @@
+.home {
+    width:80%;
+    &__group1 {
+        mat-form-field {
+            margin: 10px auto;
+            width: 100%;
+        }
+    }
+    &__group2 {
+        mat-icon{
+          margin-top:10px;  
+        }
+        margin: 10px 10px;
+        &__btn_text{
+            margin: auto;
+        }   
+        &__file {
+            width: 0.1px;
+            height: 0.1px;
+            opacity: 0;
+            overflow: hidden;
+            position: absolute;
+            z-index: -1;
+        }
+        mat-error{
+            margin-top: 10px;
+        }
+    }
+}

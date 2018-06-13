@@ -1,0 +1,63 @@
+<h4>Enter text below Or select from file</h4>
+<mat-card-content>
+  <form [formGroup]="form" (ngSubmit)="submit()">
+      <div class="home__group2"> 
+        <label fxFlex="12" fxLayoutAlign="space-evenly" for="file"  mat-button class="mat-raised-button" > 
+          <div>
+            <mat-icon matTooltip="start uploading file">cloud_upload</mat-icon>
+          </div>
+          <div class="home__group2__btn_text">
+            Upload File (*.txt)
+          </div>
+        </label>
+          <!-- Import File Control-->            
+          <input 
+            id="file" 
+            accept=".txt" 
+            (change)="load($event)"  
+            class="home__group2__file"  
+            type="file">
+          <mat-error *ngIf="invalidType ">
+              invalid file format 
+          </mat-error>
+        </div> 
+    <div class="home__group1">
+      <mat-form-field class="example-full-width">
+        <!-- Text To Translate Control-->
+        <textarea 
+            formControlName="textToTranslate"
+            matInput 
+            placeholder="Place Text In Here. Then hit the 'translate' button below" 
+            matTextareaAutosize
+            matAutosizeMinRows="6" 
+            matAutosizeMaxRows="10">
+        </textarea>
+      </mat-form-field>
+    </div>
+   
+    <div fxLayoutAlign="space-between" fxLayoutGap="20px">
+      <div flex="30">
+        <mat-form-field>
+            <!-- Select Language Control-->
+          <mat-select 
+            formControlName="language" 
+            placeholder="Language">
+            <mat-option 
+              *ngFor="let language of languages"  
+              [value]="language.value">
+                {{ language.viewValue }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div flex="60">
+        <button type="submit" 
+          mat-button
+          class="mat-raised-button" 
+          color="primary">
+          Create C-Test
+        </button>
+      </div>
+    </div>
+  </form>
+</mat-card-content>
