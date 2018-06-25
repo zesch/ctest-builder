@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component,ViewChild, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material';
 import { ModalDialogComponent } from '../modal-dialog/modal-dialog.component';
 import { Router } from '@angular/router';
@@ -33,6 +33,8 @@ export class TextEditComponent implements OnInit {
 
   /** holds the new value to add new word  */
   public newValue = new Object() as Word;
+
+  @ViewChild('input_currentValue') input_currentValue
 
   // Life Cycle Hooks
   constructor(public dialog: MatDialog, private router: Router, private storageService: StorageService) { }
@@ -221,10 +223,11 @@ export class TextEditComponent implements OnInit {
     this.updateStorage()
   }
 
-  public addNewWord() {
-   let result= this.words.indexOf(this.currentWord);
+  public addNewWord(input:any) {
+
+    let result= this.words.length-1;
     this.words.splice(++result, 0, ({
-      offset:0,
+      offset:3,
       showAlternatives:false,
       value:'new word',
       alternatives: [],
@@ -233,6 +236,10 @@ export class TextEditComponent implements OnInit {
       gapStatus: false
     } as Word));
     this.currentWord = this.words[result];
-    this.isEditMode = true;
+    setTimeout(()=>{
+      this.input_currentValue.nativeElement.select();
+        console.log(this.input_currentValue.nativeElement.focus());
+    });
+    //this.isEditMode = true;
   }
 }
