@@ -32,6 +32,7 @@ public class CTestBuilder {
 	private List <AnalysisEngine> engines;
 	private List<Predicate<Token>> exclusionCriteria;
 	private List<Token> tokens;
+	private List<String> warnings;
 	private String language = "unknown";
 	
 	private int gapInterval = 2;
@@ -52,6 +53,14 @@ public class CTestBuilder {
         return ctest;
 	}
 	
+	public List<String> getWarnings() {
+		return warnings;
+	}
+	
+	public JCas getJCas() {
+		return jcas;
+	}
+	
 	private void initialiseWith(String text, String language) throws ResourceInitializationException, AnalysisEngineProcessException {
 		engines = buildEngines(language);
 		jcas = process(text);
@@ -60,6 +69,7 @@ public class CTestBuilder {
         gapCount = 0;
         gapCandidates = 0;
         this.language = language;
+        warnings = new ArrayList<>();
 	}
 	
 	private List<AnalysisEngine> buildEngines(String language) throws ResourceInitializationException {

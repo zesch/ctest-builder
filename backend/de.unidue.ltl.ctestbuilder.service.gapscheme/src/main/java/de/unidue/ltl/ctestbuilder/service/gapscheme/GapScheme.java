@@ -1,9 +1,14 @@
 package de.unidue.ltl.ctestbuilder.service.gapscheme;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
+import javax.json.Json;
+import javax.json.JsonArrayBuilder;
+import javax.json.JsonObject;
+import javax.json.JsonObjectBuilder;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -19,6 +24,7 @@ import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import testDifficulty.core.CTestObject;
+import testDifficulty.core.CTestToken;
 
 @Path("/")
 public class GapScheme {
@@ -43,25 +49,65 @@ public class GapScheme {
 	@POST
 	@Path("/gapify")
 	@Consumes(MediaType.TEXT_PLAIN)
-	@Produces(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
 	public Response createGapScheme(String docText, @QueryParam("language") String language) {
 		Response response;
 		
 		try {
 			CTestObject cTest = builder.generateCTest(docText, language);
+			response = Response
+					.status(200)
+					.entity(toJson(cTest, builder.getWarnings()).toString())
+					.build(); 
 		} catch(ResourceInitializationException e) {
-			response = Response.status(503).entity("").build();
+			response = Response
+					.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity("{\"message\" : \"ERROR: Could not initialise AnalysisEngines.\"}")
+					.build();
 			System.err.println("ERROR: Could not initialise AnalysisEngines.");
 			e.printStackTrace();
 		} catch (AnalysisEngineProcessException e) {
-			response = Response.status(503).entity("").build();
+			response = Response
+					.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity("{\"message\" : \"ERROR: Could not process text.\"}")
+					.build();
 			System.err.println("ERROR: Could not process text.");
 			e.printStackTrace();
 		}
 		
-		response = Response.status(200).entity("").build(); 
-		
 		return response;
+	}
+	
+	JsonObjectBuilder toJson(CTestToken token) {
+		JsonArrayBuilder jsonArr = Json.createArrayBuilder();
+		JsonObjectBuilder jsonObj = Json.createObjectBuilder()
+			.add("id", token.getId())
+			.add("showAlternatives", false)
+			.add("alternatives", jsonArr.build())
+			.add("boldstatus", false)
+			.add("gapStatus", token.isGap())
+			.add("offset", (token.getText().length() / 2 - 1)) //TODO: Change, once CToken has Gapindex
+			.add("value", token.getText());
+		
+		return jsonObj;
+	}
+	
+	JsonObject toJson(CTestObject ctest, List<String> warningList) {
+		JsonArrayBuilder words = Json.createArrayBuilder();
+		for (CTestToken token : ctest.getTokens()) {
+			words.add(toJson(token));
+		}
+		
+		JsonArrayBuilder warnings = Json.createArrayBuilder();
+		for (String warning : warningList) {
+			warnings.add(warning);
+		}
+		
+		JsonObjectBuilder json = Json.createObjectBuilder()
+			.add("words", words.build())
+			.add("warnings", warnings.build());
+		
+		return json.build();
 	}
 	
 }
