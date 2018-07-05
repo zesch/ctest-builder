@@ -41,9 +41,11 @@ public class GapScheme {
 	@GET
 	@Path("/verify")
 	@Produces(MediaType.TEXT_HTML)
-	public String verifyRESTService() {
-		// TODO proper response
-		return "GapScheme service successfully started.";
+	public Response verifyRESTService() {
+		return Response
+		.status(200)
+		.entity("GapScheme service successfully started.")
+		.build();
 	}
 	
 	@POST
@@ -86,7 +88,7 @@ public class GapScheme {
 			.add("alternatives", jsonArr.build())
 			.add("boldstatus", false)
 			.add("gapStatus", token.isGap())
-			.add("offset", (token.getText().length() / 2 - 1)) //TODO: Change, once CToken has Gapindex
+			.add("offset", token.getGapIndex() - 1) // see frontend for reason
 			.add("value", token.getText());
 		
 		return jsonObj;
