@@ -27,6 +27,7 @@ import de.unidue.ltl.ctestbuilder.service.preprocessing.IsAbbreviation;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.IsNumber;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.IsPunctuation;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.ShortWord;
+import de.unidue.ltl.ctestbuilder.service.preprocessing.SimpleFrenchGapFinder;
 import testDifficulty.core.CTestObject;
 import testDifficulty.core.CTestToken;
 
@@ -52,12 +53,118 @@ public class CTestBuilder {
 	private int sentenceLimit = Integer.MAX_VALUE;
 	
 	public CTestObject generateCTest(String text, String language) throws ResourceInitializationException, AnalysisEngineProcessException {
-		//TODO: split into initialise and process()
-		initialiseWith(text, language);
+		initialise(text, language);
+		makeGaps();
+        return ctest;
+	}
+	
+	public JCas getJCas() {
+		return jcas;
+	}
+	
+	public List<String> getWarnings() {
+		return warnings;
+	}
+	
+	private void initialise(String text, String language) throws ResourceInitializationException, AnalysisEngineProcessException {
+		warnings = new ArrayList<>();
 		
-		//TODO: move to makeGaps method.
+		engines = buildEngines(language);
+		jcas = process(text);
+		exclusionCriteria = getExclusionCriteria(jcas, language);
+		gapFinders = getGapFinders(jcas, language);
+		
+		sentences = new ArrayList<>(JCasUtil.select(jcas, Sentence.class));
+        tokens = new ArrayList<>(JCasUtil.select(jcas, Token.class));
+        ctest = new CTestObject(language);
+        
+        sentenceCount = 0;
+    	sentenceLimit = sentences.size() - 1;
+        gapCount = 0;
+        gapCandidates = 0;
+        
+        this.language = language;
+        if (sentences.size() < 3)
+        	addWarning("INSUFFICIENT SENTENCES - At least 3 sentences are required for a proper c-test.");
+	}
+	
+	/* TODO: Implement Provider for Preprocessing resources */
+	private List<AnalysisEngine> buildEngines(String language) throws ResourceInitializationException {
+		if (this.language.equals(language))
+			return engines;
+		
+		List<AnalysisEngine> engines = new ArrayList<>();
+		
+		engines.add(createEngine(
+				BreakIteratorSegmenter.class));
+		
+		//TODO: Replace with language specific compound annotators?
+		engines.add(createEngine(
+				CompoundAnnotator.class,
+                CompoundAnnotator.PARAM_SPLITTING_ALGO,
+                ExternalResourceFactory.createExternalResourceDescription(
+                        BananaSplitterResource.class,
+                        BananaSplitterResource.PARAM_DICT_RESOURCE,
+                        ExternalResourceFactory.createExternalResourceDescription(SharedDictionary.class),
+                        BananaSplitterResource.PARAM_MORPHEME_RESOURCE,
+                        ExternalResourceFactory.createExternalResourceDescription(SharedLinkingMorphemes.class))));
+		
+		if (language.equals("de")) {
+			engines.add(createEngine(
+					StanfordNamedEntityRecognizer.class,
+	        		StanfordNamedEntityRecognizer.PARAM_VARIANT, "nemgp",
+	        		StanfordNamedEntityRecognizer.PARAM_LANGUAGE, "de"));
+		}
+		
+		//FIXME: Find other NER models.
+		/*
+		if (language.equals("fr") || language.equals("it") || language.equals("es") || language.equals("en")) {
+			engines.add(createEngine(
+					StanfordNamedEntityRecognizer.class,
+	        		StanfordNamedEntityRecognizer.PARAM_VARIANT, "freme-wikiner",
+	        		StanfordNamedEntityRecognizer.PARAM_LANGUAGE, language));
+		}
+		*/		
+		return engines;
+		
+	}
+	
+	private JCas process(String text) throws AnalysisEngineProcessException, ResourceInitializationException {
+		JCas jcas = engines.get(0).newJCas();
+		jcas.setDocumentText(text);
+		for (AnalysisEngine engine : engines)
+			engine.process(jcas);
+		return jcas;
+	}
+	
+	private List<Predicate<Token>> getExclusionCriteria(JCas aJCas, String language) {
+		//TODO: Compose from general and language specific criteria automatically.
+		List<Predicate<Token>> criteria = new ArrayList<>();
+		criteria.add(new ShortWord());
+		criteria.add(new IsNumber());
+		criteria.add(new IsPunctuation());	
+		criteria.add(new IsAbbreviation(language));
+		return criteria;
+	}
+	
+	//TODO: Compose from general and language specific modifiers automatically.
+	private List<GapIndexFinder> getGapFinders(JCas aJCas, String language) {
+		List<GapIndexFinder> finders = new ArrayList<>();
+		finders.add(new CompoundGapFinder(aJCas));
+		
+		if (language.equals("fr"))
+			finders.add(new SimpleFrenchGapFinder());
+		
+		return finders;
+	}
+	
+	private void addWarning(String string) {
+		warnings.add(string);
+	}
+	
+	private void makeGaps() {
 		for (Sentence sentence : sentences) {
-			for (Token token : tokens = JCasUtil.selectCovered(jcas, Token.class, sentence)) {
+			for (Token token : JCasUtil.selectCovered(jcas, Token.class, sentence)) {
 	    		CTestToken cToken = new CTestToken(token.getCoveredText());
 	    		
 	    		if (!isValidGapCandidate(token)) {
@@ -82,102 +189,11 @@ public class CTestBuilder {
 			}
 		}
     	
-		//TODO: Define Warnings in JSON Format for frontend?
 		if (gapCount < gapLimit)
 			addWarning(String.format("INSUFFICIENT GAPS - The supplied text was too short to produce at least %s gaps. Try to add more words.", gapLimit));
 		
 		if (sentenceCount <= sentenceLimit)
 			addWarning("INSUFFICIENT SENTENCES - The supplied text did not have enough sentences. c-Test is incomplete.");
-		
-        return ctest;
-	}
-	
-	public List<String> getWarnings() {
-		return warnings;
-	}
-	
-	public JCas getJCas() {
-		return jcas;
-	}
-	
-	private void initialiseWith(String text, String language) throws ResourceInitializationException, AnalysisEngineProcessException {
-		warnings = new ArrayList<>();
-		
-		engines = buildEngines(language);
-		jcas = process(text);
-		exclusionCriteria = getExclusionCriteria(jcas, language);
-		gapFinders = getGapFinders(jcas, language);
-		
-		sentences = new ArrayList<>(JCasUtil.select(jcas, Sentence.class));
-        tokens = new ArrayList<>(JCasUtil.select(jcas, Token.class));
-        ctest = new CTestObject(language);
-        
-        sentenceCount = 0;
-    	sentenceLimit = sentences.size() - 1;
-        gapCount = 0;
-        gapCandidates = 0;
-        
-        this.language = language;
-        if (sentences.size() < 3)
-        	addWarning("INSUFFICIENT SENTENCES - At least 3 sentences are required for a proper c-test.");
-	}
-	
-	private List<AnalysisEngine> buildEngines(String language) throws ResourceInitializationException {
-		if (this.language.equals(language))
-			return engines;
-		
-		List<AnalysisEngine> engines = new ArrayList<>();
-		
-		engines.add(createEngine(
-				BreakIteratorSegmenter.class));
-		
-		engines.add(createEngine(
-				StanfordNamedEntityRecognizer.class,
-        		StanfordNamedEntityRecognizer.PARAM_VARIANT, "nemgp",
-        		StanfordNamedEntityRecognizer.PARAM_LANGUAGE, language));
-		
-		engines.add(createEngine(
-				CompoundAnnotator.class,
-                CompoundAnnotator.PARAM_SPLITTING_ALGO,
-                ExternalResourceFactory.createExternalResourceDescription(
-                        BananaSplitterResource.class,
-                        BananaSplitterResource.PARAM_DICT_RESOURCE,
-                        ExternalResourceFactory.createExternalResourceDescription(SharedDictionary.class),
-                        BananaSplitterResource.PARAM_MORPHEME_RESOURCE,
-                        ExternalResourceFactory.createExternalResourceDescription(SharedLinkingMorphemes.class))));
-		
-		
-		return engines;
-		
-	}
-	
-	private JCas process(String text) throws AnalysisEngineProcessException, ResourceInitializationException {
-		JCas jcas = engines.get(0).newJCas();
-		jcas.setDocumentText(text);
-		for (AnalysisEngine engine : engines)
-			engine.process(jcas);
-		return jcas;
-	}
-	
-	private List<Predicate<Token>> getExclusionCriteria(JCas aJCas, String language) {
-		//TODO: Compose from general and language specific criteria automatically.
-		List<Predicate<Token>> criteria = new ArrayList<>();
-		criteria.add(new ShortWord());
-		criteria.add(new IsNumber());
-		criteria.add(new IsPunctuation());	
-		criteria.add(new IsAbbreviation(language));
-		return criteria;
-	}
-	
-	private List<GapIndexFinder> getGapFinders(JCas aJCas, String language) {
-		//TODO: Compose from general and language specific modifiers automatically.
-		List<GapIndexFinder> finders = new ArrayList<>();
-		finders.add(new CompoundGapFinder(aJCas));
-		return finders;
-	}
-	
-	private void addWarning(String string) {
-		warnings.add(string);
 	}
 	
 	private boolean isValidGapCandidate(Token token) {
