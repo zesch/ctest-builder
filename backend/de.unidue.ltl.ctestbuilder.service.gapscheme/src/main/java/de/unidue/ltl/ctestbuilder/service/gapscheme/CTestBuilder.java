@@ -23,6 +23,9 @@ import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordNamedEntityRecognizer;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.CompoundGapFinder;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.GapIndexFinder;
+import de.unidue.ltl.ctestbuilder.service.preprocessing.IsAbbreviation;
+import de.unidue.ltl.ctestbuilder.service.preprocessing.IsNumber;
+import de.unidue.ltl.ctestbuilder.service.preprocessing.IsPunctuation;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.ShortWord;
 import testDifficulty.core.CTestObject;
 import testDifficulty.core.CTestToken;
@@ -160,6 +163,9 @@ public class CTestBuilder {
 		//TODO: Compose from general and language specific criteria automatically.
 		List<Predicate<Token>> criteria = new ArrayList<>();
 		criteria.add(new ShortWord());
+		criteria.add(new IsNumber());
+		criteria.add(new IsPunctuation());	
+		criteria.add(new IsAbbreviation(language));
 		return criteria;
 	}
 	
