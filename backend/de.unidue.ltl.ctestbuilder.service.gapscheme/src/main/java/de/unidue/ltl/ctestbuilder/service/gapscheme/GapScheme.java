@@ -1,6 +1,5 @@
 package de.unidue.ltl.ctestbuilder.service.gapscheme;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
@@ -29,8 +28,6 @@ import testDifficulty.core.CTestToken;
 @Path("/")
 public class GapScheme {
 	
-	private List<AnalysisEngine> preprocessing;
-	private Collection<Predicate<Token>> exclusionCriteria;
 	private CTestBuilder builder;	
 	
 	public GapScheme()
@@ -96,8 +93,12 @@ public class GapScheme {
 	
 	JsonObject toJson(CTestObject ctest, List<String> warningList) {
 		JsonArrayBuilder words = Json.createArrayBuilder();
+		
+		int id = 1;
 		for (CTestToken token : ctest.getTokens()) {
+			token.setId(Integer.toString(id));			
 			words.add(toJson(token));
+			id++;
 		}
 		
 		JsonArrayBuilder warnings = Json.createArrayBuilder();
