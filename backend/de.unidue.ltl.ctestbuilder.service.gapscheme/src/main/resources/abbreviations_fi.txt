@@ -1,0 +1,9 @@
+esim
+jne
+klo
+pvm
+huom
+ko
+vrt
+yms
+mm

@@ -1,0 +1,126 @@
+a
+adr.
+Alb.
+app.
+apr. J.-C.
+art.
+av.
+av. J.-C.
+BD
+bibl.
+boul.
+bur.
+c.
+CA ou c. a.
+c.-à -d.
+C.-B.
+c. c.
+c. élec.
+ch.
+ch.
+chap.
+ch. de f.
+Cie
+coll.
+C.P.
+C.R.
+Cté
+CV
+dom.
+Dr
+Dr
+Dre
+Dre
+E.
+éd.
+édit.
+enr.
+env.
+etc.
+é.-U.
+ex.
+excl.
+exp.
+féd.
+FM
+gouv.
+H. ou haut.
+HT
+id.
+inc.
+incl.
+àŽ.-P.-é.
+l. ou larg.
+l. ou long.
+ltée
+M.
+Man.
+max.
+MD
+Me
+Mes
+min.
+Mlle
+Mlles
+MM.
+Mme
+Mmes
+N.
+N. B.
+N.-B.
+nbre
+NDLR
+NDT
+N.-é.
+No ou no
+Nos ou nos
+Nt.
+O.
+o
+Ont.
+p.
+p. c. ou p. cent
+p. c. q.
+p.-d. g. ou pdg
+p. ex.
+pH
+p. j.
+Pr ou Pr
+Pre ou Pre
+prov.
+prov.
+P.-S.
+p.-v.
+Qc
+qq.
+qqch.
+qqn
+quest. ou Q.
+RC ou r.-de-ch.
+réf.
+rép. ou R.
+ro
+RSVP
+rte ou rte
+r.-v.
+s.
+S.
+Sask.
+sc.
+St
+Sts
+Ste
+Stes
+Sté
+SVP ou svp
+t.
+tél.
+tél. cell.
+T.-N.-L.
+T. N.-O
+TTC ou t.t.c.
+V. ou v.
+vo
+vol.
+v.-p.
+Yn
