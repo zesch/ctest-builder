@@ -9,25 +9,21 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import junit.framework.TestCase;
 
-public class FrenchAbbreviationGapFinderTest extends TestCase {
+public class IsPunctuationTest extends TestCase {
+
 	@Test
-	public void testApostrophe() throws UIMAException {
+	public void testPunctuation() throws UIMAException {
 		JCas jcas = JCasFactory.createJCas();
 		JCasBuilder jcasBuilder = new JCasBuilder(jcas);
 
-		Token apostrophe = jcasBuilder.add("l'baguette", Token.class);
-		jcasBuilder.add(" ");
-
-		Token word = jcasBuilder.add("oui", Token.class);
-		jcasBuilder.add(" ");
+		Token punctuation = jcasBuilder.add("¿", Token.class);
+		Token word = jcasBuilder.add("a", Token.class);
 
 		jcasBuilder.close();
 
-		GapIndexFinder gif = new FrenchAbbreviationGapFinder();
+		IsPunctuation criterion = new IsPunctuation();
 
-		assertTrue(gif.test(apostrophe));
-		assertEquals(2, gif.getGapIndex(apostrophe));
-
-		assertFalse(gif.test(word));
+		assertFalse(criterion.test(word));
+		assertTrue(criterion.test(punctuation));
 	}
 }

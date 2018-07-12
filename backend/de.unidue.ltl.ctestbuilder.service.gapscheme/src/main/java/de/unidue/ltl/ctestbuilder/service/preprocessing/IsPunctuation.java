@@ -7,8 +7,9 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
 public class IsPunctuation implements Predicate<Token> {
 
-	private Pattern pattern = Pattern.compile("[\\!\"#\\$%\\&'\\(\\)\\*\\+,\\-\\.\\/\\\\:;<=>\\?@\\[\\]\\^_`\\{\\|\\}~]+"); 
-	
+	private Pattern pattern = Pattern
+			.compile("[\\!\"#\\$%¡¿\\&'\\(\\)\\*\\+,\\-\\.\\/\\\\:;<=>\\?@\\[\\]\\^_`\\{\\|\\}~]+");
+
 	@Override
 	public boolean test(Token token) {
 		return pattern.matcher(token.getCoveredText()).matches();
