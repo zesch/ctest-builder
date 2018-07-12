@@ -18,7 +18,7 @@ public class CTestBuilderTest extends TestCase {
 	@Test
 	public void testEnglish() throws Exception {
 		CTestBuilder ctb = new CTestBuilder();
-		String text = "Received shutters expenses ye he pleasant. Drift as blind above at up. No up simple county stairs do should praise as. Drawings sir gay together landlord had law smallest. Formerly welcomed attended declared met say unlocked. Jennings outlived no dwelling denoting in peculiar as he believed. Behaviour excellent middleton be as it curiosity departure ourselves. ";
+		String text = "Received shutters expenses ye he pleasant. Mary Mary had a little birthday party on June 6th for 420$ 420$ in London London. Drift as blind above at up. No up simple county stairs do should praise as. Drawings sir gay together landlord had law smallest. Formerly welcomed attended declared met say unlocked. Jennings outlived no dwelling denoting in peculiar as he believed. Behaviour excellent middleton be as it curiosity departure ourselves. ";
 		String language = "en";
 		
 		System.out.println(ctb.generateCTest(text,language));
@@ -27,7 +27,7 @@ public class CTestBuilderTest extends TestCase {
 	@Test
 	public void testFrench() throws Exception {
 		CTestBuilder ctb = new CTestBuilder();
-		String text = "Contrairement à une opinion répandue, le Lorem Ipsum n'est pas simplement du texte aléatoire. Il trouve ses avec-vous avec-vous racines dans une oeuvre de la littérature latine classique datant de 45 av. J.-C. av. J.-C., le rendant vieux de 2000 ans. Un professeur du Hampden-Sydney College, en Virginie, s'est intéressé à un des mots latins les plus obscurs, consectetur, extrait d'un passage du Lorem Ipsum, et en étudiant tous les usages de ce mot dans la littérature classique, découvrit la source incontestable du Lorem Ipsum.";
+		String text = "Contrairement ï¿½ une opinion rï¿½pandue, le Lorem Ipsum n'est pas simplement du texte alï¿½atoire. Il trouve ses avec-vous avec-vous racines dans une oeuvre de la littï¿½rature latine classique datant de 45 av. J.-C. av. J.-C., le rendant vieux de 2000 ans. Un professeur du Hampden-Sydney College, en Virginie, s'est intï¿½ressï¿½ ï¿½ un des mots latins les plus obscurs, consectetur, extrait d'un passage du Lorem Ipsum, et en ï¿½tudiant tous les usages de ce mot dans la littï¿½rature classique, dï¿½couvrit la source incontestable du Lorem Ipsum.";
 		String language = "fr";
 		
 		System.out.println(ctb.generateCTest(text,language));
@@ -36,7 +36,7 @@ public class CTestBuilderTest extends TestCase {
 	@Test
 	public void testSpanish() throws Exception {
 		CTestBuilder ctb = new CTestBuilder();
-		String text = "Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estándar de las industrias desde el año 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usó una galería de textos y los mezcló de tal manera que logró hacer un libro de textos especimen. No sólo sobrevivió 500 años, sino que tambien ingresó como texto de relleno en documentos electrónicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creación de las hojas \"Letraset\", las cuales contenian pasajes de Lorem Ipsum, y más recientemente con software de autoedición, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum.";
+		String text = "Lorem Ipsum es simplemente el texto de relleno de las imprentas y archivos de texto. Lorem Ipsum ha sido el texto de relleno estï¿½ndar de las industrias desde el aï¿½o 1500, cuando un impresor (N. del T. persona que se dedica a la imprenta) desconocido usï¿½ una galerï¿½a de textos y los mezclï¿½ de tal manera que logrï¿½ hacer un libro de textos especimen. No sï¿½lo sobreviviï¿½ 500 aï¿½os, sino que tambien ingresï¿½ como texto de relleno en documentos electrï¿½nicos, quedando esencialmente igual al original. Fue popularizado en los 60s con la creaciï¿½n de las hojas \"Letraset\", las cuales contenian pasajes de Lorem Ipsum, y mï¿½s recientemente con software de autoediciï¿½n, como por ejemplo Aldus PageMaker, el cual incluye versiones de Lorem Ipsum.";
 		String language = "es";
 		
 		System.out.println(ctb.generateCTest(text,language));
@@ -45,7 +45,7 @@ public class CTestBuilderTest extends TestCase {
 	@Test
 	public void testItalian() throws Exception {
 		CTestBuilder ctb = new CTestBuilder();
-		String text = "Lorem Ipsum è un testo segnaposto utilizzato nel settore della tipografia e della stampa. Lorem Ipsum è considerato il testo segnaposto standard sin dal sedicesimo secolo, quando un anonimo tipografo prese una cassetta di caratteri e li assemblò per preparare un testo campione. È sopravvissuto non solo a più di cinque secoli, ma anche al passaggio alla videoimpaginazione, pervenendoci sostanzialmente inalterato. Fu reso popolare, negli anni ’60, con la diffusione dei fogli di caratteri trasferibili “Letraset”, che contenevano passaggi del Lorem Ipsum, e più recentemente da software di impaginazione come Aldus PageMaker, che includeva versioni del Lorem Ipsum.";
+		String text = "Lorem Ipsum ï¿½ un testo segnaposto utilizzato nel settore della tipografia e della stampa. Lorem Ipsum ï¿½ considerato il testo segnaposto standard sin dal sedicesimo secolo, quando un anonimo tipografo prese una cassetta di caratteri e li assemblï¿½ per preparare un testo campione. ï¿½ sopravvissuto non solo a piï¿½ di cinque secoli, ma anche al passaggio alla videoimpaginazione, pervenendoci sostanzialmente inalterato. Fu reso popolare, negli anni ï¿½60, con la diffusione dei fogli di caratteri trasferibili ï¿½Letrasetï¿½, che contenevano passaggi del Lorem Ipsum, e piï¿½ recentemente da software di impaginazione come Aldus PageMaker, che includeva versioni del Lorem Ipsum.";
 		String language = "it";
 		
 		System.out.println(ctb.generateCTest(text,language));
@@ -55,7 +55,7 @@ public class CTestBuilderTest extends TestCase {
 	@Test
 	public void testFinnish() throws Exception {
 		CTestBuilder ctb = new CTestBuilder();
-		String text = "Lorem Ipsum on yksinkertaisesti testausteksti, jota tulostus- ja ladontateollisuudet käyttävät. Lorem Ipsum on ollut teollisuuden normaali testausteksti jo 1500-luvulta asti, jolloin tuntematon tulostaja otti kaljuunan ja sekoitti sen tehdäkseen esimerkkikirjan. Se ei ole selvinnyt vain viittä vuosisataa, mutta myös loikan elektroniseen kirjoitukseen, jääden suurinpiirtein muuntamattomana. Se tuli kuuluisuuteen 1960-luvulla kun Letraset-paperiarkit, joissa oli Lorem Ipsum pätkiä, julkaistiin ja vielä myöhemmin tietokoneen julkistusohjelmissa, kuten Aldus PageMaker joissa oli versioita Lorem Ipsumista.";
+		String text = "Lorem Ipsum on yksinkertaisesti testausteksti, jota tulostus- ja ladontateollisuudet kï¿½yttï¿½vï¿½t. Lorem Ipsum on ollut teollisuuden normaali testausteksti jo 1500-luvulta asti, jolloin tuntematon tulostaja otti kaljuunan ja sekoitti sen tehdï¿½kseen esimerkkikirjan. Se ei ole selvinnyt vain viittï¿½ vuosisataa, mutta myï¿½s loikan elektroniseen kirjoitukseen, jï¿½ï¿½den suurinpiirtein muuntamattomana. Se tuli kuuluisuuteen 1960-luvulla kun Letraset-paperiarkit, joissa oli Lorem Ipsum pï¿½tkiï¿½, julkaistiin ja vielï¿½ myï¿½hemmin tietokoneen julkistusohjelmissa, kuten Aldus PageMaker joissa oli versioita Lorem Ipsumista.";
 		String language = "it";
 		
 		System.out.println(ctb.generateCTest(text,language));
