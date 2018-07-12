@@ -33,8 +33,7 @@ public class CompoundGapFinder implements GapIndexFinder {
 		CompoundPart gapTarget = getLastCompoundPart(token);
 		int tokenLength = getLength(token);
 		int targetLength = getLength(gapTarget);
-		int gapOffset = targetLength / 2;
-		return tokenLength - targetLength + gapOffset;
+		return tokenLength - targetLength;
 	}
 	
 	private CompoundPart getLastCompoundPart(Token token) {

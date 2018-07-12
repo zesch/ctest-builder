@@ -23,11 +23,12 @@ import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordNamedEntityRecognizer;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.CompoundGapFinder;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.GapIndexFinder;
+import de.unidue.ltl.ctestbuilder.service.preprocessing.HyphenGapFinder;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.IsAbbreviation;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.IsNumber;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.IsPunctuation;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.ShortWord;
-import de.unidue.ltl.ctestbuilder.service.preprocessing.SimpleFrenchGapFinder;
+import de.unidue.ltl.ctestbuilder.service.preprocessing.FrenchAbbreviationGapFinder;
 import testDifficulty.core.CTestObject;
 import testDifficulty.core.CTestToken;
 
@@ -150,10 +151,21 @@ public class CTestBuilder {
 	//TODO: Compose from general and language specific modifiers automatically.
 	private List<GapIndexFinder> getGapFinders(JCas aJCas, String language) {
 		List<GapIndexFinder> finders = new ArrayList<>();
-		finders.add(new CompoundGapFinder(aJCas));
 		
-		if (language.equals("fr"))
-			finders.add(new SimpleFrenchGapFinder());
+		if (language.equals("de")) {
+			finders.add(new CompoundGapFinder(aJCas));
+			finders.add(new HyphenGapFinder());
+		}
+		
+		if (language.equals("en")) {
+			finders.add(new HyphenGapFinder());
+		}
+		
+		if (language.equals("fr")) {
+			finders.add(new FrenchAbbreviationGapFinder());
+			finders.add(new HyphenGapFinder());
+		}
+			
 		
 		return finders;
 	}
@@ -216,19 +228,18 @@ public class CTestBuilder {
 	}
 	
 	/* Assumes gaps at the end, e.g. playgro___ (playground) */
-	private int estimateGapIndex(Token token) {
-		int index = (token.getEnd() - token.getBegin()) / 2;
+	protected int estimateGapIndex(Token token) {
+		int gapRangeStart = 0;
 		
 		for (GapIndexFinder modifier : gapFinders) {
 			if (modifier.test(token)) {
-				index = Math.max(index, modifier.getGapIndex(token));
+				gapRangeStart = Math.max(gapRangeStart, modifier.getGapIndex(token));
 			}
 		}
 		
-		if (index % 2 != 0)
-			return index - 1;
+		int gapOffset = token.getCoveredText().substring(gapRangeStart).length()/2;
 		
-		return index;		
+		return gapRangeStart + gapOffset;		
 	}
 	
 	private boolean isGap() {

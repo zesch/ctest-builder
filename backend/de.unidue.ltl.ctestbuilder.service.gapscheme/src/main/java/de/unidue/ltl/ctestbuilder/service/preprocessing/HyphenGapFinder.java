@@ -4,13 +4,14 @@ import java.util.regex.Pattern;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 
-public class SimpleFrenchGapFinder implements GapIndexFinder {
+public class HyphenGapFinder implements GapIndexFinder {
 	
+	private static Pattern hyphen = Pattern.compile("-");
 	private String[] splits;
 	
 	@Override
 	public boolean test(Token token) {
-		splits = token.getCoveredText().split("'");
+		splits = hyphen.split(token.getCoveredText());
 		return splits.length > 1;
 	}
 
@@ -19,10 +20,9 @@ public class SimpleFrenchGapFinder implements GapIndexFinder {
 		if (splits == null || splits.length == 1)
 			return -1;
 		
-		int tokenLength = token.getCoveredText().length();
-		int lastWordLength = splits[splits.length - 1].length();
-		int gapOffset = lastWordLength / 2;
-		return tokenLength - lastWordLength + gapOffset;
+		int tokenLength = token.getEnd() - token.getBegin();
+		int targetLength = splits[splits.length - 1].length();
+		return tokenLength - targetLength;
 	}
 
 }
