@@ -1,6 +1,5 @@
 package de.unidue.ltl.ctestbuilder.service.gapscheme;
 
-import java.util.Arrays;
 import java.util.List;
 
 import javax.json.Json;
@@ -16,8 +15,7 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.resource.ResourceInitializationException;
+import org.apache.uima.UIMAException;
 
 import testDifficulty.core.CTestObject;
 import testDifficulty.core.CTestToken;
@@ -25,7 +23,6 @@ import testDifficulty.core.CTestToken;
 @Path("/")
 public class GapScheme {
 
-	public static List<String> SUPPORTED_LANGUAGES = Arrays.asList(new String[] { "de", "en", "es", "fi", "fr", "it" });
 	private CTestBuilder builder;
 
 	public GapScheme() {
@@ -36,7 +33,7 @@ public class GapScheme {
 	@Path("/verify")
 	@Produces(MediaType.TEXT_HTML)
 	public Response verifyRESTService() {
-		return Response.status(200).entity("GapScheme service successfully started.").build();
+		return Response.status(Response.Status.OK).entity("GapScheme service successfully started.").build();
 	}
 
 	@POST
@@ -47,17 +44,16 @@ public class GapScheme {
 		Response response;
 
 		try {
-			CTestObject cTest = builder.generateCTest(docText, language);
-			response = Response.status(200).entity(toJson(cTest, builder.getWarnings()).toString()).build();
-		} catch (ResourceInitializationException e) {
-			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-					.entity("{\"message\" : \"ERROR: Could not initialise AnalysisEngines.\"}").build();
-			System.err.println("ERROR: Could not initialise AnalysisEngines.");
-			e.printStackTrace();
-		} catch (AnalysisEngineProcessException e) {
-			response = Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-					.entity("{\"message\" : \"ERROR: Could not process text.\"}").build();
-			System.err.println("ERROR: Could not process text.");
+			JsonObject cTest = toJson(builder.generateCTest(docText, language), builder.getWarnings());
+			response = Response
+					.status(Response.Status.OK)
+					.entity(cTest.toString())
+					.build();
+		} catch (UIMAException e) {
+			response = Response
+					.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity("{\"message\" : \"ERROR: Could not create c-test.\"}")
+					.build();
 			e.printStackTrace();
 		}
 
@@ -66,8 +62,12 @@ public class GapScheme {
 
 	JsonObjectBuilder toJson(CTestToken token) {
 		JsonArrayBuilder jsonArr = Json.createArrayBuilder();
-		JsonObjectBuilder jsonObj = Json.createObjectBuilder().add("id", token.getId()).add("showAlternatives", false)
-				.add("alternatives", jsonArr.build()).add("boldstatus", false).add("gapStatus", token.isGap())
+		JsonObjectBuilder jsonObj = Json.createObjectBuilder()
+				.add("id", token.getId())
+				.add("showAlternatives", false)
+				.add("alternatives", jsonArr.build())
+				.add("boldstatus", false)
+				.add("gapStatus", token.isGap())
 				.add("offset", token.getGapIndex() - 1) // see frontend for reason
 				.add("value", token.getText());
 
@@ -89,8 +89,9 @@ public class GapScheme {
 			warnings.add(warning);
 		}
 
-		JsonObjectBuilder json = Json.createObjectBuilder().add("words", words.build()).add("warnings",
-				warnings.build());
+		JsonObjectBuilder json = Json.createObjectBuilder()
+				.add("words", words.build())
+				.add("warnings",warnings.build());
 
 		return json.build();
 	}

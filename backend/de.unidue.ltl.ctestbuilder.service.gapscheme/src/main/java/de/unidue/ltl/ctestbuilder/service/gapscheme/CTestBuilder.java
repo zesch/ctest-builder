@@ -1,86 +1,78 @@
 package de.unidue.ltl.ctestbuilder.service.gapscheme;
 
-import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngine;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
 
+import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
-import org.apache.uima.analysis_engine.AnalysisEngineProcessException;
-import org.apache.uima.fit.factory.ExternalResourceFactory;
+import org.apache.uima.fit.factory.JCasFactory;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
-import org.apache.uima.resource.ResourceInitializationException;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Sentence;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-import de.tudarmstadt.ukp.dkpro.core.decompounding.uima.annotator.CompoundAnnotator;
-import de.tudarmstadt.ukp.dkpro.core.decompounding.uima.resource.BananaSplitterResource;
-import de.tudarmstadt.ukp.dkpro.core.decompounding.uima.resource.SharedDictionary;
-import de.tudarmstadt.ukp.dkpro.core.decompounding.uima.resource.SharedLinkingMorphemes;
-import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpNamedEntityRecognizer;
-import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordNamedEntityRecognizer;
-import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
-import de.unidue.ltl.ctestbuilder.service.preprocessing.CompoundGapFinder;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.GapIndexFinder;
-import de.unidue.ltl.ctestbuilder.service.preprocessing.HyphenGapFinder;
-import de.unidue.ltl.ctestbuilder.service.preprocessing.IsAbbreviation;
-import de.unidue.ltl.ctestbuilder.service.preprocessing.IsNamedEntity;
-import de.unidue.ltl.ctestbuilder.service.preprocessing.IsNumber;
-import de.unidue.ltl.ctestbuilder.service.preprocessing.IsPunctuation;
-import de.unidue.ltl.ctestbuilder.service.preprocessing.IsSingleCharacter;
-import de.unidue.ltl.ctestbuilder.service.preprocessing.FrenchAbbreviationGapFinder;
 import testDifficulty.core.CTestObject;
 import testDifficulty.core.CTestToken;
 
-public class CTestBuilder {
-
-	private JCas jcas;
-	private CTestObject ctest;
-	private String language = "unknown";
-
-	private List<AnalysisEngine> engines;
-	private List<Predicate<Token>> exclusionCriteria;
-	private List<GapIndexFinder> gapFinders;
-
-	private List<Sentence> sentences;
-	private List<Token> tokens;
+public class CTestBuilder {	
+	private List<Predicate<Token>> exclusionRules;
+	private List<GapIndexFinder> gapIndexFinders;
 	private List<String> warnings;
+	private List<Sentence> sentences;
+	
+	private String language;
+	private CTestObject ctest;
+	private JCas jcas;
 
-	private int gapInterval = 2;
-	private int gapLimit = 20;
-	private int gapCount = 0;
-	private int gapCandidates = 0;
-	private int sentenceCount = 0;
-	private int sentenceLimit = Integer.MAX_VALUE;
+	private int gapInterval;
+	private int gapLimit;
+	
+	private int gapCount;
+	private int gapCandidates;
+	private int sentenceCount;
+	private int sentenceLimit;
 
-	public CTestObject generateCTest(String text, String language)
-			throws ResourceInitializationException, AnalysisEngineProcessException {
+	
+	public CTestBuilder() {
+		gapInterval = 2;
+		gapLimit = 20;
+	}
+	
+	public CTestBuilder(int gapLimit, int gapInterval) {
+		this.gapLimit = gapLimit;
+		this.gapInterval = gapInterval;
+	}
+	
+	
+	public CTestObject generateCTest(String text, String language) throws UIMAException {
 		initialise(text, language);
 		makeGaps();
 		return ctest;
 	}
-
-	public JCas getJCas() {
-		return jcas;
+	
+	public CTestObject getCTest() {
+		return ctest;
 	}
-
+	
 	public List<String> getWarnings() {
 		return warnings;
 	}
 
-	private void initialise(String text, String language)
-			throws ResourceInitializationException, AnalysisEngineProcessException {
+	
+	private void initialise(String aText, String aLanguage)
+			throws UIMAException {
 		warnings = new ArrayList<>();
-
-		engines = buildEngines(language);
-		jcas = process(text);
-		exclusionCriteria = getExclusionCriteria(jcas, language);
-		gapFinders = getGapFinders(jcas, language);
+		language = aLanguage;
+		
+		List<AnalysisEngine> engines = CTestResourceProvider.getAnalysisEngines(language);
+		
+		jcas = process(aText, aLanguage, engines);
+		exclusionRules = CTestResourceProvider.getExclusionRules(jcas, language);
+		gapIndexFinders = CTestResourceProvider.getGapFinders(jcas, language);
 
 		sentences = new ArrayList<>(JCasUtil.select(jcas, Sentence.class));
-		tokens = new ArrayList<>(JCasUtil.select(jcas, Token.class));
 		ctest = new CTestObject(language);
 
 		sentenceCount = 0;
@@ -88,100 +80,17 @@ public class CTestBuilder {
 		gapCount = 0;
 		gapCandidates = 0;
 
-		this.language = language;
-		if (sentences.size() < 3)
-			addWarning("INSUFFICIENT SENTENCES - At least 3 sentences are required for a proper c-test.");
 	}
 
-	/* TODO: Implement Provider for Preprocessing resources */
-	private List<AnalysisEngine> buildEngines(String language) throws ResourceInitializationException {
-		if (this.language.equals(language))
-			return engines;
-
-		List<AnalysisEngine> engines = new ArrayList<>();
-
-		engines.add(createEngine(BreakIteratorSegmenter.class));
-
-		// TODO: Replace with language specific compound annotators?
-		engines.add(createEngine(CompoundAnnotator.class, CompoundAnnotator.PARAM_SPLITTING_ALGO,
-				ExternalResourceFactory.createExternalResourceDescription(BananaSplitterResource.class,
-						BananaSplitterResource.PARAM_DICT_RESOURCE,
-						ExternalResourceFactory.createExternalResourceDescription(SharedDictionary.class),
-						BananaSplitterResource.PARAM_MORPHEME_RESOURCE,
-						ExternalResourceFactory.createExternalResourceDescription(SharedLinkingMorphemes.class))));
-
-		if (language.equals("de")) {
-			engines.add(createEngine(StanfordNamedEntityRecognizer.class, 
-					StanfordNamedEntityRecognizer.PARAM_VARIANT, "nemgp", 
-					StanfordNamedEntityRecognizer.PARAM_LANGUAGE, language));
-		}
-
-		if (language.equals("en")) {
-			String[] nerVariants = new String[] { "date", "location", "money", "person", "organization", "time", "percentage" };
-			for (String variant : nerVariants)
-			engines.add(createEngine(OpenNlpNamedEntityRecognizer.class, 
-					OpenNlpNamedEntityRecognizer.PARAM_VARIANT, variant, 
-					OpenNlpNamedEntityRecognizer.PARAM_LANGUAGE, language));
-		}
-		
-		if (language.equals("es")) {
-			String[] nerVariants = new String[] { "location", "misc", "person", "organization" };
-			for (String variant : nerVariants)
-				engines.add(createEngine(OpenNlpNamedEntityRecognizer.class, 
-						OpenNlpNamedEntityRecognizer.PARAM_VARIANT, variant, 
-						OpenNlpNamedEntityRecognizer.PARAM_LANGUAGE, language));
-		}
-		
-		// FIXME: Find other NER models.
-		return engines;
-
-	}
-
-	private JCas process(String text) throws AnalysisEngineProcessException, ResourceInitializationException {
-		JCas jcas = engines.get(0).newJCas();
-		jcas.setDocumentText(text);
+	private JCas process(String aText, String aLanguage, List<AnalysisEngine> engines) throws UIMAException {
+		JCas jcas = JCasFactory.createText(aText, aLanguage);
 		for (AnalysisEngine engine : engines)
 			engine.process(jcas);
 		return jcas;
 	}
 
-	private List<Predicate<Token>> getExclusionCriteria(JCas aJCas, String language) {
-		// TODO: Compose from general and language specific criteria automatically.
-		List<Predicate<Token>> criteria = new ArrayList<>();
-		criteria.add(new IsSingleCharacter());
-		criteria.add(new IsNumber());
-		criteria.add(new IsPunctuation());
-		criteria.add(new IsAbbreviation(language));
-		criteria.add(new IsNamedEntity(jcas));
-		return criteria;
-	}
 
-	// TODO: Compose from general and language specific modifiers automatically.
-	private List<GapIndexFinder> getGapFinders(JCas aJCas, String language) {
-		List<GapIndexFinder> finders = new ArrayList<>();
-
-		if (language.equals("de")) {
-			finders.add(new CompoundGapFinder(aJCas));
-			finders.add(new HyphenGapFinder());
-		}
-
-		if (language.equals("en")) {
-			finders.add(new HyphenGapFinder());
-		}
-
-		if (language.equals("fr")) {
-			finders.add(new FrenchAbbreviationGapFinder());
-			finders.add(new HyphenGapFinder());
-		}
-
-		return finders;
-	}
-
-	private void addWarning(String string) {
-		warnings.add(string);
-	}
-
-	private void makeGaps() {
+	private void makeGaps() {		
 		for (Sentence sentence : sentences) {
 			for (Token token : JCasUtil.selectCovered(jcas, Token.class, sentence)) {
 				CTestToken cToken = new CTestToken(token.getCoveredText());
@@ -189,7 +98,7 @@ public class CTestBuilder {
 				if (!isValidGapCandidate(token)) {
 					cToken.setGap(false);
 				} else {
-					if (gapCandidates % gapInterval == 0) {
+					if (gapCandidates % gapInterval != 0) {
 						cToken.setGap(true);
 						cToken.setGapIndex(estimateGapIndex(token));
 						gapCount++;
@@ -202,19 +111,19 @@ public class CTestBuilder {
 			}
 			sentenceCount++;
 		}
-
-		if (gapCount < gapLimit)
-			addWarning(String.format(
-					"INSUFFICIENT NUMBER OF GAPS - The supplied text was too short to produce at least %s gaps. Try to add more words.",
-					gapLimit));
-
-		if (sentenceCount < sentenceLimit)
-			addWarning(
-					"INSUFFICIENT NUMBER OF SENTENCES - The supplied text did not have enough sentences. c-Test is incomplete.");
+		
+		if (sentenceCount < sentenceLimit || sentences.size() < 3)
+			warnings.add(
+					"INSUFFICIENT NUMBER OF SENTENCES - The supplied text did not contain enough sentences. You may need to add additional sentences.");
 
 		if (sentenceCount > sentenceLimit)
-			addWarning(
-					"TOO MANY SENTENCES - The supplied text contained more sentences than necessary. The c-test may not use all sentences.");
+			warnings.add(
+					"TOO MANY SENTENCES - The supplied text contained more sentences than necessary. The c-test did not use all sentences.");
+		
+		if (gapCount < gapLimit)
+			warnings.add(String.format(
+					"INSUFFICIENT NUMBER OF GAPS - The supplied text was too short to produce at least %s gaps. Try to add more words.",
+					gapLimit));
 	}
 
 	private boolean isValidGapCandidate(Token token) {
@@ -224,7 +133,7 @@ public class CTestBuilder {
 		if (gapCount == gapLimit)
 			return false;
 
-		for (Predicate<Token> criterion : exclusionCriteria) {
+		for (Predicate<Token> criterion : exclusionRules) {
 			if (criterion.test(token))
 				return false;
 		}
@@ -236,7 +145,7 @@ public class CTestBuilder {
 	protected int estimateGapIndex(Token token) {
 		int gapRangeStart = 0;
 
-		for (GapIndexFinder modifier : gapFinders) {
+		for (GapIndexFinder modifier : gapIndexFinders) {
 			if (modifier.test(token)) {
 				gapRangeStart = Math.max(gapRangeStart, modifier.getGapIndex(token));
 			}

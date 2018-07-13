@@ -7,6 +7,7 @@ import org.apache.uima.jcas.JCas;
 import org.junit.Test;
 
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.unidue.ltl.ctestbuilder.service.gapscheme.CTestResourceProvider;
 import junit.framework.TestCase;
 
 public class IsAbbreviationTest extends TestCase {
@@ -34,7 +35,7 @@ public class IsAbbreviationTest extends TestCase {
 
 		jcasBuilder.close();
 
-		IsAbbreviation criterion = new IsAbbreviation("de");
+		IsAbbreviation criterion = new IsAbbreviation(CTestResourceProvider.getAbbreviations("de"));
 
 		assertTrue(criterion.test(bzgl));
 		assertTrue(criterion.test(ps));
@@ -51,7 +52,7 @@ public class IsAbbreviationTest extends TestCase {
 
 		Token token = new Token(jcas, 0, 5);
 
-		IsAbbreviation criterion = new IsAbbreviation("unsupportedLanguage");
+		IsAbbreviation criterion = new IsAbbreviation(CTestResourceProvider.getAbbreviations("unsupportedLanguage"));
 
 		assertFalse(criterion.test(token));
 	}

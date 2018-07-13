@@ -20,8 +20,6 @@ public class IsNamedEntity implements Predicate<Token> {
 	
 	@Override
 	public boolean test(Token token) {
-		if (!index.get(token).isEmpty())
-			System.out.println(index.get(token));
 		return !index.get(token).isEmpty();
 	}
 
