@@ -13,6 +13,21 @@ import javax.ws.rs.core.Response;
 
 import org.knallgrau.utils.textcat.TextCategorizer;
 
+/**
+ * Class defining the Language Identification Service REST API, which identifies the language of texts. 
+ * <p>
+ * The service offers the following endpoints: 
+ * <ul>
+ * <li>{@code /} Offers information about the usage of the API.
+ * <li>{@code /verify} Offers information about the status and version of the service.
+ * <li>{@code /classify} Offers the language identification. 
+ * </ul><p>
+ * The {@code /classify} endpoint can be accessed with a {@code POST} Request.
+ * The request must contain the text for which the language should be found.
+ * The text to be converted must be supplied in the body of the request.
+ * A {@code Content-type: text/plain} header must be present in the request.
+ */
+// TODO: Edit index.jsp to be more informative.
 @Path("/")
 public class TextCat {
 	
@@ -41,6 +56,11 @@ public class TextCat {
 	
 	private final TextCategorizer categorizer;
 
+	/**
+	 * Indicates whether the Language Identification Service is running. 
+	 * 
+	 * @return A {@code Response} with the status text and version number.
+	 */
 	@GET
 	@Path("/verify")
 	@Produces(MediaType.TEXT_HTML)
@@ -49,6 +69,9 @@ public class TextCat {
 		return "TextCat language identification service successfully started.";
 	}
 	
+	/**
+	 * Returns the language for the given text, as ISO 639-1 Language Code String.
+	 */
 	@POST
 	@Path("/classify")
 	@Consumes(MediaType.TEXT_PLAIN)

@@ -35,21 +35,42 @@ import de.unidue.ltl.ctestbuilder.service.preprocessing.IsAbbreviation;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.IsNamedEntity;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.IsNumber;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.IsPunctuation;
-import de.unidue.ltl.ctestbuilder.service.preprocessing.IsSingleCharacter;
+import de.unidue.ltl.ctestbuilder.service.preprocessing.IsTooShort;
 
+/**
+ * A class providing required resources for {@link CTestBuilder} objects.
+ * Provides both general and language specific resources.
+ * <p>
+ * Resources include <ul>
+ * <li> A list of supported languages.
+ * <li> Exclusion criteria for gapping.
+ * <li> {@code GapIndexFinder} objects.
+ * <li> {@code AnalysisEngine} objects for necessary preprocessing steps.
+ * <li> Abbreviations for {@code IsAbbreviation} predicates.
+ * </ul>
+ * 
+ * @see de.unidue.ltl.ctestbuilder.service.preprocessing.GapIndexFinder
+ * @see de.unidue.ltl.ctestbuilder.service.preprocessing.IsAbbreviation
+ * @see org.apache.uima.analysis_engine.AnalysisEngine
+ */
 public class CTestResourceProvider {
 	
 	private static Map<String, List<AnalysisEngine>> analysisEngines = new HashMap<>();
 	private static Map<String, List<String>> ABBREVIATIONS = new HashMap<>();	
-	
 	private static List<String> SUPPORTED_LANGUAGES = Arrays.asList(new String[] { "de", "en", "es", "fi", "fr", "it" });
 	
-	private CTestResourceProvider() {};
-	
+	/**
+	 * Returns a list of {@code AnalysisEngine} objects for the given language.
+	 * 
+	 * @param  language The language for which the the {@code AnalysisEngine}s are built, 
+	 * "all" returns language independent analysisEngines.
+	 * {@code language} must be an ISO 639-1 language code.
+	 * @return The engines.
+	 */
 	public static List<AnalysisEngine> getAnalysisEngines(String language) throws ResourceInitializationException {
 		List<AnalysisEngine> engines = new ArrayList<>();
 		List<AnalysisEngine> currentEngines;
-		
+
 		currentEngines = analysisEngines.get("all");
 		if (currentEngines == null) {
 			currentEngines = createAndStoreEngines("all");
@@ -65,6 +86,12 @@ public class CTestResourceProvider {
 		return engines;
 	}
 	
+	/**
+	 * Returns a list of abbreviations for the given language.
+	 * 
+	 * @param  language The language of the abbreviations. Must be an ISO 639-1 language code.
+	 * @return The abbreviations.
+	 */
 	public static List<String> getAbbreviations(String language) {
 		List<String> abbreviations = ABBREVIATIONS.get(language);
 		if (abbreviations == null) {
@@ -74,10 +101,18 @@ public class CTestResourceProvider {
 		return abbreviations;
 	}
 	
+	/**
+	 * Returns a list of gapping exclusion criteria for the given {@code JCas} and language.
+	 * 
+	 * @param  aJCas The JCas to which the exclusion criteria are going to be applied.
+	 * @param  language The language to which the exclusion criteria are going to be applied. 
+	 * Must be a ISO 639-1 language string.
+	 * @return The exclusion criteria.
+	 */
 	public static List<Predicate<Token>> getExclusionRules(JCas aJCas, String language) {
 		List<Predicate<Token>> rules = new ArrayList<>();
 		
-		rules.add(new IsSingleCharacter());
+		rules.add(new IsTooShort());
 		rules.add(new IsNumber());
 		rules.add(new IsPunctuation());
 		rules.add(new IsAbbreviation(getAbbreviations(language)));
@@ -86,6 +121,14 @@ public class CTestResourceProvider {
 		return rules;
 	}
 	
+	/**
+	 * Returns a list of gap index finders for the given {@code JCas} and language.
+	 * 
+	 * @param  aJCas The JCas to which the index findesrs are going to be applied.
+	 * @param  language The language to which index finders are going to be applied. 
+	 * Must be a ISO 639-1 language string.
+	 * @return The index finders.
+	 */
 	public static List<GapIndexFinder> getGapFinders(JCas aJCas, String language) {
 		List<GapIndexFinder> finders = new ArrayList<>();
 		
@@ -102,6 +145,9 @@ public class CTestResourceProvider {
 		return finders;
 	}
 	
+	/**
+	 * Returns a list of languages, currently supported by the {@code CTestBuilder} Service. 
+	 */
 	public static List<String> getSupportedLanguages() {
 		return SUPPORTED_LANGUAGES;
 	}
@@ -166,4 +212,6 @@ public class CTestResourceProvider {
 		
 		return abbreviations;
 	}
+	
+	private CTestResourceProvider() {};
 }

@@ -15,32 +15,70 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.uima.UIMAException;
-
 import testDifficulty.core.CTestObject;
 import testDifficulty.core.CTestToken;
 
+/**
+ * Class defining the GapScheme REST API, which provides <a href="https://de.wikipedia.org/wiki/C-Test">c-tests</a>. 
+ * <p>
+ * The service offers the following endpoints: 
+ * <ul>
+ * <li>{@code /} Offers information about the usage of the API.
+ * <li>{@code /verify} Offers information about the status and version of the service.
+ * <li>{@code /gapify} Offers the c-test generation of the service. 
+ * </ul><p>
+ * The {@code /gapify} endpoint can be accessed with a {@code POST} Request.
+ * The request must contain the text to be converted to a c-test and the the language of the text.
+ * The text to be converted must be supplied in the body of the request.
+ * The language must be specified in the {@code language} query parameter as a ISO 639-1 Language Code.
+ * A {@code Content-type: text/plain} header must be present in the request.
+ */
+// TODO: Edit index.jsp to be more informative.
+// TODO: Look for english explanation of c-tests?
 @Path("/")
 public class GapScheme {
 
 	private CTestBuilder builder;
 
+	/**
+	 * Creates a {@code GapScheme} object.
+	 * Should not be necessary to be explicitly created.
+	 */
 	public GapScheme() {
 		builder = new CTestBuilder();
 	}
-
+	
+	/**
+	 * Indicates whether the GapScheme Service is running. 
+	 * 
+	 * @return A {@code Response} with the status text and version number.
+	 */
 	@GET
 	@Path("/verify")
 	@Produces(MediaType.TEXT_HTML)
 	public Response verifyRESTService() {
+		//TODO: Add version number.
 		return Response.status(Response.Status.OK).entity("GapScheme service successfully started.").build();
 	}
-
+	
+	/**
+	 * Creates a c-test from the given text and the specified language.
+	 * 
+	 * @param  docText The text to be converted into a c-Test.
+	 * @param  language The language of the Text. Should be a two-letter ISO 639-1 Language Code.
+	 * @return A {@code Response}, containing the c-Test and potential warnings, regarding the generation process as JSON String.
+	 */
 	@POST
 	@Path("/gapify")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response createGapScheme(String docText, @QueryParam("language") String language) {
+		if (language == null || docText == null)
+			return Response
+					.status(Response.Status.BAD_REQUEST)
+					.entity("{\"message\" : \"ERROR: language and text must not be null.\"}")
+					.build();
+		
 		Response response;
 
 		try {
@@ -49,7 +87,7 @@ public class GapScheme {
 					.status(Response.Status.OK)
 					.entity(cTest.toString())
 					.build();
-		} catch (UIMAException e) {
+		} catch (Exception e) {
 			response = Response
 					.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity("{\"message\" : \"ERROR: Could not create c-test.\"}")
@@ -59,8 +97,13 @@ public class GapScheme {
 
 		return response;
 	}
-
-	JsonObjectBuilder toJson(CTestToken token) {
+	
+	//TODO: Make private.
+	//TODO: Transfer functionality to JSON Converter class.
+	/* 
+	 * Converts a single CTestToken to a JSON Object, complying with the FrontendCTestToken Interface.
+	 */
+	protected JsonObjectBuilder toJson(CTestToken token) {
 		JsonArrayBuilder jsonArr = Json.createArrayBuilder();
 		JsonObjectBuilder jsonObj = Json.createObjectBuilder()
 				.add("id", token.getId())
@@ -73,8 +116,17 @@ public class GapScheme {
 
 		return jsonObj;
 	}
-
-	JsonObject toJson(CTestObject ctest, List<String> warningList) {
+	
+	//TODO: Make private.
+	//TODO: Transfer functionality to JSON Converter class.
+	/* 
+	 * Converts a CTestObject to a JSON Object.
+	 * 
+	 * The JSON Object contains two properties: words and warnings.
+	 * words is a String Array, containing JSON Encoded FrontEndCTestToken Objects.
+	 * warnings is a String Array, containing strings with information about potential problems with the c-test.
+	 */
+	protected JsonObject toJson(CTestObject ctest, List<String> warningList) {
 		JsonArrayBuilder words = Json.createArrayBuilder();
 
 		int id = 1;
