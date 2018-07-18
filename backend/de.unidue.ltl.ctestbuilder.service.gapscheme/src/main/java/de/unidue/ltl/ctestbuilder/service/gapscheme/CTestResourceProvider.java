@@ -94,11 +94,16 @@ public class CTestResourceProvider {
 	 */
 	public static List<String> getAbbreviations(String language) {
 		List<String> abbreviations = ABBREVIATIONS.get(language);
+		
+		/*
 		if (abbreviations == null) {
 			abbreviations = createAndStoreAbbreviations(language);
 		}
 		
 		return abbreviations;
+		*/
+		
+		return new ArrayList<String>();
 	}
 	
 	/**
