@@ -1,3 +1,5 @@
+import { HttpHeaders } from "../../node_modules/@angular/common/http";
+
 // The file contents for the current environment will overwrite these during build.
 // The build system defaults to the dev environment which uses `environment.ts`, but if you do
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
@@ -5,5 +7,35 @@
 
 export const environment = {
   production: false,
-  APIUrl: 'http://134.91.18.133:9000'
+  api: {
+    url: 'http://localhost:8080',
+    services: {
+      gapscheme: {
+        root: 'de.unidue.ltl.ctestbuilder.service.GapScheme/rest',
+        endpoints: {
+          verify: {
+            path: 'verify',
+            queryParameters: false,
+            headers: {
+              'Content-Type': 'text/plain'
+            }
+          },
+          service: {
+            path: 'gapify',
+            queryParameters: { language: 'language' },
+            headers: {
+              'Content-Type': 'text/plain'
+            }
+          }
+        },
+      }
+    },
+    langid: {
+      root: '/de.unidue.ltl.ctestbuilder.service.LangId/rest/',
+      endpoints: {
+        verify: { path: 'verify', queryParameters: false },
+        service: { path: 'classify', queryParameters: false }
+      }
+    }
+  }
 };

@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { StorageService } from './../storage.service';
-import { LOCAL_STORAGE } from '../../shared/utilities/defines';
 import { Router } from '@angular/router';
+import { CtestService } from '../ctest.service';
+import { MatSnackBar } from '../../../node_modules/@angular/material';
 
 @Component({
   selector: 'tp-home',
@@ -21,19 +21,41 @@ export class HomeComponent implements OnInit {
 
   /** holds available system languages */
   public languages = [
-    { value: 'english-0', viewValue: 'English' },
-    { value: 'french-1', viewValue: 'French' },
-    { value: 'german-2', viewValue: 'German' }
+    { value: 'en', viewValue: 'English' },
+    { value: 'fr', viewValue: 'French' },
+    { value: 'de', viewValue: 'German' },
+    { value: 'fi', viewValue: 'Finnish' },
+    { value: 'es', viewValue: 'Spanish' },
+    { value: 'it', viewValue: 'Italian' }
   ];
 
+  private serviceAvailable: boolean;
+
   // Life Cycle Hooks
-  constructor(private _fb: FormBuilder, private storageService: StorageService,private router:Router) { }
+  constructor(
+    private _fb: FormBuilder,
+    private ctestService: CtestService,
+    private router: Router,
+    private snackBar: MatSnackBar
+  ) { }
 
   ngOnInit(): void {
     this.form = this._fb.group({
       language: ['', Validators.required],
       textToTranslate: ['', Validators.required],
     });
+
+    this.ctestService.verify().subscribe(
+      success => {
+        console.log(success);
+        this.serviceAvailable = true;
+      },
+      failure => {
+        console.error('GapScheme Service is not available.');
+        this.serviceAvailable = false;
+        this.snackBar.open('GapScheme Service is not available.', 'OK');
+      }
+    );
   }
 
   /**
@@ -69,10 +91,18 @@ export class HomeComponent implements OnInit {
    * submitting form and navigating to next stage
    */
   submit() {
-    if (this.form.valid) {
-      this.storageService.setStorage(LOCAL_STORAGE.Language, this.form.controls.language.value);
-      this.storageService.setStorage(LOCAL_STORAGE.TEXT, this.form.controls.textToTranslate.value);
-      this.router.navigate(['/text-editor']);
+    if (this.form.valid && this.serviceAvailable) {
+      this.snackBar.open('Processing text, please be patient...', 'OK');
+
+      this.ctestService.fetchCTest(this.form.controls.textToTranslate.value, this.form.controls.language.value).subscribe(
+        success => {
+          this.snackBar.open('Done!', 'OK', {duration: 1250});
+          this.router.navigate(['/text-editor']);
+        },
+        failure => {
+          this.snackBar.open('ERROR: Could not process text!', 'OK', {duration: 2500});
+        }
+      );
     }
   }
 }

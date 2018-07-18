@@ -15,6 +15,8 @@ import { StorageService } from './storage.service';
 import { ModalDialogComponent } from './modal-dialog/modal-dialog.component';
 import { ReplacePipe } from './shared/pipes/replace.pipe';
 import { NgxDnDModule } from '@swimlane/ngx-dnd';
+import { HttpClientModule } from '../../node_modules/@angular/common/http';
+import { CtestService } from './ctest.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -31,10 +33,11 @@ import { NgxDnDModule } from '@swimlane/ngx-dnd';
     MaterialModule,
     BrowserAnimationsModule,
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpClientModule
   ],
   providers: [
-    LanguageTranslateService, StorageService],
+    LanguageTranslateService, CtestService],
   entryComponents: [ModalDialogComponent],
   bootstrap: [AppComponent]
 })
