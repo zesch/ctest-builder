@@ -174,15 +174,6 @@ public class CTestResourceProvider {
 							ExternalResourceFactory.createExternalResourceDescription(SharedLinkingMorphemes.class))));
 			analysisEngines.put("de", engines);
 		}
-
-		if (language.equals("en")) {
-			String[] nerVariants = new String[] { "date", "location", "money", "person", "organization", "time", "percentage" };
-			for (String variant : nerVariants)
-			engines.add(createEngine(OpenNlpNamedEntityRecognizer.class, 
-					OpenNlpNamedEntityRecognizer.PARAM_VARIANT, variant, 
-					OpenNlpNamedEntityRecognizer.PARAM_LANGUAGE, language));
-			analysisEngines.put("en", engines);
-		}
 		
 		if (language.equals("es")) {
 			String[] nerVariants = new String[] { "location", "misc", "person", "organization" };
