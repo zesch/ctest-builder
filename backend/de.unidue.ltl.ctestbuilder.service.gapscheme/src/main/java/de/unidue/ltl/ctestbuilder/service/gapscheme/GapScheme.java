@@ -38,6 +38,8 @@ import testDifficulty.core.CTestToken;
 @Path("/")
 public class GapScheme {
 
+	private static final String corsOrigins = "*";
+	
 	private CTestBuilder builder;
 
 	/**
@@ -58,7 +60,11 @@ public class GapScheme {
 	@Produces(MediaType.TEXT_HTML)
 	public Response verifyRESTService() {
 		//TODO: Add version number.
-		return Response.status(Response.Status.OK).entity("GapScheme service successfully started.").build();
+		return Response.status(Response.Status.OK)
+				.entity("GapScheme service successfully started.")
+				.header("Access-Control-Allow-Origin", corsOrigins)
+				.header("Access-Control-Allow-Methods", "GET")
+				.build();
 	}
 	
 	/**
@@ -77,6 +83,8 @@ public class GapScheme {
 			return Response
 					.status(Response.Status.BAD_REQUEST)
 					.entity("{\"message\" : \"ERROR: language and text must not be null.\"}")
+					.header("Access-Control-Allow-Origin", corsOrigins)
+					.header("Access-Control-Allow-Methods", "POST")
 					.build();
 		
 		Response response;
@@ -86,11 +94,15 @@ public class GapScheme {
 			response = Response
 					.status(Response.Status.OK)
 					.entity(cTest.toString())
+					.header("Access-Control-Allow-Origin", corsOrigins)
+					.header("Access-Control-Allow-Methods", "POST")
 					.build();
 		} catch (Exception e) {
 			response = Response
 					.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity("{\"message\" : \"ERROR: Could not create c-test.\"}")
+					.header("Access-Control-Allow-Origin", corsOrigins)
+					.header("Access-Control-Allow-Methods", "POST")
 					.build();
 			e.printStackTrace();
 		}
@@ -111,7 +123,7 @@ public class GapScheme {
 				.add("alternatives", jsonArr.build())
 				.add("boldstatus", false)
 				.add("gapStatus", token.isGap())
-				.add("offset", token.getGapIndex() - 1) // see frontend for reason
+				.add("offset", token.getGapIndex())
 				.add("value", token.getText());
 
 		return jsonObj;

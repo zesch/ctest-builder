@@ -31,6 +31,7 @@ import org.knallgrau.utils.textcat.TextCategorizer;
 @Path("/")
 public class TextCat {
 	
+	private static final String corsOrigins = "*";
 	private static final Map<String, String> langName2ISO = new HashMap<String, String>();
 	static {
 		langName2ISO.put("german", "de");
@@ -64,9 +65,14 @@ public class TextCat {
 	@GET
 	@Path("/verify")
 	@Produces(MediaType.TEXT_HTML)
-	public String verifyRESTService() {
+	public Response verifyRESTService() {
 		// TODO proper response
-		return "TextCat language identification service successfully started.";
+		return Response
+				.status(Response.Status.OK)
+				.entity("TextCat language identification service successfully started.")
+				.header("Access-Control-Allow-Origin", corsOrigins)
+				.header("Access-Control-Allow-Methods", "GET")
+				.build();
 	}
 	
 	/**
@@ -80,7 +86,12 @@ public class TextCat {
 		
 		String result = categorizer.categorize(docText);
 	
-		return Response.status(200).entity(langName2ISO.get(result)).build();
+		return Response
+				.status(200)
+				.entity(langName2ISO.get(result))
+				.header("Access-Control-Allow-Origin", corsOrigins)
+				.header("Access-Control-Allow-Methods", "POST")
+				.build();
 	}
 	
 
