@@ -117,6 +117,37 @@
 			<artifactId>de.tudarmstadt.ukp.dkpro.core.stanfordnlp-model-ner-de-nemgp</artifactId>
 		</dependency>
 		
+		<!-- English -->
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-model-ner-en-date</artifactId>
+			<version>20100907.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-model-ner-en-location</artifactId>
+			<version>20100907.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-model-ner-en-percentage</artifactId>
+			<version>20100907.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-model-ner-en-person</artifactId>
+			<version>20130624.1</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-model-ner-en-time</artifactId>
+			<version>20100907.0</version>
+		</dependency>
+		
 		<!-- Spanish -->
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
