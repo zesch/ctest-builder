@@ -196,7 +196,7 @@ public class CTestResourceProvider {
 		}
 		
 		if (language.equals("en")) {
-			String[] nerVariants = new String[] { "date", "location", "percentage", "person", "time" };
+			String[] nerVariants = new String[] { "date", "money", "organization", "location", "percentage", "person", "time" };
 			for (String variant : nerVariants)
 				engines.add(createEngine(OpenNlpNamedEntityRecognizer.class, 
 						OpenNlpNamedEntityRecognizer.PARAM_VARIANT, variant, 

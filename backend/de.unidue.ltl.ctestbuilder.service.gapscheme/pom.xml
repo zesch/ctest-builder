@@ -126,6 +126,18 @@
 		
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-model-ner-en-money</artifactId>
+			<version>20100907.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-model-ner-en-organization</artifactId>
+			<version>20100907.0</version>
+		</dependency>
+		
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
 			<artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-model-ner-en-location</artifactId>
 			<version>20100907.0</version>
 		</dependency>
