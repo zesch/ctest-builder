@@ -35,6 +35,7 @@ import de.unidue.ltl.ctestbuilder.service.preprocessing.IsAbbreviation;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.IsNamedEntity;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.IsNumber;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.IsPunctuation;
+import de.unidue.ltl.ctestbuilder.service.preprocessing.IsSimpleNamedEntity;
 import de.unidue.ltl.ctestbuilder.service.preprocessing.IsTooShort;
 
 /**
@@ -95,6 +96,7 @@ public class CTestResourceProvider {
 	public static List<String> getAbbreviations(String language) {
 		List<String> abbreviations = ABBREVIATIONS.get(language);
 		
+		//FIXME: File Paths not working for Tomcat 
 		/*
 		if (abbreviations == null) {
 			abbreviations = createAndStoreAbbreviations(language);
@@ -122,6 +124,11 @@ public class CTestResourceProvider {
 		rules.add(new IsPunctuation());
 		rules.add(new IsAbbreviation(getAbbreviations(language)));
 		rules.add(new IsNamedEntity(aJCas));
+		
+		for (String lang : new String[] {"en", "fr", "fi", "it"}) {
+			if (language.equals(lang))
+				rules.add(new IsSimpleNamedEntity(aJCas));
+		}
 		
 		return rules;
 	}
@@ -157,6 +164,11 @@ public class CTestResourceProvider {
 		return SUPPORTED_LANGUAGES;
 	}
 	
+	/*
+	 * Returns AnalysisEnginges for the given language. 
+	 * Engines are first created and then added to the AnalysisEngine Store.
+	 * In this way, engines only need to be created once, reducing processing times on following runs.
+	 */
 	private static List<AnalysisEngine> createAndStoreEngines(String language) throws ResourceInitializationException {
 		List<AnalysisEngine> engines = new ArrayList<>();
 		
@@ -192,10 +204,16 @@ public class CTestResourceProvider {
 		return engines;
 	}
 	
+	/*
+	 * Returns the list of abbreviations for the given language. 
+	 * Abbreviations are read from file and then stored for future use.
+	 * In this way, the abbreviations only need to be read once.
+	 */
 	private static List<String> createAndStoreAbbreviations(String language) {
 		List<String> abbreviations = new ArrayList<>();
 		
 		if (SUPPORTED_LANGUAGES.contains(language)) {
+			//FIXME: Location on Server must be different.
 			Path file = Paths.get(String.format("src/main/resources/abbreviations_%s.txt", language));			
 			try {
 				abbreviations = Files.lines(file).collect(Collectors.toList());
