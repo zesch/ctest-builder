@@ -13,7 +13,7 @@ import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
  */
 public class FrenchAbbreviationGapFinder implements GapIndexFinder {
 	
-	private Pattern apostrophe = Pattern.compile("'");
+	private Pattern abbreviation = Pattern.compile("'");
 	private String[] splits;
 	
 	/**
@@ -21,7 +21,7 @@ public class FrenchAbbreviationGapFinder implements GapIndexFinder {
 	 */
 	@Override
 	public boolean test(Token token) {
-		splits = apostrophe.split(token.getCoveredText());
+		splits = token.getCoveredText().split(abbreviation.pattern(), 2);
 		return splits.length > 1;
 	}
 
@@ -34,12 +34,12 @@ public class FrenchAbbreviationGapFinder implements GapIndexFinder {
 	 */
 	@Override
 	public int getGapIndex(Token token) {
-		if (splits == null || splits.length == 1)
+		if (splits == null || splits.length < 2)
 			return -1;
 		
 		int tokenLength = token.getCoveredText().length();
-		int targetLength = splits[splits.length - 1].length();
-		return tokenLength - targetLength;
+		String target = splits[1];
+		return tokenLength - target.length();
 	}
 
 }

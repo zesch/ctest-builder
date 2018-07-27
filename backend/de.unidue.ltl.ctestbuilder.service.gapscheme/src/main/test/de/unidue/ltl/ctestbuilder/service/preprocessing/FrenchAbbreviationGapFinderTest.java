@@ -17,6 +17,9 @@ public class FrenchAbbreviationGapFinderTest extends TestCase {
 
 		Token apostrophe = jcasBuilder.add("l'baguette", Token.class);
 		jcasBuilder.add(" ");
+		
+		Token abbrev = jcasBuilder.add("qu'aujourd'hui", Token.class);
+		jcasBuilder.add(" ");
 
 		Token word = jcasBuilder.add("oui", Token.class);
 		jcasBuilder.add(" ");
@@ -27,6 +30,9 @@ public class FrenchAbbreviationGapFinderTest extends TestCase {
 
 		assertTrue(gif.test(apostrophe));
 		assertEquals(2, gif.getGapIndex(apostrophe));
+		
+		assertTrue(gif.test(abbrev));
+		assertEquals(3, gif.getGapIndex(abbrev));
 
 		assertFalse(gif.test(word));
 	}
