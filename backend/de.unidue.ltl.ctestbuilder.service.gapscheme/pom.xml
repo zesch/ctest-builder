@@ -189,13 +189,6 @@
 			<groupId>org.dkpro</groupId>
 			<artifactId>difficultyPrediction</artifactId>
 			<version>1</version>
-			<exclusions>
-				<exclusion>
-					<!-- Causes java.util.zip.ZipException on build. -->
-					<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
-					<artifactId>de.tudarmstadt.ukp.dkpro.core.matetools-model-lemmatizer-de-default</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 	</dependencies>
