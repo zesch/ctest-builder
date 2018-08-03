@@ -1,5 +1,7 @@
 import { LanguageTranslateService } from './language-translate.service';
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser';
+import { GestureConfig } from '@angular/material';
+
 import { NgModule } from '@angular/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { AppRoutingModule } from './app-routing.module';
@@ -17,6 +19,7 @@ import { ReplacePipe } from './shared/pipes/replace.pipe';
 import { NgxDnDModule } from '@swimlane/ngx-dnd';
 import { HttpClientModule } from '../../node_modules/@angular/common/http';
 import { CtestService } from './ctest.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,7 +29,7 @@ import { CtestService } from './ctest.service';
     ModalDialogComponent
   ],
   imports: [
-     NgxDnDModule,
+    NgxDnDModule,
     FlexLayoutModule,
     FormsModule,
     ReactiveFormsModule,
@@ -37,6 +40,7 @@ import { CtestService } from './ctest.service';
     HttpClientModule
   ],
   providers: [
+    { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig },
     LanguageTranslateService, CtestService],
   entryComponents: [ModalDialogComponent],
   bootstrap: [AppComponent]
