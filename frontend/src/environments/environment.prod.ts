@@ -2,10 +2,10 @@
 export const environment = {
   production: false,
   api: {
-    url: '134.91.18.133:8080',
+    url: 'http://134.91.18.133:8080',
     services: {
       gapscheme: {
-        root: 'de.unidue.ltl.ctestbuilder.service.GapScheme/rest',
+        root: 'gapscheme/rest',
         endpoints: {
           verify: {
             path: 'verify',
@@ -25,7 +25,7 @@ export const environment = {
       }
     },
     langid: {
-      root: '/de.unidue.ltl.ctestbuilder.service.LangId/rest/',
+      root: '/langid/rest/',
       endpoints: {
         verify: { path: 'verify', queryParameters: false },
         service: { path: 'classifiy', queryParameters: false }
