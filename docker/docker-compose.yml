@@ -8,4 +8,4 @@ services:
     build:
       context: .
     ports:
-      - "8080:8080"
+      - "9001:8080"
