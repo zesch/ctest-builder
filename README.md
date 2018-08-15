@@ -54,11 +54,23 @@ ng serve
 The GapScheme Service can be deployed in one of two ways - manually or using eclipse. 
 In both cases, the webservice will be available under http://localhost:8080/de.unidue.ltl.ctestbuilder.service.GapScheme/rest/.
 
-To build the GapScheme Service, you first need to install the difficultyPrediction Project in your local Maven repository.
+To build the GapScheme Service, you first need to install the _difficultyPrediction_ Project and the _c-test-tools_ Project in your local Maven repository.
 
 ```
 git clone https://www.github.com/zesch/c-test-scoring
 cd c-test-scoring/difficultyPrediction/
+mvn install
+```
+
+```
+git clone https://www.github.com/ltl-ude/c-test-tools
+cd c-test-tools/de.unidue.ltl.ctest/
+mvn install
+cd ./de.unidue.ltl.ctest.core/
+mvn install
+cd ../de.unidue.ltl.ctest.io/
+mvn install
+cd ../de.unidue.ltl.ctest.gapscheme/
 mvn install
 ```
 
@@ -99,11 +111,12 @@ Deployment on the server comprises three steps:
 2. Copying built services to the server
 3. Starting all Docker services
 
-In case you never deployed the CTest Builder before, you may need to copy the `<c.test.builder>/docker` directory to some directory on the server (this may be your user's home directory). `<c.test.builder>` refers to the full path to the project's repository.
+**Note:** In case you never deployed the CTest Builder before, you may need to copy the `<c.test.builder>/docker` directory to some directory on the server (this may be your user's home directory). `<c.test.builder>` refers to the full path to the project's repository.
 
 ### Building all required services
 
-Run the following commands to build all services.
+Run the following commands to build all services using the following commands or a suitable alternative.
+
 ```
 cd <c.test.builder>/backend/de.unidue.ltl.ctestbuilder.service.gapscheme/
 mvn clean package
@@ -115,7 +128,7 @@ ng build --prod
 
 ### Copying built services to the server
 
-Copy the built services to the Docker folder on the server. `<server.docker>` refers to the full path of the docker directory on the server. `<user.name>` refers to your username.
+Copy the built services to the Docker directory on the server, using the following commands or a suitable alternative. `<server.docker>` refers to the full path of the docker directory on the server. `<user.name>` refers to your username.
 
 ```
 scp -P 42922 <c.test.builder>/backend/de.unidue.ltl.ctestbuilder.service.gapscheme/target/*.war <user.name>@134.91.18.133:<server.docker>/backend/gapscheme/
@@ -125,7 +138,7 @@ scp -P 42922 <c.test.builder>/frontend/dist/* <user.name>@134.91.18.133:<server.
 
 ### Starting all Docker services
 
-Execute the following commands on the server. The CTest Builder App will be available under http://134.91.18.133:8000, as specified in `<c.test.builder>/docker/docker-compose.yml`.
+Execute the following commands on the server. The CTest Builder App will be available under http://134.91.18.133:8000.
 
 ```
 cd <server.docker>
@@ -133,4 +146,4 @@ docker-compose build
 docker-compose up -d
 ```
 
-**Note:** In case something went wrong at some earlier deployment, you may need to remove orphaned containers from earlier builds. To do this, run `docker-compose up -d --remove-orphans`.
+**Note:** In case something went wrong at some earlier deployment, you may need to remove orphaned containers from earlier builds. To do this, execute `docker-compose up -d --remove-orphans`.
