@@ -1,8 +1,8 @@
 # define prepare stage
 FROM tomcat:9-jre8-alpine AS prepare
 
-COPY services/gapscheme/*.war GapScheme.war
-COPY services/langid/*.war LangId.war
+COPY gapscheme/*.war GapScheme.war
+COPY langid/*.war LangId.war
 
 # unzip in prepare stage, to save space
 RUN mkdir gapscheme && unzip GapScheme.war -d gapscheme

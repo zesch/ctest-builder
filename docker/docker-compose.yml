@@ -1,12 +1,12 @@
 version: '2'
 
 services:
-  ctest_builder_webapp:
-    container_name: ctest_builder
-    image: ctest_builder
+  ctest_backend:
+    container_name: ctest_backend
+    image: ctest_backend
     restart: always
     build:
-      context: .
+      context: ./backend
     ports:
       - "9001:8080"
   ctest_frontend:
