@@ -45,7 +45,7 @@ On Windows, make sure to add Maven to your `PATH` environment variable.
 Just execute the following commands. The app will be available under http://localhost:4200.
 
 ```
-cd <c-test-builder>/frontend
+cd <c.test.builder>/frontend
 ng serve
 ```
 
@@ -57,21 +57,22 @@ In both cases, the webservice will be available under http://localhost:8080/de.u
 To build the GapScheme Service, you first need to install the difficultyPrediction Project in your local Maven repository.
 
 ```
-git clone `https://www.github.com/zesch/c-test-scoring`
+git clone https://www.github.com/zesch/c-test-scoring
 cd c-test-scoring/difficultyPrediction/
 mvn install
 ```
 
 #### Manual Deployment
 
-Execute the following commands. `<c-test-builder>` refers to the full path to the project's repository. 
-`<tomcat-9>` refers to the full path to the local Tomcat installation.
+Execute the following commands. 
+`<c.test.builder>` refers to the full path to the project's repository. 
+`<tomcat>` refers to the full path to the local Tomcat installation.
 
 ```
-cd <c-test-builder>/backend/de.unidue.ltl.ctestbuilder.service.gapscheme/
+cd <c.test.builder>/backend/de.unidue.ltl.ctestbuilder.service.gapscheme/
 mvn clean package
-cp target/*.war <tomcat-9>/webapps/
-cd <tomcat-9>/bin
+cp target/*.war <tomcat>/webapps/
+cd <tomcat>/bin
 ./startup.sh 
 ```
 
@@ -92,46 +93,44 @@ The service can then be started from eclipse, by starting the server.
 
 ## Deployment on the server
 
-### Run on server with http-server
+Deployment on the server comprises three steps:
 
-```http-server dist/ -p 8000 > ./output.log &```
+1. Building all required services
+2. Copying built services to the server
+3. Starting all Docker services
 
-### Post on github page
+In case you never deployed the CTest Builder before, you may need to copy the `<c.test.builder>/docker` directory to some directory on the server (this may be your user's home directory). `<c.test.builder>` refers to the full path to the project's repository.
 
+### Building all required services
+
+Run the following commands to build all services.
 ```
-ng build --prod --base-href https://zesch.github.io/ctest-builder/
-ngh
-```
-
-### scp to server
-
-```scp -r -P 42922 dist wang@134.91.18.133:~/```
-
-
-### Docker operations in server
-
-```
-//create container
-docker run -it --rm -p 9000:8080 tomcat:9.0 tail /dev/null -f
-
-//go in to the container bash
-docker exec -it e146c4089a86 /bin/bash
-
-
-//preparation
-cd conf
-vim tomcat-users.xml
-https://stackoverflow.com/a/39462403/2948417
-
-
-//start tomcat
-cd bin
-./startup.sh
+cd <c.test.builder>/backend/de.unidue.ltl.ctestbuilder.service.gapscheme/
+mvn clean package
+cd <c.test.builder>/backend/de.unidue.ltl.ctestbuilder.service.LangId/
+mvn clean package
+cd <c.test.builder>/frontend/
+ng build --prod
 ```
 
-### Deploy to server
+### Copying built services to the server
 
-* Compile client side ```ng build --prod --base-href http://134.91.18.133:9000/demo/```
-* Copy to server side under src/main/webapp
-* Export as WAR
-* Deploy with tomcat manager panel
+Copy the built services to the Docker folder on the server. `<server.docker>` refers to the full path of the docker directory on the server. `<user.name>` refers to your username.
+
+```
+scp -P 42922 <c.test.builder>/backend/de.unidue.ltl.ctestbuilder.service.gapscheme/target/*.war <user.name>@134.91.18.133:<server.docker>/backend/gapscheme/
+scp -P 42922 <c.test.builder>/backend/de.unidue.ltl.ctestbuilder.service.LangId/target/*.war <user.name>@134.91.18.133:<server.docker>/backend/langid/
+scp -P 42922 <c.test.builder>/frontend/dist/* <user.name>@134.91.18.133:<server.docker>/frontend/dist/
+```
+
+### Starting all Docker services
+
+Execute the following commands on the server. The CTest Builder App will be available under http://134.91.18.133:8000, as specified in `<c.test.builder>/docker/docker-compose.yml`.
+
+```
+cd <server.docker>
+docker-compose build
+docker-compose up -d
+```
+
+**Note:** In case something went wrong at some earlier deployment, you may need to remove orphaned containers from earlier builds. To do this, run `docker-compose up -d --remove-orphans`.
