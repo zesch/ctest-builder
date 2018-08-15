@@ -9,3 +9,11 @@ services:
       context: .
     ports:
       - "9001:8080"
+  ctest_frontend:
+    container_name: ctest_frontend
+    image: ctest_frontend
+    restart: always
+    build:
+      context: ./frontend
+    ports:
+      - "8000:8080"
