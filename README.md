@@ -9,15 +9,6 @@ This project is built using
 + Apache Tomcat (9.0.0 or higher)
 + Maven (3.0.0 or higher)
 
-## Setup
-
-### Cloning the repository
-```
-git clone https://github.com/zesch/ctest-builder.git
-cd c-test-builder
-npm install
-```
-
 ### Node & NPM
 
 https://nodejs.org/en/download/
@@ -39,6 +30,37 @@ https://maven.apache.org/download.cgi
 
 On Windows, make sure to add Maven to your `PATH` environment variable.
 
+## Setup
+
+First, install all required tools, listed under prerequisites. 
+After that, clone the repository and install all required npm dependencies.
+
+```
+git clone https://github.com/zesch/ctest-builder.git
+cd c-test-builder
+npm install
+```
+
+To build the GapScheme Service, you first need to install the _difficultyPrediction_ Project and the _c-test-tools_ Project in your local Maven repository.
+
+```
+git clone https://www.github.com/zesch/c-test-scoring
+cd c-test-scoring/difficultyPrediction/
+mvn install
+```
+
+```
+git clone https://www.github.com/ltl-ude/c-test-tools
+cd ./c-test-tools/
+mvn install
+cd ./de.unidue.ltl.ctest.core/
+mvn install
+cd ../de.unidue.ltl.ctest.gapscheme/
+mvn install
+```
+
+You should now be able to build and deploy the project.
+
 ## Local Deployment
 
 ### C-Test App
@@ -53,26 +75,6 @@ ng serve
 
 The GapScheme Service can be deployed in one of two ways - manually or using eclipse. 
 In both cases, the webservice will be available under http://localhost:8080/de.unidue.ltl.ctestbuilder.service.GapScheme/rest/.
-
-To build the GapScheme Service, you first need to install the _difficultyPrediction_ Project and the _c-test-tools_ Project in your local Maven repository.
-
-```
-git clone https://www.github.com/zesch/c-test-scoring
-cd c-test-scoring/difficultyPrediction/
-mvn install
-```
-
-```
-git clone https://www.github.com/ltl-ude/c-test-tools
-cd c-test-tools/de.unidue.ltl.ctest/
-mvn install
-cd ./de.unidue.ltl.ctest.core/
-mvn install
-cd ../de.unidue.ltl.ctest.io/
-mvn install
-cd ../de.unidue.ltl.ctest.gapscheme/
-mvn install
-```
 
 #### Manual Deployment
 
@@ -146,4 +148,7 @@ docker-compose build
 docker-compose up -d
 ```
 
-**Note:** In case something went wrong at some earlier deployment, you may need to remove orphaned containers from earlier builds. To do this, execute `docker-compose up -d --remove-orphans`.
+**Note:** The build process produces unused images. To remove them, run `docker rmi $(docker images -f 'dangling=true' -q)`. This will remove all untagged images.
+
+**Note:** In case something went wrong at some earlier deployment, you may need to remove orphaned containers from earlier builds. Identify the orphaned containers, using `docker ps -a` and remove them manually.
+

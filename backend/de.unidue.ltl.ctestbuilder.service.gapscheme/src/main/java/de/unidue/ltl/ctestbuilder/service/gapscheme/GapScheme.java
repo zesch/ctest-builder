@@ -15,9 +15,9 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import de.unidue.ltl.ctest.core.CTestObject;
+import de.unidue.ltl.ctest.core.CTestToken;
 import de.unidue.ltl.ctest.gapscheme.CTestBuilder;
-import testDifficulty.core.CTestObject;
-import testDifficulty.core.CTestToken;
 
 /**
  * Class defining the GapScheme REST API, which provides <a href="https://de.wikipedia.org/wiki/C-Test">c-tests</a>. 

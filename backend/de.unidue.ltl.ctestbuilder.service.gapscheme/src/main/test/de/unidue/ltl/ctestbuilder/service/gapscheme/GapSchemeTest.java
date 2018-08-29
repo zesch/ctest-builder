@@ -5,9 +5,9 @@ import java.util.List;
 
 import org.junit.Test;
 
+import de.unidue.ltl.ctest.core.CTestObject;
+import de.unidue.ltl.ctest.core.CTestToken;
 import junit.framework.TestCase;
-import testDifficulty.core.CTestObject;
-import testDifficulty.core.CTestToken;
 
 public class GapSchemeTest extends TestCase {
 	@Test
