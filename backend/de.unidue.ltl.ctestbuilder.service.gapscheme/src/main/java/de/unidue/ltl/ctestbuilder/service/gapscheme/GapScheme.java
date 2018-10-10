@@ -17,7 +17,7 @@ import javax.ws.rs.core.Response;
 
 import de.unidue.ltl.ctest.core.CTestObject;
 import de.unidue.ltl.ctest.core.CTestToken;
-import de.unidue.ltl.ctest.gapscheme.CTestBuilder;
+import de.unidue.ltl.ctest.gapscheme.CTestGenerator;
 
 /**
  * Class defining the GapScheme REST API, which provides <a href="https://de.wikipedia.org/wiki/C-Test">c-tests</a>. 
@@ -34,21 +34,21 @@ import de.unidue.ltl.ctest.gapscheme.CTestBuilder;
  * The language must be specified in the {@code language} query parameter as a ISO 639-1 Language Code.
  * A {@code Content-type: text/plain} header must be present in the request.
  */
-// TODO: Edit index.jsp to be more informative.
-// TODO: Look for english explanation of c-tests?
+//TODO: Edit index.jsp to be more informative.
+//TODO: Look for english explanation of c-tests?
 @Path("/")
 public class GapScheme {
 
 	private static final String corsOrigins = "*";
 	
-	private CTestBuilder builder;
+	private CTestGenerator builder;
 
 	/**
 	 * Creates a {@code GapScheme} object.
 	 * Should not be necessary to be explicitly created.
 	 */
 	public GapScheme() {
-		builder = new CTestBuilder();
+		builder = new CTestGenerator();
 	}
 	
 	/**
@@ -111,8 +111,6 @@ public class GapScheme {
 		return response;
 	}
 	
-	//TODO: Make private.
-	//TODO: Transfer functionality to JSON Converter class.
 	/* 
 	 * Converts a single CTestToken to a JSON Object, complying with the FrontendCTestToken Interface.
 	 */
@@ -130,7 +128,6 @@ public class GapScheme {
 		return jsonObj;
 	}
 	
-	//TODO: Make private.
 	//TODO: Transfer functionality to JSON Converter class.
 	/* 
 	 * Converts a CTestObject to a JSON Object.

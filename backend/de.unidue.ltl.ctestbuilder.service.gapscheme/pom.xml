@@ -68,7 +68,7 @@
 		<dependency>
 			<groupId>de.unidue.ltl.ctest</groupId>
 			<artifactId>de.unidue.ltl.ctest.gapscheme</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.2-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 
