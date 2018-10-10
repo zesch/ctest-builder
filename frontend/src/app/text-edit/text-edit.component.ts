@@ -30,6 +30,10 @@ export class TextEditComponent implements OnInit {
   /** holds selected current word */
   public currentWord: Word = null;
 
+  //TODO: Implement clean solution.
+  /** holds previously selected word */
+  public previousWord: Word = null;
+
   /** holds the new value to add new word  */
   public newValue = new Object() as Word;
 
@@ -149,15 +153,18 @@ export class TextEditComponent implements OnInit {
    * Set Current Clicked Word to be Configurable
    */
   public onWordClick(word: Word) {
-    this.currentWord = word;
+    if (this.currentWord !== word) {
+      this.previousWord = this.currentWord;
+      this.currentWord = word;
+      word.boldStatus = true;
+      this.previousWord.boldStatus = false;
+    }
   }
 
   /**
-   *  Edit The Word to be Bold and Gaped
-   * @param word
+   *  Toggles the gap status of the given word.
    */
-  public makeItBoldAndGapped(word: Word) {
-    word.boldStatus = !word.boldStatus;
+  public toggleGapStatus(word: Word) {
     word.gapStatus = !word.gapStatus;
   }
 

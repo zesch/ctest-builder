@@ -31,12 +31,12 @@
         <!-- Draggable Words  -->
         <ng-container *ngFor="let word of words">
             <label
-              [ngClass]="{'highlightme': word === currentWord,'text_editor__make_bold':word.boldStatus }"
+              [ngClass]="{'highlightme': word === currentWord,'text_editor__make_bold': word.boldStatus }"
               #item
               ngxDraggable="wordArea,deleteArea"
               [model]="word"
               class="text_editor__word"
-              (dblclick)="makeItBoldAndGapped(word)"
+              (dblclick)="toggleGapStatus(word)"
               (click)="onWordClick(word)">
               {{word.value | replace:word.offset:!word.gapStatus}} {{(word.showAlternatives && word.alternatives.length > 0)?'/ '+word.alternatives.join('/ '):''}}
           </label>
