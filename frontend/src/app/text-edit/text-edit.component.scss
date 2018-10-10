@@ -17,6 +17,8 @@
     }
     &__main {
         min-height: 270px;
+        max-height: 600px;
+        overflow: auto;
     }
     &__right {
         place-content: flex-start !important;
