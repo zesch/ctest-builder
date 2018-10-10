@@ -3,6 +3,7 @@
 <div *ngIf="this.words" class="report_card" fxLayoutAlign="start" fxLayoutGap="25px">
   <div class="report_card__preview">
     <mat-slide-toggle (change)="processPreview()" [(ngModel)]="showPreview" color="primary"> Show Preview</mat-slide-toggle>
+    <mat-slide-toggle (change)="toggleAlternativesView()" color="primary"> Show Alternatives</mat-slide-toggle>
   </div>
   <p>
     gaps: {{calculateGaps()}}
@@ -29,19 +30,6 @@
           <mat-form-field *ngIf="word === currentWord && isEditMode">
             <input matInput type="text" [(ngModel)]="word.value">
           </mat-form-field>
-
-          <!--          disable the 3 big buttons-->
-          <!--<button (click)="delete()" *ngIf="word === currentWord"  mat-mini-fab color="warn">-->
-          <!--<mat-icon matTooltip="Remove Word">delete</mat-icon>-->
-          <!--</button>-->
-
-          <!--<button (click)="isEditMode=!isEditMode" *ngIf="word === currentWord && !isEditMode"  mat-mini-fab  color="primary">-->
-          <!--<mat-icon matTooltip="Edit Word">edit</mat-icon>-->
-          <!--</button>-->
-          <!--<button (click)="isEditMode=!isEditMode" *ngIf="word === currentWord && isEditMode"  mat-mini-fab  color="primary">-->
-          <!--<mat-icon matTooltip="Close Edit Mode">close</mat-icon>-->
-          <!--</button>-->
-
 
         </ng-container>
         <button (click)="addNewWord()" mat-mini-fab color="primary">
@@ -71,13 +59,7 @@
         <div>
           <mat-slide-toggle (change)="updateStorage()" [(ngModel)]="currentWord.gapStatus" color="primary">Gapped</mat-slide-toggle>
         </div>
-        <!--<div>-->
-        <!--<mat-slide-toggle (change)="updateStorage()" [(ngModel)]="currentWord.boldStatus" matTooltip="make it bold" color="primary">Make it bold </mat-slide-toggle>-->
-        <!--</div>-->
-        <div>
-          <mat-slide-toggle (change)="updateStorage()" [(ngModel)]="currentWord.showAlternatives" color="primary"> Show
-            Alternatives</mat-slide-toggle>
-        </div>
+
         <br>
         <!-- Gap Part -->
         <div>

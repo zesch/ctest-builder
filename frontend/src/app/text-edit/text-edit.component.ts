@@ -54,7 +54,9 @@ export class TextEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.newValue.value = '';
-    this.newValue.showAlternatives = this.newValue.gapStatus = this.newValue.boldStatus = false;
+    this.newValue.showAlternatives = false;
+    this.newValue.gapStatus = false;
+    this.newValue.boldStatus = false;
     this.newValue.alternatives = []
 
     // This is just a workaround until this gets refactored. Should use observables below.
@@ -184,6 +186,11 @@ export class TextEditComponent implements OnInit {
     this.processedText = `<p>${words} </p>`;
   }
 
+  public toggleAlternativesView() {
+    this.words.forEach((word: Word) => {
+      word.showAlternatives = !word.showAlternatives;
+    })
+  }
 
   /** adding alternative for current selected word */
   public addAlternative(word: Word): void {
