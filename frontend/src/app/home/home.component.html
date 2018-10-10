@@ -1,4 +1,4 @@
-<h4>Enter text below Or select from file</h4>
+<h4>Enter a text below or select a text file to upload</h4>
 <mat-card-content>
   <form [formGroup]="form" (ngSubmit)="submit()">
       <div class="home__group2">
@@ -7,7 +7,7 @@
             <mat-icon matTooltip="start uploading file">cloud_upload</mat-icon>
           </div>
           <div class="home__group2__btn_text">
-            Upload File (*.txt)
+            Upload file (*.txt)
           </div>
         </label>
           <!-- Import File Control-->
@@ -18,7 +18,7 @@
             class="home__group2__file"
             type="file">
           <mat-error *ngIf="invalidType ">
-              invalid file format
+              Invalid file format. Only .txt files are accepted.
           </mat-error>
         </div>
     <div class="home__group1">
@@ -27,11 +27,12 @@
         <textarea
             formControlName="textToTranslate"
             matInput
-            placeholder="Text for C-test builder"
+            placeholder="Text to convert to C-Test"
             matTextareaAutosize
             matAutosizeMinRows="6"
             matAutosizeMaxRows="10">
         </textarea>
+        <mat-error *ngIf="this.form.controls.textToTranslate.errors.required">You need to enter a text.</mat-error>
       </mat-form-field>
     </div>
 
@@ -48,6 +49,7 @@
                 {{ language.viewValue }}
             </mat-option>
           </mat-select>
+          <mat-error *ngIf="this.form.controls.language.errors.required">You need to select a language.</mat-error>
         </mat-form-field>
       </div>
       <div flex="60">
