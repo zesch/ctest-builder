@@ -1,4 +1,9 @@
-<p class="margin-left-1">Info...</p>
+<!-- Warnings -->
+<h5>Warnings:</h5>
+<p><ng-container *ngFor="let warning of (warnings$ | async)">
+  <span style="color: red;">{{warning}}</span><br>
+</ng-container></p>
+
 <!-- Report Card -->
 <div *ngIf="this.words" class="report_card" fxLayoutAlign="start" fxLayoutGap="25px">
   <div class="report_card__preview">
@@ -103,34 +108,6 @@
       </mat-card-content>
     </mat-card>
 
-    <!-- <mat-card>
-      <mat-card-content>
-        <div
-          fxLayout="column"
-          fxLayout.xs="column"
-          fxLayoutAlign="center"
-          fxLayoutGap="10px"
-          fxLayoutGap.xs="0">
-          <div
-          class="ngx-dnd-container"
-          [copy]="true"
-          ngxDroppable>
-            <span
-            [model]="newValue"
-            class="text_editor__right__new_word ngx-dnd-item"
-            ngxDraggable="wordArea"
-            fxLayoutAlign="center">
-                New Word
-            </span>
-          </div>
-          <div  fxLayoutAlign="center">
-            <button [model]="[]" class="ngx-dnd-container"  ngxDroppable="deleteArea" mat-fab color="warn">
-              <mat-icon matTooltip="Drop here to delete">delete</mat-icon>
-            </button>
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card> -->
     <mat-card>
       <mat-card-content>
         <div fxLayout="row" fxLayoutAlign="space-evenly center">

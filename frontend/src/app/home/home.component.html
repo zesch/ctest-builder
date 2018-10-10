@@ -32,7 +32,7 @@
             matAutosizeMinRows="6"
             matAutosizeMaxRows="10">
         </textarea>
-        <mat-error *ngIf="this.form.controls.textToTranslate.errors.required">You need to enter a text.</mat-error>
+        <mat-error *ngIf="this.form.controls.textToTranslate.errors">You need to enter a text.</mat-error>
       </mat-form-field>
     </div>
 
@@ -49,7 +49,7 @@
                 {{ language.viewValue }}
             </mat-option>
           </mat-select>
-          <mat-error *ngIf="this.form.controls.language.errors.required">You need to select a language.</mat-error>
+          <mat-error *ngIf="this.form.controls.language.errors">You need to select a language.</mat-error>
         </mat-form-field>
       </div>
       <div flex="60">
