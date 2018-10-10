@@ -1,12 +1,11 @@
-<div style="margin:3% 10% auto 10% ">
-    <mat-card class="home">
-        <mat-card-header>
-            <mat-card-title>
-                <h1>
-                    {{title}}
-                </h1>
-            </mat-card-title>
-        </mat-card-header>
-        <router-outlet></router-outlet>
-    </mat-card>
-</div>
+
+<mat-toolbar
+  class="header"
+  fxLayout="row"
+  fxLayoutAlign="start space-evenly">
+  <img src="../assets/LTL4KLogoneu2.png">
+  <span style="font-size: 32px; color: #004c93; margin-top: 14px; font-weight: bold; font-family: 'Roboto'">{{title}}</span>
+</mat-toolbar>
+<mat-card>
+  <router-outlet></router-outlet>
+</mat-card>
