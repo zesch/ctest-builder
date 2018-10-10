@@ -2,18 +2,16 @@
     align-items: center !important;
 }
 .report_card{
-    &__preview{
+/*    &__preview{
         margin-top: auto;
         margin-bottom: auto;
-    }
+    }*/
 }
 .text_editor {
     &__make_bold {
         font-weight: 600;
     }
     &__word {
-        margin: 10px;
-        padding: 10px;
         color: rgba(0, 0, 0, .87);
         display: inline-block;
     }
