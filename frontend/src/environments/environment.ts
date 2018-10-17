@@ -26,6 +26,13 @@ export const environment = {
             headers: {
               'Content-Type': 'text/plain'
             }
+          },
+          partial: {
+            path: 'gapify-partial',
+            queryParameters: { language: 'language' },
+            headers: {
+              'Content-Type': 'text/plain'
+            }
           }
         },
       }

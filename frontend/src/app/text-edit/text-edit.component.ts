@@ -164,10 +164,34 @@ export class TextEditComponent implements OnInit {
   }
 
   /**
-   *  Toggles the gap status of the given word.
+   * Toggles the gap status of the given word.
+   * Reapplies the gapscheme starting at the given word.
    */
   public toggleGapStatus(word: Word) {
     word.gapStatus = !word.gapStatus;
+
+    console.log(word.id);
+    let startId = word.id;
+    let text = this.words
+      .slice(startId)
+      .map((token: Word) => token.value)
+      .join(" ")
+
+    this.ctestService.fetchPartialCTest(text, this.ctestService.getLanguage(), !word.gapStatus).subscribe(
+      success => {
+        console.log(success.words[0].id);
+        let words = success.words;
+
+        for (let i = 0; i < words.length; i++) {
+            words[i].id = startId + i;
+        }
+
+        console.log(this.words.slice(startId))
+        this.words.splice(startId, words.length, ...words);
+        console.log(this.words.slice(startId))
+      },
+      failure => console.error(failure)
+    );
   }
 
   /** Process data before being exported  */

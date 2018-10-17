@@ -125,11 +125,11 @@ public class GapScheme {
 	@Path("/gapify-partial")
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response createSimpleGapScheme(String docText, @QueryParam("language") String language) {
-		if (language == null || docText == null)
+	public Response createSimpleGapScheme(String docText, @QueryParam("language") String language, @QueryParam("gapfirst") Boolean gapFirst) {
+		if (language == null || docText == null || gapFirst == null)
 			return Response
 					.status(Response.Status.BAD_REQUEST)
-					.entity("{\"message\" : \"ERROR: language and text must not be null.\"}")
+					.entity("{\"message\" : \"ERROR: Query parameters 'language', 'text' and 'gapfirst' must not be null.\"}")
 					.header("Access-Control-Allow-Origin", corsOrigins)
 					.header("Access-Control-Allow-Methods", "POST")
 					.build();
@@ -137,7 +137,7 @@ public class GapScheme {
 		Response response;
 
 		try {
-			JsonObject cTest = toJson(builder.generatePartialCTest(docText, language), new ArrayList<String>());
+			JsonObject cTest = toJson(builder.generatePartialCTest(docText, language, gapFirst), new ArrayList<String>());
 			response = Response
 					.status(Response.Status.OK)
 					.entity(cTest.toString())
