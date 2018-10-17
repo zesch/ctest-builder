@@ -1,5 +1,6 @@
 package de.unidue.ltl.ctestbuilder.service.gapscheme;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.json.Json;
@@ -35,7 +36,6 @@ import de.unidue.ltl.ctest.gapscheme.CTestGenerator;
  * A {@code Content-type: text/plain} header must be present in the request.
  */
 //TODO: Edit index.jsp to be more informative.
-//TODO: Look for english explanation of c-tests?
 @Path("/")
 public class GapScheme {
 
@@ -60,16 +60,17 @@ public class GapScheme {
 	@Path("/verify")
 	@Produces(MediaType.TEXT_HTML)
 	public Response verifyRESTService() {
-		//TODO: Add version number.
-		return Response.status(Response.Status.OK)
-				.entity("GapScheme service successfully started.")
+		System.out.println("verify endpoint called");
+		return Response
+				.status(Response.Status.OK)
+				.entity("GapScheme service successfully started. Version: 0.0.2-SNAPSHOT")
 				.header("Access-Control-Allow-Origin", corsOrigins)
 				.header("Access-Control-Allow-Methods", "GET")
 				.build();
 	}
 	
 	/**
-	 * Creates a c-test from the given text and the specified language.
+	 * Creates a C-Test from the given text and the specified language.
 	 * 
 	 * @param  docText The text to be converted into a c-Test.
 	 * @param  language The language of the Text. Should be a two-letter ISO 639-1 Language Code.
@@ -111,6 +112,51 @@ public class GapScheme {
 		return response;
 	}
 	
+	/**
+	 * Creates a partial C-Test from the given text and the specified language.
+	 * The gapscheme is applied to each token, starting with the very first.
+	 * Usual constraints, like the gap limit or ungapped opening and closing sentences are ignored.
+	 * 
+	 * @param  docText The text to be converted into a c-Test.
+	 * @param  language The language of the Text. Should be a two-letter ISO 639-1 Language Code.
+	 * @return A {@code Response}, containing the c-Test and potential warnings, regarding the generation process as JSON String.
+	 */
+	@POST
+	@Path("/gapify-partial")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response createSimpleGapScheme(String docText, @QueryParam("language") String language) {
+		if (language == null || docText == null)
+			return Response
+					.status(Response.Status.BAD_REQUEST)
+					.entity("{\"message\" : \"ERROR: language and text must not be null.\"}")
+					.header("Access-Control-Allow-Origin", corsOrigins)
+					.header("Access-Control-Allow-Methods", "POST")
+					.build();
+		
+		Response response;
+
+		try {
+			JsonObject cTest = toJson(builder.generatePartialCTest(docText, language), new ArrayList<String>());
+			response = Response
+					.status(Response.Status.OK)
+					.entity(cTest.toString())
+					.header("Access-Control-Allow-Origin", corsOrigins)
+					.header("Access-Control-Allow-Methods", "POST")
+					.build();
+		} catch (Exception e) {
+			response = Response
+					.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity("{\"message\" : \"ERROR: Could not create c-test.\"}")
+					.header("Access-Control-Allow-Origin", corsOrigins)
+					.header("Access-Control-Allow-Methods", "POST")
+					.build();
+			e.printStackTrace();
+		}
+
+		return response;
+	}
+	
 	/* 
 	 * Converts a single CTestToken to a JSON Object, complying with the FrontendCTestToken Interface.
 	 */
@@ -128,7 +174,6 @@ public class GapScheme {
 		return jsonObj;
 	}
 	
-	//TODO: Transfer functionality to JSON Converter class.
 	/* 
 	 * Converts a CTestObject to a JSON Object.
 	 * 
