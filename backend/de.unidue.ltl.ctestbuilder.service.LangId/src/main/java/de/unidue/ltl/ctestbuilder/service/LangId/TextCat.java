@@ -69,9 +69,9 @@ public class TextCat {
 		// TODO proper response
 		return Response
 				.status(Response.Status.OK)
-				.entity("TextCat language identification service successfully started.")
 				.header("Access-Control-Allow-Origin", corsOrigins)
 				.header("Access-Control-Allow-Methods", "GET")
+				.entity("TextCat language identification service successfully started.")
 				.build();
 	}
 	
@@ -83,14 +83,13 @@ public class TextCat {
 	@Consumes(MediaType.TEXT_PLAIN)
 	@Produces(MediaType.TEXT_PLAIN)
 	public Response identifyLanguage(String docText) {
-		
+		System.out.println("/classify endpoint called");
 		String result = categorizer.categorize(docText);
-	
+		System.out.println(result);
 		return Response
-				.status(200)
-				.entity(langName2ISO.get(result))
+				.status(Response.Status.OK)
 				.header("Access-Control-Allow-Origin", corsOrigins)
-				.header("Access-Control-Allow-Methods", "POST")
+				.entity(langName2ISO.get(result))
 				.build();
 	}
 	

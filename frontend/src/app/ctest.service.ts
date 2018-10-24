@@ -13,6 +13,10 @@ export class CtestService {
   private partialEndpoint: any;
   private verifyEndpoint: any;
 
+  private langIdRootPath: string;
+  private langIdEndpoint: any;
+  private langIdVerifyEndpoint: any;
+
   private ctest$: Observable<any>;
   private language: string;
 
@@ -22,6 +26,10 @@ export class CtestService {
     this.serviceEndpoint = environment.api.services.gapscheme.endpoints.service;
     this.partialEndpoint = environment.api.services.gapscheme.endpoints.partial;
     this.verifyEndpoint = environment.api.services.gapscheme.endpoints.verify;
+
+    this.langIdRootPath = environment.api.services.langid.root;
+    this.langIdEndpoint = environment.api.services.langid.endpoints.service;
+    this.langIdVerifyEndpoint = environment.api.services.langid.endpoints.verify;
   }
 
   /**
@@ -76,10 +84,23 @@ export class CtestService {
     return this.ctest$;
   }
   /**
-   * Returns the language that was most recently queried for a c-test.
+   * Returns the language that was most recently queried or identified for a c-test.
    */
   public getLanguage() {
     return this.language;
+  }
+
+  /**
+   * Sends the given text to the language identification service and stores the result.
+   */
+  public identifyLanguage(text: string): Observable<any> {
+    const url: string = [
+      this.host,
+      this.langIdRootPath,
+      this.langIdEndpoint.path
+    ].join('/');
+    const options: object = this.langIdEndpoint.options;
+    return this.http.post(url, text, options);
   }
 
   private buildURL(endpoint: string): string {

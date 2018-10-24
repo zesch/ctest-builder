@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CtestService } from '../ctest.service';
 import { MatSnackBar } from '../../../node_modules/@angular/material';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'tp-home',
@@ -10,11 +11,10 @@ import { MatSnackBar } from '../../../node_modules/@angular/material';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  // Variables
+  /**
+   * The form containing the text to send to the service.
+   */
   public form: FormGroup;
-
-  /** holds current selected tab index*/
-  public selectedIndex = 0;
 
   /** holds value indicate if user uploaded wrong files or not */
   public invalidType = false;
@@ -41,8 +41,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this._fb.group({
-      language: ['', Validators.required],
-      textToTranslate: ['', Validators.required],
+      ctestText: ['', Validators.required],
     });
 
     this.ctestService.verify().subscribe(
@@ -68,33 +67,28 @@ export class HomeComponent implements OnInit {
     if (/(\.txt|\.TXT)$/.test(input.value)) {
       const reader = new FileReader();
       reader.onload = () => {
-        this.form.controls.textToTranslate.setValue(reader.result);
+        this.form.controls.ctestText.setValue(reader.result);
       };
       reader.readAsText(input.files[0]);
       this.invalidType = false;
-      this.selectedIndex = 0;
     } else {
       this.invalidType = true;
-      this.form.controls.textToTranslate.reset('');
+      this.form.controls.ctestText.reset('');
     }
   }
 
   /**
-   * Event Fires when user navigate between tabs
-   * @param {number} val  holds selected tab index
-   */
-  selectedIndexChange(val: number) {
-    this.selectedIndex = val;
-  }
-
-  /**
-   * submitting form and navigating to next stage
+   * Submits the form, requests the C-Test and navigates to the text-edit view.
    */
   submit() {
     if (this.form.valid && this.serviceAvailable) {
       this.snackBar.open('Processing text, please be patient...', 'OK');
 
-      this.ctestService.fetchCTest(this.form.controls.textToTranslate.value, this.form.controls.language.value).subscribe(
+      let text = this.form.controls.ctestText.value;
+
+      this.ctestService.identifyLanguage(text).pipe(
+        switchMap(language => this.ctestService.fetchCTest(text, language))
+      ).subscribe(
         success => {
           this.snackBar.open('Done!', 'OK', {duration: 1250});
           this.router.navigate(['/text-editor']);

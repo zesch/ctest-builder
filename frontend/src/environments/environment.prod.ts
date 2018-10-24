@@ -29,13 +29,20 @@ export const environment = {
             }
           }
         }
-      }
-    },
-    langid: {
-      root: '/langid/rest/',
-      endpoints: {
-        verify: { path: 'verify', queryParameters: false },
-        service: { path: 'classifiy', queryParameters: false }
+      },
+      langid: {
+        root: '/langid/rest',
+        endpoints: {
+          verify: { path: 'verify', queryParameters: false },
+          service: {
+            path: 'classifiy',
+            queryParameters: false,
+            options : {
+              headers: { 'Content-Type' : 'text/plain' },
+              responseType: 'text'
+            }
+          }
+        }
       }
     }
   }

@@ -35,13 +35,20 @@ export const environment = {
             }
           }
         },
-      }
-    },
-    langid: {
-      root: '/de.unidue.ltl.ctestbuilder.service.LangId/rest/',
-      endpoints: {
-        verify: { path: 'verify', queryParameters: false },
-        service: { path: 'classify', queryParameters: false }
+      },
+      langid: {
+        root: 'de.unidue.ltl.ctestbuilder.service.LangId/rest',
+        endpoints: {
+          verify: { path: 'verify', queryParameters: false },
+          service: {
+            path: 'classify',
+            queryParameters: false,
+            options : {
+              headers: { 'Content-Type' : 'text/plain' },
+              responseType: 'text'
+            }
+          }
+        }
       }
     }
   }

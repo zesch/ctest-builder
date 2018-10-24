@@ -25,33 +25,18 @@
       <mat-form-field class="example-full-width">
         <!-- Text To Translate Control-->
         <textarea
-            formControlName="textToTranslate"
+            formControlName="ctestText"
             matInput
             placeholder="Text to convert to C-Test"
             matTextareaAutosize
             matAutosizeMinRows="6"
             matAutosizeMaxRows="10">
         </textarea>
-        <mat-error *ngIf="this.form.controls.textToTranslate.errors">You need to enter a text.</mat-error>
+        <mat-error *ngIf="this.form.controls.ctestText.errors">You need to enter a text.</mat-error>
       </mat-form-field>
     </div>
 
     <div fxLayoutAlign="space-between" fxLayoutGap="20px">
-      <div flex="30">
-        <mat-form-field>
-            <!-- Select Language Control-->
-          <mat-select
-            formControlName="language"
-            placeholder="Language">
-            <mat-option
-              *ngFor="let language of languages"
-              [value]="language.value">
-                {{ language.viewValue }}
-            </mat-option>
-          </mat-select>
-          <mat-error *ngIf="this.form.controls.language.errors">You need to select a language.</mat-error>
-        </mat-form-field>
-      </div>
       <div flex="60">
         <button type="submit" class="mat-raised-button"
           mat-button
