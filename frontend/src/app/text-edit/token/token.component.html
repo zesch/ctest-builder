@@ -1,0 +1,56 @@
+<div *ngIf="this.selected; then editView; else defaultView"></div>
+
+<ng-template #defaultView>
+  <span
+    (click)="this.selected=true; this.select$.emit(this.token);">
+    {{ this.token.value }}
+  </span>
+</ng-template>
+
+<ng-template #editView>
+  <button mat-button
+    (click)="decrementIndex()"
+    matTooltip="Move gap to the left">
+    <mat-icon>keyboard_arrow_left</mat-icon>
+  </button>
+
+  <div *ngIf="this.textEdit; then textEditView; else tokenInfoView"></div>
+  <ng-template #tokenInfoView>
+    <span (click)="this.textEdit = true;">
+      {{ this.token.value }}|{{ this.token.offset }}|{{ this.token.gapStatus }}
+    </span>
+  </ng-template>
+  <ng-template #textEditView>
+    <mat-form-field>
+      <input matInput [(ngModel)]="this.token.value" (keyup)="handleTextEditKeyup($event)">
+    </mat-form-field>
+  </ng-template>
+
+  <button mat-button
+    (click)="incrementIndex()"
+    matTooltip="Move gap to the right">
+    <mat-icon>keyboard_arrow_right</mat-icon>
+  </button>
+
+  <br>
+
+  <mat-slide-toggle
+    [checked]="this.token.gapStatus"
+    (change)="this.token.gapStatus = !this.token.gapStatus">
+    Gap
+  </mat-slide-toggle>
+
+  <button mat-button
+    (click)="this.selected = false"
+    matTooltip="Confirm changes"
+    color="primary">
+    <mat-icon>done</mat-icon>
+  </button>
+
+  <button mat-button
+    (click)="this.selected = false"
+    matTooltip="Discard changes."
+    color="warn">
+    <mat-icon>clear</mat-icon>
+  </button>
+</ng-template>
