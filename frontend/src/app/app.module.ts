@@ -20,6 +20,8 @@ import { NgxDnDModule } from '@swimlane/ngx-dnd';
 import { HttpClientModule } from '../../node_modules/@angular/common/http';
 import { CtestService } from './ctest.service';
 import { TokenComponent } from './text-edit/token/token.component';
+import { PromptPipe } from './shared/pipes/prompt.pipe';
+import { SolutionsPipe } from './shared/pipes/solutions.pipe';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { TokenComponent } from './text-edit/token/token.component';
     TextEditComponent,
     ReplacePipe,
     ModalDialogComponent,
-    TokenComponent
+    TokenComponent,
+    PromptPipe,
+    SolutionsPipe
   ],
   imports: [
     NgxDnDModule,

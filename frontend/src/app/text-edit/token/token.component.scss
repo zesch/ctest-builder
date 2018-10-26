@@ -1,4 +1,9 @@
-#editView {
-  z-index: 9001;
-  position: absolute;
+mat-card {
+  padding: 4px;
+}
+
+#textEditInput {
+  min-width: 25px;
+  max-width: 80px;
+  padding: 0px;
 }

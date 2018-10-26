@@ -37,10 +37,20 @@ export class TokenComponent implements OnInit {
   private textEdit: boolean;
 
   /**
+   * Indicates whether alternative solutions are being edited.
+   */
+  private alternativesEdit: boolean;
+
+  /**
+   * Indicates whether this token should be ignored by the automatic gapping procedure.
+   */
+  private locked: boolean;
+
+  /**
    * Increments the gap index of the token.
    */
   private incrementIndex() {
-    if (this.token.offset < this.token.value.length - 1)
+    if (this.token.offset < this.token.value.length)
       this.token.offset ++;
   }
 
@@ -68,5 +78,7 @@ export class TokenComponent implements OnInit {
     this.select$ = new EventEmitter<Word>();
     this.selected = false;
     this.textEdit = false;
+    this.alternativesEdit = false;
+    this.locked = false;
   }
 }
