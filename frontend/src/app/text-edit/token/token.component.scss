@@ -1,5 +1,16 @@
 mat-card {
   padding: 4px;
+  opacity: 0.33;
+  z-index: 1;
+  position: absolute;
+}
+
+mat-card:hover {
+  opacity: 1.0;
+}
+
+.bold-on-hover:hover {
+  font-weight: 700;
 }
 
 #textEditInput {

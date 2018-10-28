@@ -1,10 +1,7 @@
 <div *ngIf="this.selected; then editView; else defaultView"></div>
 
 <ng-template #defaultView>
-  <span
-    (click)="this.selected=true; this.select$.emit(this.token);">
-    {{ this.token.value }}
-  </span>
+  <span (click)="this.selected=true; this.select$.emit(this.token);">{{ this.token.value }}</span>
 </ng-template>
 
 <ng-template #editView>
@@ -12,14 +9,14 @@
     <div #firstRow fxLayout="row" fxLayoutAlign="space-between center">
       <button mat-icon-button
         (click)="decrementIndex()"
-        matTooltip="Move gap to the left">
+        matTooltip="move gap to the left">
         <mat-icon>keyboard_arrow_left</mat-icon>
       </button>
 
       <span>
         <span *ngIf="this.textEdit; then textEditView; else textShowView;"></span>
         <ng-template #textShowView>
-          <span (click)="this.textEdit = true; this.alternativesEdit = false;">{{ this.token | prompt }}</span>
+          <span class="bold-on-hover" (click)="this.textEdit = true; this.alternativesEdit = false;" matTooltip="click to edit text">{{ this.token | prompt }}</span>
         </ng-template>
         <ng-template #textEditView>
           <mat-form-field *ngIf="this.textEdit" id="textEditInput">
@@ -29,7 +26,7 @@
 
         <span *ngIf="this.alternativesEdit; then alternativesEditView; else alternativesShowView;"></span>
         <ng-template #alternativesShowView>
-            <span (click)="this.alternativesEdit = true; this.textEdit = false;">{{ this.token | solutions }}</span>
+            <span class="bold-on-hover" (click)="this.alternativesEdit = true; this.textEdit = false;" matTooltip="click to edit alternatives">{{ this.token | solutions }}</span>
         </ng-template>
         <ng-template #alternativesEditView>
           <mat-form-field *ngIf="this.alternativesEdit">
@@ -40,40 +37,45 @@
 
       <button mat-icon-button
         (click)="incrementIndex()"
-        matTooltip="Move gap to the right">
+        matTooltip="move gap to the right">
         <mat-icon>keyboard_arrow_right</mat-icon>
       </button>
     </div>
 
-    <div #secondRow fxLayoutAlign="center center" fxLayoutGap="5%">
+    <div #secondRow fxLayoutAlign="center center">
       <mat-slide-toggle
         [checked]="this.token.gapStatus"
         (change)="this.token.gapStatus = !this.token.gapStatus"
         labelPosition="before"
-        matTooltip="Toggle Gap">
+        matTooltip="toggle gap">
         Gap
       </mat-slide-toggle>
       <button mat-icon-button
         (click)="this.locked = !this.locked"
-        matTooltip="Toggle Lock">
+        matTooltip="toggle lock">
         <mat-icon *ngIf="this.locked">lock</mat-icon>
         <mat-icon *ngIf="!this.locked">lock_open</mat-icon>
       </button>
+      <button mat-icon-button
+        matTooltip="delete token">
+        <mat-icon>delete_outlined</mat-icon>
+      </button>
     </div>
+
     <mat-divider [inset]="true"></mat-divider>
+
     <div #thirdRow fxLayoutAlign="center center">
       <button mat-button
-        fxFlex="1 1 50%"
+        fxFlex="1"
         (click)="this.selected = false"
-        matTooltip="Confirm changes"
+        matTooltip="apply changes"
         color="primary">
         <mat-icon>done</mat-icon>
       </button>
-
       <button mat-button
-        fxFlex="1 1 50%"
+        fxFlex="1"
         (click)="this.selected = false"
-        matTooltip="Discard changes."
+        matTooltip="discard changes"
         color="warn">
         <mat-icon>clear</mat-icon>
       </button>
