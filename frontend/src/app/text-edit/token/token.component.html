@@ -16,21 +16,21 @@
       <span>
         <span *ngIf="this.textEdit; then textEditView; else textShowView;"></span>
         <ng-template #textShowView>
-          <span class="bold-on-hover" (click)="this.textEdit = true; this.alternativesEdit = false;" matTooltip="click to edit text">{{ this.token | prompt }}</span>
+          <span class="bold-on-hover" (click)="this.textEdit = true; this.alternativesEdit = false;" matTooltip="click to edit text">{{ this.tempToken | prompt }}</span>
         </ng-template>
         <ng-template #textEditView>
           <mat-form-field *ngIf="this.textEdit" id="textEditInput">
-            <input matInput [(ngModel)]="this.token.value" (keyup)="handleTextEditKeyup($event)">
+            <input matInput [(ngModel)]="this.tempToken.value" (keyup)="handleTextEditKeyup($event)">
           </mat-form-field>
         </ng-template>
 
         <span *ngIf="this.alternativesEdit; then alternativesEditView; else alternativesShowView;"></span>
         <ng-template #alternativesShowView>
-            <span class="bold-on-hover" (click)="this.alternativesEdit = true; this.textEdit = false;" matTooltip="click to edit alternatives">{{ this.token | solutions }}</span>
+            <span class="bold-on-hover" (click)="this.alternativesEdit = true; this.textEdit = false;" matTooltip="click to edit alternatives">{{ this.tempToken | solutions }}</span>
         </ng-template>
         <ng-template #alternativesEditView>
           <mat-form-field *ngIf="this.alternativesEdit">
-              <input matInput placeholder="Alternatives" [value]="this.token.alternatives">
+              <input matInput placeholder="Alternatives" [value]="this.tempToken.alternatives">
           </mat-form-field>
         </ng-template>
       </span>
@@ -44,8 +44,8 @@
 
     <div #secondRow fxLayoutAlign="center center">
       <mat-slide-toggle
-        [checked]="this.token.gapStatus"
-        (change)="this.token.gapStatus = !this.token.gapStatus"
+        [checked]="this.tempToken.gapStatus"
+        (change)="this.tempToken.gapStatus = !this.tempToken.gapStatus"
         labelPosition="before"
         matTooltip="toggle gap">
         Gap
@@ -57,6 +57,7 @@
         <mat-icon *ngIf="!this.locked">lock_open</mat-icon>
       </button>
       <button mat-icon-button
+        (click)="delete()"
         matTooltip="delete token">
         <mat-icon>delete_outlined</mat-icon>
       </button>
@@ -67,14 +68,14 @@
     <div #thirdRow fxLayoutAlign="center center">
       <button mat-button
         fxFlex="1"
-        (click)="this.selected = false"
+        (click)="apply()"
         matTooltip="apply changes"
         color="primary">
         <mat-icon>done</mat-icon>
       </button>
       <button mat-button
         fxFlex="1"
-        (click)="this.selected = false"
+        (click)="discard()"
         matTooltip="discard changes"
         color="warn">
         <mat-icon>clear</mat-icon>

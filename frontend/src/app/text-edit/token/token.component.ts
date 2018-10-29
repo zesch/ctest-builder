@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Word } from '../../shared/models/word';
+import { Word, Token } from '../../shared/models/word';
 
 @Component({
   selector: 'tp-token',
@@ -26,6 +26,12 @@ export class TokenComponent implements OnInit {
   @Output('select')
   public select$: EventEmitter<Word>;
 
+  //TODO: Change to tempToken
+  /**
+   * Temporary token to which changes are applied, before the user saves all changes.
+   */
+  private tempToken: Token;
+
   /**
    * Indicates whether the component is selected.
    */
@@ -46,20 +52,38 @@ export class TokenComponent implements OnInit {
    */
   private locked: boolean;
 
+  constructor() { }
+
+  ngOnInit() {
+    this.gapChange$ = new EventEmitter<Word>();
+    this.select$ = new EventEmitter<Word>();
+    this.selected = false;
+    this.textEdit = false;
+    this.alternativesEdit = false;
+    this.locked = false;
+
+    this.select$.subscribe(
+      token => {
+        this.tempToken = new Token();
+        this.tempToken.set(this.token);
+      }
+    )
+  }
+
   /**
    * Increments the gap index of the token.
    */
   private incrementIndex() {
-    if (this.token.offset < this.token.value.length)
-      this.token.offset ++;
+    if (this.tempToken.offset < this.tempToken.value.length)
+      this.tempToken.offset ++;
   }
 
   /**
    * Decrements the gap index of the token.
    */
   private decrementIndex() {
-    if(this.token.offset > 0)
-      this.token.offset --;
+    if(this.tempToken.offset > 0)
+      this.tempToken.offset --;
   }
 
   /**
@@ -71,14 +95,36 @@ export class TokenComponent implements OnInit {
     }
   }
 
-  constructor() { }
+  /**
+   * Applies changes to the actual token.
+   */
+  private apply() {
+    this.token = this.tempToken;
+    this.tempToken = new Token();
+    this.tempToken.set(this.token);
+    this.close()
+  }
 
-  ngOnInit() {
-    this.gapChange$ = new EventEmitter<Word>();
-    this.select$ = new EventEmitter<Word>();
+  /**
+   * Discards changes made to the temporary token.
+   */
+  private discard() {
+    this.tempToken.set(this.token);
+    this.close();
+  }
+
+  /**
+   * Deletes the token.
+   */
+  private delete() {
+    //TODO: delete
+    this.close();
+  }
+
+  /**
+   * Closes the edit ui.
+   */
+  private close() {
     this.selected = false;
-    this.textEdit = false;
-    this.alternativesEdit = false;
-    this.locked = false;
   }
 }
