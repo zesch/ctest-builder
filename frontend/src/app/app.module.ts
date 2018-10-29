@@ -22,6 +22,8 @@ import { CtestService } from './ctest.service';
 import { TokenComponent } from './text-edit/token/token.component';
 import { PromptPipe } from './shared/pipes/prompt.pipe';
 import { SolutionsPipe } from './shared/pipes/solutions.pipe';
+import { IosviewPipe } from './shared/pipes/iosview.pipe';
+import { TestviewPipe } from './shared/pipes/testview.pipe';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,9 @@ import { SolutionsPipe } from './shared/pipes/solutions.pipe';
     ModalDialogComponent,
     TokenComponent,
     PromptPipe,
-    SolutionsPipe
+    SolutionsPipe,
+    IosviewPipe,
+    TestviewPipe
   ],
   imports: [
     NgxDnDModule,

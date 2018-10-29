@@ -27,24 +27,28 @@
   <div fxFlex="80%">
     <mat-card class="text_editor__main">
       <div *ngIf="!showPreview" class="ngx-dnd-container" ngxDroppable="wordArea" [model]="words">
+
         <!-- Draggable Words  -->
         <ng-container *ngFor="let word of words">
-          <label [ngClass]="{'highlightme': word === currentWord,'text_editor__make_bold': word.boldStatus }" #item
-            ngxDraggable="wordArea,deleteArea" [model]="word" class="text_editor__word" (dblclick)="toggleGapStatus(word)"
+          <span
+            class="text_editor__word token"
+            [ngClass]="{ 'selected': word === currentWord }"
+            ngxDraggable="wordArea,deleteArea"
+            [model]="word"
+            (dblclick)="toggleGapStatus(word)"
             (click)="onWordClick(word)">
-            {{word.value | replace:word.offset:!word.gapStatus}} {{(word.showAlternatives && word.alternatives.length >
-            0)?'/ '+word.alternatives.join('/ '):''}}
-          </label>
+            {{ word | iosview }}
+          </span>
           <mat-form-field *ngIf="word === currentWord && isEditMode">
             <input matInput type="text" [(ngModel)]="word.value">
           </mat-form-field>
-
         </ng-container>
+
         <button (click)="addNewWord()" mat-mini-fab color="primary">
           <mat-icon matTooltip="Add new word next">add</mat-icon>
         </button>
       </div>
-      <div [innerHTML]="processedText" *ngIf="showPreview">
+      <div *ngIf="showPreview">
       </div>
 
     </mat-card>

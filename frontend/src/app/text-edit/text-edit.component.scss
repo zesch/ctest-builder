@@ -11,10 +11,6 @@
     &__make_bold {
         font-weight: 600;
     }
-    &__word {
-        color: rgba(0, 0, 0, .87);
-        display: inline-block;
-    }
     &__main {
         min-height: 270px;
         max-height: 600px;
@@ -42,5 +38,19 @@
   margin-left: 50px;
 }
 
-.highlightme { background-color:#FFFF00; }
+.token {
+  padding: 1px;
+  display: inline-block;
+  color: rgba(0, 0, 0, .87);
+}
+
+.token:hover {
+  background-color: lightgray;
+  cursor: pointer;
+}
+
+.selected {
+  font-weight: 700;
+}
+
 .delete{cursor: pointer; padding-left: 26px;}

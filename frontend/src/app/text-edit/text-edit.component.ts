@@ -3,7 +3,8 @@ import { MatDialog } from '@angular/material';
 import { ModalDialogComponent } from '../modal-dialog/modal-dialog.component';
 import { Router } from '@angular/router';
 import { Word } from '../shared/models/word';
-import { ReplacePipe } from '../shared/pipes/replace.pipe';
+import { TestviewPipe } from '../shared/pipes/testview.pipe';
+import { IosviewPipe } from '../shared/pipes/iosview.pipe';
 import * as jsPDF from 'jspdf';
 import { CtestService } from '../ctest.service';
 import { Observable } from '../../../node_modules/rxjs/Observable';
@@ -16,36 +17,50 @@ import { map } from '../../../node_modules/rxjs/operators/map';
 })
 
 export class TextEditComponent implements OnInit {
-  /** holds all words */
-  public words = []; //TODO: replace with observables.
+  /**
+   *  Words in the current c-test.
+   */
+  public words: Word[] = []; //TODO: replace with observables.
 
-  /** holds single word mode that indicate edit or view mode */
+  /**
+   * Indicates whether view or edit mode is currently active.
+   */
   public isEditMode = false;
-  /** display text after formatting and before exporting */
+
+  /**
+   * Indicates whether text should be shown before export.
+   */
   public showPreview = false;
 
-  /** holds the text that will be exported as preview */
-  public processedText = null;
-
-  /** holds selected current word */
+  /**
+   * The word currently selected.
+   */
   public currentWord: Word = null;
 
   //TODO: Implement clean solution.
-  /** holds previously selected word */
+  /**
+   * The previously selected word.
+   */
   public previousWord: Word = null;
 
-  /** holds the new value to add new word  */
-  public newValue = new Object() as Word;
+  /**
+   * An empty word. To be used as a template for new words.
+   */
+  public newValue: Word = new Object() as Word;
 
-  /* the words for the view. */
+  /**
+   * Observable of words in the c-test.
+   */
   private words$: Observable<Word[]>;
 
-  /* the warnings to be displayed. */
+  /**
+   * Observable of warning messages to be displayed.
+   */
   private warnings$: Observable<string[]>;
 
-  @ViewChild('input_currentValue') input_currentValue
+  //TODO: What does this do?
+  @ViewChild('input_currentValue') input_currentValue;
 
-  // Life Cycle Hooks
   constructor(
     public dialog: MatDialog,
     private router: Router,
@@ -75,31 +90,34 @@ export class TextEditComponent implements OnInit {
     )
   }
 
-
-  /** * * * * * * * * PRIVATE METHODS * * * * * * * * * */
-  private makeBold(word: string): string {
-    return `<strong>${word}</strong>`;
-  }
-
   /**
-   * Export html to PDF and open download dialog
-   * @param title File name to be saved
+   * Exports the current c-test as PDF
    */
-  private processPDFFile(title) {
+  private exportAsPDF(title: string) {
     const doc = new jsPDF();
-    doc.fromHTML(
-      this.processedText,
-      15,
-      15,
-      {
-        'width': 180, 'elementHandlers': (a) => console.log(a)
-      }
-    );
+    const view = new TestviewPipe();
+    const text = this.words
+        .map(view.transform)
+        .join(' ');
+
+    doc.fromHTML(text, 15, 15, { 'width': 180 });
     doc.save(title);
     return;
   }
 
-  /** * * * * * * * * PUBLIC METHODS * * * * * * * * * */
+  /**
+   * Exports the current c-test as PDF
+   */
+  private exportAsTXT(filename: string) {
+    const div = document.createElement('div');
+    const view = new IosviewPipe();
+    div.innerHTML = this.words.map(view.transform).join(' ');
+    const doc = document.createElement('a');
+    doc.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(div.innerText)),
+      doc.setAttribute('download', (filename + '.txt'));
+    doc.click();
+  }
+
   /**
    * Cancel Changes and return back home
    */
@@ -117,7 +135,7 @@ export class TextEditComponent implements OnInit {
   }
 
   /**
-   * Ask user to Export html to txt/pdf
+   * Opens export dialogue.
    */
   public openDialogExport(): void {
     const data = {
@@ -131,19 +149,12 @@ export class TextEditComponent implements OnInit {
         selectedValue: 'Text'
       },
       title: 'Export As', action: () => {
-        this.processPreview();
         switch (data.options.selectedValue) {
           case 'PDF':
-            this.processPDFFile(data.file.title);
+            this.exportAsPDF(data.file.title);
             break;
-
           case 'Text':
-            const div = document.createElement('div');
-            div.innerHTML = this.processedText;
-            const doc = document.createElement('a');
-            doc.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(div.innerText)),
-              doc.setAttribute('download', (data.file.title + '.txt'));
-            doc.click();
+            this.exportAsTXT(data.file.title);
             break;
         }
       }, no: 'Cancel', yes: 'Export'
@@ -152,7 +163,7 @@ export class TextEditComponent implements OnInit {
   }
 
   /**
-   * Set Current Clicked Word to be Configurable
+   * Sets the given word as the current word. Also sets the previously selected word.
    */
   public onWordClick(word: Word) {
     if (this.currentWord !== word) {
@@ -194,34 +205,25 @@ export class TextEditComponent implements OnInit {
     );
   }
 
-  /** Process data before being exported  */
-  public processPreview() {
-    let words = '';
-    const replace = new ReplacePipe().transform;
-    this.words.forEach((word: Word) => {
-      if (word.boldStatus) {
-        words += ` ${this.makeBold(replace(word.value, word.offset, !word.gapStatus))} ${(word.showAlternatives &&
-          word.alternatives.length > 0) ? ('/ ' + word.alternatives.join(' /')) : ''}`;
-      } else {
-        words += ` ${replace(word.value, word.offset, !word.gapStatus)} ${(word.showAlternatives && word.alternatives.length > 0) ?
-          ('/ ' + word.alternatives.join(' /')) : ''} `;
-      }
-    });
-    this.processedText = `<p>${words} </p>`;
-  }
-
+  /**
+   * Toggles whether alternative solutions should be shown in the preview.
+   */
   public toggleAlternativesView() {
     this.words.forEach((word: Word) => {
       word.showAlternatives = !word.showAlternatives;
     })
   }
 
-  /** adding alternative for current selected word */
+  /**
+   * Adds an alternative to the given word.
+   */
   public addAlternative(word: Word): void {
     word.alternatives.push('');
   }
 
-  /** updates the alternative word with each change */
+  /**
+   * Updates the alternative word with each change
+   */
   public onWordAlternativeChange(word: Word, index: number, event: Event) {
     word.alternatives[index] = (event.target as HTMLInputElement).value;
   }
@@ -230,14 +232,16 @@ export class TextEditComponent implements OnInit {
     word.alternatives.splice(index, 1);
   }
 
-  /** Calculate total gapes enabled for each word */
+  /**
+   * Calculate total gapes enabled for each word
+   */
   public calculateGaps() {
     return this.words.filter((word: Word) => Boolean(word.gapStatus)).length;
   }
 
 
   /**
-   * delete Current Word
+   * Deletes the currently selected word.
    */
   public delete() {
     this.words.splice(this.words.indexOf(this.currentWord), 1);
@@ -261,6 +265,5 @@ export class TextEditComponent implements OnInit {
       this.input_currentValue.nativeElement.select();
       console.log(this.input_currentValue.nativeElement.focus());
     });
-    //this.isEditMode = true;
   }
 }
