@@ -1,7 +1,18 @@
 <ng-container>
-  <span class="token" [ngClass]="{'selected': selected}" (click)="this.select();">{{ this.token | iosview }}</span>
+  <span class="token" cdk-overlay-origin #trigger="cdkOverlayOrigin"
+    [ngClass]="{'selected': selected}"
+    (click)="this.select()">
+    {{ this.token | iosview }}
+  </span>
 
-  <mat-card *ngIf="this.selected" fxLayout="column">
+  <ng-template cdk-connected-overlay
+    [origin]="trigger"
+    [open]="this.selected"
+    cdkConnectedOverlayBackdropClass="transparent"
+    (backdropClick)="this.close()">
+  <mat-card
+
+    fxLayout="column">
     <div #firstRow fxLayout="row" fxLayoutAlign="space-between center">
       <button mat-icon-button
         (click)="decrementIndex()"
@@ -78,5 +89,6 @@
       </button>
     </div>
   </mat-card>
+</ng-template>
 
 </ng-container>

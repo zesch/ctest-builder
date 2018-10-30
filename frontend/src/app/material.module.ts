@@ -34,6 +34,8 @@ import {
   MatToolbarModule,
   MatTooltipModule
 } from '@angular/material';
+import { PortalModule } from '@angular/cdk/portal';
+import { OverlayModule } from '@angular/cdk/overlay';
 
 @NgModule({
   imports: [
@@ -70,6 +72,8 @@ import {
     MatTabsModule,
     MatToolbarModule,
     MatTooltipModule,
+    OverlayModule,
+    PortalModule
   ],
   exports: [
     MatAutocompleteModule,
@@ -103,7 +107,9 @@ import {
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    OverlayModule,
+    PortalModule
   ],
   declarations: []
 })

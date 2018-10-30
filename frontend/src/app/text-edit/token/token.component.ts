@@ -55,6 +55,7 @@ export class TokenComponent implements OnInit {
   constructor() {
     this.gapChange$ = new EventEmitter<Word>();
     this.select$ = new EventEmitter<TokenComponent>();
+    this.tempToken = new Token();
     this.selected = false;
     this.textEdit = false;
     this.alternativesEdit = false;
