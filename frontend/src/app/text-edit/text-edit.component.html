@@ -5,10 +5,21 @@
 </ng-container></p>
 
 <!-- Report Card -->
-<div *ngIf="this.words" class="report_card" fxLayoutAlign="start" fxLayoutGap="25px">
+<div *ngIf="this.words"
+  class="report_card"
+  fxLayoutAlign="start"
+  fxLayoutGap="25px">
   <div class="report_card__preview">
-    <mat-slide-toggle (change)="processPreview()" [(ngModel)]="showPreview" color="primary"> Show Preview</mat-slide-toggle>
-    <mat-slide-toggle (change)="toggleAlternativesView()" color="primary"> Show Alternatives</mat-slide-toggle>
+    <mat-slide-toggle
+      [(ngModel)]="showPreview"
+      color="primary">
+      Show Preview
+    </mat-slide-toggle>
+    <mat-slide-toggle
+      (change)="toggleAlternativesView()"
+      color="primary">
+      Show Alternatives
+    </mat-slide-toggle>
   </div>
   <p>
     gaps: {{calculateGaps()}}
@@ -18,116 +29,63 @@
   </p>
 </div>
 
-<div>
-  <strong>CLICK THIS -> </strong> <tp-token [token]="words[0]"></tp-token>
-</div>
+<div class="text_editor"
+  fxLayout fxLayout.xs="column"
+  fxLayoutAlign="center"
+  fxLayoutGap="10px"
+  fxLayoutGap.xs="0">
 
-<div class="text_editor" fxLayout fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="10px" fxLayoutGap.xs="0">
   <!-- Middle Container -->
   <div fxFlex="80%">
     <mat-card class="text_editor__main">
-      <div *ngIf="!showPreview" class="ngx-dnd-container" ngxDroppable="wordArea" [model]="words">
+      <div class="ngx-dnd-container"
+        *ngIf="!showPreview"
+        ngxDroppable="wordArea"
+        [model]="words">
 
         <!-- Draggable Words  -->
         <ng-container *ngFor="let word of words">
-          <span
-            class="text_editor__word token"
-            [ngClass]="{ 'selected': word === currentWord }"
-            ngxDraggable="wordArea,deleteArea"
-            [model]="word"
-            (dblclick)="toggleGapStatus(word)"
-            (click)="onWordClick(word)">
-            {{ word | iosview }}
-          </span>
-          <mat-form-field *ngIf="word === currentWord && isEditMode">
-            <input matInput type="text" [(ngModel)]="word.value">
-          </mat-form-field>
+          <tp-token [token]="word"
+            (select)="onTokenSelection($event)"
+            (gapChange)="reapplyGapscheme($event)"
+            ngxDraggable="wordArea,deleteArea">
+          </tp-token>
         </ng-container>
 
-        <button (click)="addNewWord()" mat-mini-fab color="primary">
+        <button mat-mini-fab
+          (click)="addNewWord()"
+          color="primary">
           <mat-icon matTooltip="Add new word next">add</mat-icon>
         </button>
       </div>
-      <div *ngIf="showPreview">
-      </div>
-
+      <div *ngIf="showPreview"><!-- FIXME: Does not work --></div>
     </mat-card>
   </div>
 
   <!-- Right Container -->
-  <div class="text_editor__right" fxLayout="column" fxLayout.xs="column" fxLayoutAlign="center" fxLayoutGap="10px"
-    fxLayoutGap.xs="0" fxFlex="20%">
-    <!-- Item Configurations Card -->
-    <mat-card>
-      <mat-card-content *ngIf="currentWord">
-        <p class="config_card" fxLayoutAlign="start">
-          Token: <span>{{currentWord&& currentWord.gapStatus
-            ?currentWord.value.slice(0,currentWord.offset):currentWord.value}}</span><span *ngIf="currentWord.gapStatus"
-            style="color:red">{{currentWord && currentWord.value |
-            replace:currentWord.offset:!currentWord.gapStatus:true}}</span>
-          <mat-icon class="delete" color="warn" (click)="delete()" matTooltip="Click here to delete">delete</mat-icon>
-        </p>
-
-        <div>
-          <mat-slide-toggle (change)="updateStorage()" [(ngModel)]="currentWord.gapStatus" color="primary">Gapped</mat-slide-toggle>
-        </div>
-
-        <br>
-        <!-- Gap Part -->
-        <div>
-          <div>
-            Prefix Length
-          </div>
-          <mat-slider [(ngModel)]="currentWord.offset" [max]="currentWord.value.length" thumbLabel="true" color="primary"
-            min="0" step="1">
-          </mat-slider>
-          {{currentWord.offset}}
-        </div>
-
-        <br>
-        <!-- Solutions Part -->
-        <div>
-          <mat-form-field>
-            <input #input_currentValue matInput [(ngModel)]="currentWord.value">
-          </mat-form-field>
-          <h5>
-            Alternative solutions
-            <button (click)="addAlternative(currentWord)" mat-mini-fab color="primary">
-              <mat-icon matTooltip="Add an alternative solution">add</mat-icon>
-            </button>
-          </h5>
-          <!-- for each solution in each word -->
-          <div *ngFor="let alt of currentWord.alternatives;let i = index">
-            <mat-form-field>
-              <input matInput [value]="currentWord.alternatives[i]" (change)="onWordAlternativeChange(currentWord,i,$event)">
-            </mat-form-field>
-            <mat-icon class="text_editor__right__close" (click)="onWordAlternativeCloseClick(currentWord,i)" matTooltip="Delete this solution">close</mat-icon>
-          </div>
-
-        </div>
-
-
-      </mat-card-content>
-      <mat-card-content fxLayoutAlign="center" *ngIf="!currentWord">
-        <span class="text_editor__right__empty_word">
-          Select a Word
-        </span>
-      </mat-card-content>
-    </mat-card>
-
+  <div class="text_editor__right"
+    fxLayout="column"
+    fxLayout.xs="column"
+    fxLayoutAlign="center"
+    fxLayoutGap="10px"
+    fxLayoutGap.xs="0"
+    fxFlex="20%">
     <mat-card>
       <mat-card-content>
-        <div fxLayout="row" fxLayoutAlign="space-evenly center">
-          <button mat-raised-button color="primary" (click)="openDialogExport()">
+        <div
+          fxLayout="row"
+          fxLayoutAlign="space-evenly center">
+          <button mat-raised-button
+            (click)="openDialogExport()"
+            color="primary">
             Export
           </button>
-          <button mat-raised-button (click)="this.router.navigate([''])">
+          <button mat-raised-button
+            (click)="this.router.navigate([''])">
             New C-Test
           </button>
         </div>
       </mat-card-content>
     </mat-card>
-
-
   </div>
 </div>

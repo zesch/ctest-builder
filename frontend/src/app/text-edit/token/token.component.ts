@@ -24,7 +24,7 @@ export class TokenComponent implements OnInit {
    * Emits when the token was selected.
    */
   @Output('select')
-  public select$: EventEmitter<Word>;
+  public select$: EventEmitter<TokenComponent>;
 
   //TODO: Change to tempToken
   /**
@@ -52,16 +52,16 @@ export class TokenComponent implements OnInit {
    */
   private locked: boolean;
 
-  constructor() { }
-
-  ngOnInit() {
+  constructor() {
     this.gapChange$ = new EventEmitter<Word>();
-    this.select$ = new EventEmitter<Word>();
+    this.select$ = new EventEmitter<TokenComponent>();
     this.selected = false;
     this.textEdit = false;
     this.alternativesEdit = false;
     this.locked = false;
+  }
 
+  ngOnInit() {
     this.select$.subscribe(
       token => {
         this.tempToken = new Token();
@@ -99,6 +99,9 @@ export class TokenComponent implements OnInit {
    * Applies changes to the actual token.
    */
   private apply() {
+    if(this.token.gapStatus !== this.tempToken.gapStatus) {
+      this.gapChange$.emit(this.tempToken);
+    }
     this.token = this.tempToken;
     this.tempToken = new Token();
     this.tempToken.set(this.token);
@@ -122,9 +125,17 @@ export class TokenComponent implements OnInit {
   }
 
   /**
+   * Selects this component and sets the edit UI active.
+   */
+  private select() {
+    this.selected = true;
+    this.select$.emit(this);
+  }
+
+  /**
    * Closes the edit ui.
    */
-  private close() {
+  public close() {
     this.selected = false;
   }
 }

@@ -9,6 +9,7 @@ import * as jsPDF from 'jspdf';
 import { CtestService } from '../ctest.service';
 import { Observable } from '../../../node_modules/rxjs/Observable';
 import { map } from '../../../node_modules/rxjs/operators/map';
+import { TokenComponent } from './token/token.component';
 
 @Component({
   selector: 'tp-text-edit',
@@ -42,6 +43,11 @@ export class TextEditComponent implements OnInit {
    * The previously selected word.
    */
   public previousWord: Word = null;
+
+  /**
+   * The {@code TokenComponent} associated with the current word.
+   */
+  public currentComponent: TokenComponent = null;
 
   /**
    * An empty word. To be used as a template for new words.
@@ -175,13 +181,9 @@ export class TextEditComponent implements OnInit {
   }
 
   /**
-   * Toggles the gap status of the given word.
    * Reapplies the gapscheme starting at the given word.
    */
-  public toggleGapStatus(word: Word) {
-    word.gapStatus = !word.gapStatus;
-
-    console.log(word.id);
+  public reapplyGapscheme(word: Word) {
     let startId = word.id;
     let text = this.words
       .slice(startId)
@@ -230,6 +232,27 @@ export class TextEditComponent implements OnInit {
 
   public onWordAlternativeCloseClick(word: Word, index: number) {
     word.alternatives.splice(index, 1);
+  }
+
+  /**
+   * Handles the selection of a token in the edit container.
+   * Closes all token components that are currently open and sets the current token component.
+   * @param component The component that was selected.
+   */
+  public onTokenSelection(component: TokenComponent) {
+    if (this.currentComponent === null) {
+      this.currentComponent = component;
+      return;
+    }
+
+    if (this.currentComponent !== component) {
+      this.currentComponent.close();
+      this.currentComponent = component;
+    }
+  }
+
+  public print(val: any) {
+    console.log(val)
   }
 
   /**

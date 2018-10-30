@@ -18,3 +18,19 @@ mat-card:hover {
   max-width: 80px;
   padding: 0px;
 }
+
+
+.token {
+  padding: 1px;
+  display: inline-block;
+  color: rgba(0, 0, 0, .87);
+}
+
+.token:hover {
+  background-color: lightgray;
+  cursor: pointer;
+}
+
+.selected {
+  font-weight: 700;
+}
