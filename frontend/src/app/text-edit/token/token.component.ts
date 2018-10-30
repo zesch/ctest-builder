@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { Word, Token } from '../../shared/models/word';
+import { MatChipInputEvent } from '@angular/material';
 
 @Component({
   selector: 'tp-token',
@@ -13,6 +14,14 @@ export class TokenComponent implements OnInit {
    */
   @Input('token')
   public token: Word;
+
+  /**
+   * Indicates, whether a backdrop should be present when the edit ui is active.
+   * The backdrop prevents users to access ui elements other than the edit ui,
+   * when the edit ui is opened.
+   */
+  @Input('backdrop')
+  public backdrop: boolean = false;
 
   /**
    * Emits the token when the gap status was changed.
@@ -52,6 +61,14 @@ export class TokenComponent implements OnInit {
    */
   private locked: boolean;
 
+  /**
+   * The keycodes which trigger an alternative to be added to the list of alternatives.
+   */
+  private alternativesAddKeys: number[] = [
+    13, // enter
+    32, // space
+  ]
+
   constructor() {
     this.gapChange$ = new EventEmitter<Word>();
     this.select$ = new EventEmitter<TokenComponent>();
@@ -85,6 +102,30 @@ export class TokenComponent implements OnInit {
   private decrementIndex() {
     if(this.tempToken.offset > 0)
       this.tempToken.offset --;
+  }
+
+  /**
+   * Adds an alternative to the token
+   */
+  private addAlternative(event: MatChipInputEvent) {
+    const alternative: string = event.value.trim();
+    const input: HTMLInputElement = event.input;
+
+    if(alternative)
+      this.tempToken.alternatives.push(alternative);
+
+    if(input)
+      input.value = '';
+  }
+
+  /**
+   * Removes the given alternative from the alternative solutions list of the token.
+   */
+  removeAlternative(alternative: string) {
+    const index: number = this.tempToken.alternatives.indexOf(alternative);
+    if(index !== -1) {
+      this.tempToken.alternatives.splice(index, 1);
+    }
   }
 
   /**

@@ -1,5 +1,7 @@
 <ng-container>
-  <span class="token" cdk-overlay-origin #trigger="cdkOverlayOrigin"
+  <span cdk-overlay-origin
+    #trigger="cdkOverlayOrigin"
+    class="token"
     [ngClass]="{'selected': selected}"
     (click)="this.select()">
     {{ this.token | iosview }}
@@ -8,8 +10,10 @@
   <ng-template cdk-connected-overlay
     [origin]="trigger"
     [open]="this.selected"
+    [cdkConnectedOverlayHasBackdrop]="backdrop"
     cdkConnectedOverlayBackdropClass="transparent"
-    (backdropClick)="this.close()">
+    (backdropClick)="this.close()"
+    (detach)="this.close()">
   <mat-card
 
     fxLayout="column">
@@ -23,11 +27,23 @@
       <span>
         <span *ngIf="this.textEdit; then textEditView; else textShowView;"></span>
         <ng-template #textShowView>
-          <span class="bold-on-hover" (click)="this.textEdit = true; this.alternativesEdit = false;" matTooltip="click to edit text">{{ this.tempToken | prompt }}</span>
+          <span class="bold-on-hover"
+            (click)="this.textEdit = true; this.alternativesEdit = false;"
+            matTooltip="click to edit text">
+            {{ this.tempToken | prompt }}
+          </span>
         </ng-template>
         <ng-template #textEditView>
           <mat-form-field *ngIf="this.textEdit" id="textEditInput">
             <input matInput [(ngModel)]="this.tempToken.value" (keyup)="handleTextEditKeyup($event)">
+            <button
+              mat-icon-button
+              matSuffix
+              color="primary"
+              (click)="this.textEdit = false;"
+              matTooltip="close">
+              <mat-icon>clear</mat-icon>
+            </button>
           </mat-form-field>
         </ng-template>
 
@@ -37,7 +53,26 @@
         </ng-template>
         <ng-template #alternativesEditView>
           <mat-form-field *ngIf="this.alternativesEdit">
-              <input matInput placeholder="Alternatives" [value]="this.tempToken.alternatives">
+            <mat-chip-list #solutionChips>
+              <mat-chip>{{ this.tempToken.value.substring(this.tempToken.offset, this.tempToken.value.length) }}</mat-chip>
+              <mat-chip *ngFor="let solution of this.tempToken.alternatives" [removable]="true" (removed)="removeAlternative(solution)">
+                {{solution}}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
+              <input placeholder="solutions"
+                [matChipInputFor]="solutionChips"
+                [matChipInputSeparatorKeyCodes]="alternativesAddKeys"
+                [matChipInputAddOnBlur]="true"
+                (matChipInputTokenEnd)="addAlternative($event)">
+            </mat-chip-list>
+            <button
+              mat-icon-button
+              matSuffix
+              color="primary"
+              (click)="this.alternativesEdit = false;"
+              matTooltip="close">
+              <mat-icon>clear</mat-icon>
+            </button>
           </mat-form-field>
         </ng-template>
       </span>
