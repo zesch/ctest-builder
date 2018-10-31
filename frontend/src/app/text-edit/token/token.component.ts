@@ -19,6 +19,8 @@ export class TokenComponent implements OnInit {
    * Indicates, whether a backdrop should be present when the edit ui is active.
    * The backdrop prevents users to access ui elements other than the edit ui,
    * when the edit ui is opened.
+   *
+   * Defaults to 'false'.
    */
   @Input('backdrop')
   public backdrop: boolean = false;
@@ -74,6 +76,7 @@ export class TokenComponent implements OnInit {
     188, // comma
     190, // dot
      32, // space
+     13, // enter
   ]
 
   constructor() {
@@ -100,16 +103,32 @@ export class TokenComponent implements OnInit {
    * Increments the gap index of the token.
    */
   private incrementIndex() {
-    if (this.tempToken.offset < this.tempToken.value.length)
-      this.tempToken.offset ++;
+    if (this.tempToken.offset < this.tempToken.value.length) {
+      this.tempToken.offset++;
+
+      this.tempToken.alternatives = this.tempToken.alternatives
+        .map((alternative: string) => {
+          return alternative.substring(1,alternative.length); // remove first char
+        })
+        .filter((alternative: string) => {
+          let firstSolutionChar: string = this.tempToken.value.charAt(this.tempToken.offset);
+          return alternative.charAt(0) === firstSolutionChar; // remove alternative if it does not start with same char as solution
+        });
+    }
   }
 
   /**
    * Decrements the gap index of the token.
    */
   private decrementIndex() {
-    if(this.tempToken.offset > 0)
-      this.tempToken.offset --;
+    if(this.tempToken.offset > 0) {
+      this.tempToken.offset--;
+
+      // Add last character to all alternatives
+      this.tempToken.alternatives = this.tempToken.alternatives.map((alternative: string) => {
+        return this.tempToken.value.charAt(this.tempToken.offset) + alternative;
+      });
+    }
   }
 
   /**
