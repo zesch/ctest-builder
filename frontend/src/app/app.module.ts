@@ -24,6 +24,7 @@ import { PromptPipe } from './shared/pipes/prompt.pipe';
 import { SolutionsPipe } from './shared/pipes/solutions.pipe';
 import { IosviewPipe } from './shared/pipes/iosview.pipe';
 import { TestviewPipe } from './shared/pipes/testview.pipe';
+import { SolutionPipe } from './shared/pipes/solution.pipe';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import { TestviewPipe } from './shared/pipes/testview.pipe';
     PromptPipe,
     SolutionsPipe,
     IosviewPipe,
-    TestviewPipe
+    TestviewPipe,
+    SolutionPipe
   ],
   imports: [
     NgxDnDModule,
