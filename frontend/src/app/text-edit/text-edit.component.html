@@ -45,7 +45,9 @@
 
         <!-- Draggable Words  -->
         <ng-container *ngFor="let word of words">
-          <tp-token [token]="word"
+          <tp-token
+            [token]="word"
+            [backdrop]="true"
             (select)="onTokenSelection($event)"
             (gapChange)="reapplyGapscheme($event)"
             ngxDraggable="wordArea,deleteArea">

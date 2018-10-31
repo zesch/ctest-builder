@@ -18,70 +18,81 @@
 
     fxLayout="column">
     <div #firstRow fxLayout="row" fxLayoutAlign="space-between center">
-      <button mat-icon-button
-        (click)="decrementIndex()"
-        matTooltip="move gap to the left">
-        <mat-icon>keyboard_arrow_left</mat-icon>
-      </button>
+      <ng-container *ngIf="!(this.textEdit || this.alternativesEdit)">
+        <button mat-icon-button
+          (click)="decrementIndex()"
+          matTooltip="move gap to the left">
+          <mat-icon>keyboard_arrow_left</mat-icon>
+        </button>
 
-      <span>
-        <span *ngIf="this.textEdit; then textEditView; else textShowView;"></span>
-        <ng-template #textShowView>
+        <div>
           <span class="bold-on-hover"
             (click)="this.textEdit = true; this.alternativesEdit = false;"
             matTooltip="click to edit text">
             {{ this.tempToken | prompt }}
           </span>
-        </ng-template>
-        <ng-template #textEditView>
-          <mat-form-field *ngIf="this.textEdit" id="textEditInput">
-            <input matInput [(ngModel)]="this.tempToken.value" (keyup)="handleTextEditKeyup($event)">
-            <button
-              mat-icon-button
-              matSuffix
-              color="primary"
-              (click)="this.textEdit = false;"
-              matTooltip="close">
-              <mat-icon>clear</mat-icon>
-            </button>
-          </mat-form-field>
-        </ng-template>
+          <span class="bold-on-hover"
+            (click)="this.alternativesEdit = true; this.textEdit = false;"
+            matTooltip="click to edit alternatives">
+            {{ this.tempToken | solutions }}
+          </span>
+        </div>
 
-        <span *ngIf="this.alternativesEdit; then alternativesEditView; else alternativesShowView;"></span>
-        <ng-template #alternativesShowView>
-            <span class="bold-on-hover" (click)="this.alternativesEdit = true; this.textEdit = false;" matTooltip="click to edit alternatives">{{ this.tempToken | solutions }}</span>
-        </ng-template>
-        <ng-template #alternativesEditView>
-          <mat-form-field *ngIf="this.alternativesEdit">
-            <mat-chip-list #solutionChips>
-              <mat-chip>{{ this.tempToken.value.substring(this.tempToken.offset, this.tempToken.value.length) }}</mat-chip>
-              <mat-chip *ngFor="let solution of this.tempToken.alternatives" [removable]="true" (removed)="removeAlternative(solution)">
-                {{solution}}
-                <mat-icon matChipRemove>cancel</mat-icon>
-              </mat-chip>
-              <input placeholder="solutions"
-                [matChipInputFor]="solutionChips"
-                [matChipInputSeparatorKeyCodes]="alternativesAddKeys"
-                [matChipInputAddOnBlur]="true"
-                (matChipInputTokenEnd)="addAlternative($event)">
-            </mat-chip-list>
-            <button
-              mat-icon-button
-              matSuffix
-              color="primary"
-              (click)="this.alternativesEdit = false;"
-              matTooltip="close">
-              <mat-icon>clear</mat-icon>
-            </button>
-          </mat-form-field>
-        </ng-template>
-      </span>
+        <button mat-icon-button
+          (click)="incrementIndex()"
+          matTooltip="move gap to the right">
+          <mat-icon>keyboard_arrow_right</mat-icon>
+        </button>
+      </ng-container>
 
-      <button mat-icon-button
-        (click)="incrementIndex()"
-        matTooltip="move gap to the right">
-        <mat-icon>keyboard_arrow_right</mat-icon>
-      </button>
+      <ng-container *ngIf="this.textEdit">
+        <mat-form-field *ngIf="this.textEdit"
+          class="edit-field">
+          <input matInput
+            placeholder="text"
+            [(ngModel)]="this.tempToken.value"
+            (keyup)="handleTextEditKeyup($event)">
+          <button
+            mat-icon-button
+            matSuffix
+            color="primary"
+            (click)="this.textEdit = false;"
+            matTooltip="close">
+            <mat-icon>clear</mat-icon>
+          </button>
+        </mat-form-field>
+      </ng-container>
+
+      <ng-container *ngIf="this.alternativesEdit">
+        <mat-form-field *ngIf="this.alternativesEdit"
+          class="edit-field">
+          <mat-chip-list #solutionChips>
+            <mat-chip
+              color="primary">
+              {{ this.tempToken.value.substring(this.tempToken.offset, this.tempToken.value.length) }}
+            </mat-chip>
+            <mat-chip *ngFor="let solution of this.tempToken.alternatives"
+              [removable]="true"
+              (removed)="removeAlternative(solution)">
+              {{solution}}
+              <mat-icon matChipRemove>cancel</mat-icon>
+            </mat-chip>
+            <input placeholder="solutions"
+              [matChipInputFor]="solutionChips"
+              [matChipInputSeparatorKeyCodes]="alternativesAddKeys"
+              [matChipInputAddOnBlur]="true"
+              (matChipInputTokenEnd)="addAlternative($event)">
+          </mat-chip-list>
+          <button
+            mat-icon-button
+            matSuffix
+            color="primary"
+            (click)="this.alternativesEdit = false;"
+            matTooltip="close">
+            <mat-icon>clear</mat-icon>
+          </button>
+        </mat-form-field>
+      </ng-container>
     </div>
 
     <div #secondRow fxLayoutAlign="center center">
@@ -109,14 +120,14 @@
 
     <div #thirdRow fxLayoutAlign="center center">
       <button mat-button
-        fxFlex="1"
+        fxFlex="1 1 50%"
         (click)="apply()"
         matTooltip="apply changes"
         color="primary">
         <mat-icon>done</mat-icon>
       </button>
       <button mat-button
-        fxFlex="1"
+        fxFlex="1 1 50%"
         (click)="discard()"
         matTooltip="discard changes"
         color="warn">

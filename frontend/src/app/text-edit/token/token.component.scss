@@ -1,24 +1,10 @@
 mat-card {
-  padding: 4px;
-  opacity: 0.33;
-  z-index: 1;
-  position: absolute;
-}
-
-mat-card:hover {
-  opacity: 1.0;
+  padding: 0px;
 }
 
 .bold-on-hover:hover {
   font-weight: 700;
 }
-
-#textEditInput {
-  min-width: 25px;
-  max-width: 80px;
-  padding: 0px;
-}
-
 
 .token {
   padding: 1px;
@@ -37,4 +23,9 @@ mat-card:hover {
 
 .transparent {
   opacity: 1.0;
+}
+
+.edit-field {
+  padding: 8px;
+  min-width: 160px;
 }
