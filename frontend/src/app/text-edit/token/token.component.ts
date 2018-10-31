@@ -30,6 +30,12 @@ export class TokenComponent implements OnInit {
   public gapChange$: EventEmitter<Word>;
 
   /**
+   * Emits the token when it should be deleted.
+   */
+  @Output('delete')
+  public delete$: EventEmitter<Word>;
+
+  /**
    * Emits when the token was selected.
    */
   @Output('select')
@@ -65,12 +71,14 @@ export class TokenComponent implements OnInit {
    * The keycodes which trigger an alternative to be added to the list of alternatives.
    */
   private alternativesAddKeys: number[] = [
-    13, // enter
-    32, // space
+    188, // comma
+    190, // dot
+     32, // space
   ]
 
   constructor() {
     this.gapChange$ = new EventEmitter<Word>();
+    this.delete$ = new EventEmitter<Word>();
     this.select$ = new EventEmitter<TokenComponent>();
     this.tempToken = new Token();
     this.selected = false;
@@ -131,9 +139,10 @@ export class TokenComponent implements OnInit {
   /**
    * Handles user input in textedit mode.
    */
-  private handleTextEditKeyup(event: KeyboardEvent) {
-    if (event.keyCode == 13 || event.keyCode == 27) {
+  private closeEditFieldsIfEnter(event: KeyboardEvent) {
+    if (event.keyCode == 13) {
       this.textEdit = false;
+      this.alternativesEdit = false;
     }
   }
 
@@ -159,10 +168,12 @@ export class TokenComponent implements OnInit {
   }
 
   /**
-   * Deletes the token.
+   * Sends a signal to delete the token.
+   * Note that this does not directly delete the token.
+   * The actual deletion has to be handled by the parent component.
    */
   private delete() {
-    //TODO: delete
+    this.delete$.emit(this.token);
     this.close();
   }
 

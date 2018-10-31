@@ -49,9 +49,10 @@
         <mat-form-field *ngIf="this.textEdit"
           class="edit-field">
           <input matInput
+            autofocus
             placeholder="text"
             [(ngModel)]="this.tempToken.value"
-            (keyup)="handleTextEditKeyup($event)">
+            (keyup)="closeEditFieldsIfEnter($event)">
           <button
             mat-icon-button
             matSuffix
@@ -77,11 +78,13 @@
               {{solution}}
               <mat-icon matChipRemove>cancel</mat-icon>
             </mat-chip>
-            <input placeholder="solutions"
-              [matChipInputFor]="solutionChips"
+            <input [matChipInputFor]="solutionChips"
               [matChipInputSeparatorKeyCodes]="alternativesAddKeys"
               [matChipInputAddOnBlur]="true"
-              (matChipInputTokenEnd)="addAlternative($event)">
+              (matChipInputTokenEnd)="addAlternative($event)"
+              (keyup)="closeEditFieldsIfEnter($event)"
+              autofocus
+              placeholder="solutions">
           </mat-chip-list>
           <button
             mat-icon-button
