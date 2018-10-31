@@ -14,131 +14,137 @@
     cdkConnectedOverlayBackdropClass="transparent"
     (backdropClick)="this.close()"
     (detach)="this.close()">
-  <mat-card
+    <mat-card fxLayout="column">
+      <div #firstRow
+        fxLayout="row"
+        fxLayoutAlign="space-between center">
 
-    fxLayout="column">
-    <div #firstRow fxLayout="row" fxLayoutAlign="space-between center">
-      <ng-container *ngIf="!(this.textEdit || this.alternativesEdit)">
-        <button mat-icon-button
-          (click)="decrementIndex()"
-          matTooltip="move gap to the left">
-          <mat-icon>keyboard_arrow_left</mat-icon>
-        </button>
-
-        <div>
-          <span class="bold-on-hover"
-            (click)="this.textEdit = true; this.alternativesEdit = false;"
-            matTooltip="click to edit text">
-            {{ this.tempToken | prompt }}
-          </span>
-          <span class="bold-on-hover"
-            (click)="this.alternativesEdit = true; this.textEdit = false;"
-            matTooltip="click to edit alternatives">
-            {{ this.tempToken | solution }}
-            <span class="badge" *ngIf="this.tempToken.alternatives.length > 0">+{{this.tempToken.alternatives.length}}</span>
-          </span>
-        </div>
-
-        <button mat-icon-button
-          (click)="incrementIndex()"
-          matTooltip="move gap to the right">
-          <mat-icon>keyboard_arrow_right</mat-icon>
-        </button>
-      </ng-container>
-
-      <ng-container *ngIf="this.textEdit">
-        <mat-form-field *ngIf="this.textEdit"
-          class="edit-field">
-          <input matInput
-            autofocus
-            placeholder="text"
-            [(ngModel)]="this.tempToken.value"
-            (keyup)="closeEditFieldsIfEnter($event)">
-          <button
-            mat-icon-button
-            matSuffix
-            color="primary"
-            (click)="this.textEdit = false;"
-            matTooltip="close">
-            <mat-icon>clear</mat-icon>
+        <ng-container *ngIf="!(this.textEdit || this.alternativesEdit)">
+          <button mat-icon-button
+            (click)="decrementIndex()"
+            matTooltip="move gap to the left">
+            <mat-icon>keyboard_arrow_left</mat-icon>
           </button>
-        </mat-form-field>
-      </ng-container>
 
-      <ng-container *ngIf="this.alternativesEdit">
-        <mat-form-field *ngIf="this.alternativesEdit"
-          class="edit-field">
-          <mat-chip-list #solutionChips>
-            <mat-chip
-              color="primary">
-              {{ this.tempToken.value.substring(this.tempToken.offset, this.tempToken.value.length) }}
-            </mat-chip>
-            <mat-chip *ngFor="let solution of this.tempToken.alternatives"
-              [removable]="true"
-              (removed)="removeAlternative(solution)">
-              {{solution}}
-              <mat-icon matChipRemove>cancel</mat-icon>
-            </mat-chip>
-            <input [matChipInputFor]="solutionChips"
-              [matChipInputSeparatorKeyCodes]="alternativesAddKeys"
-              [matChipInputAddOnBlur]="true"
-              (matChipInputTokenEnd)="addAlternative($event)"
-              (keyup)="closeEditFieldsIfEnter($event)"
+          <div>
+            <span class="bold-on-hover"
+              (click)="this.textEdit = true; this.alternativesEdit = false;"
+              matTooltip="click to edit text">
+              {{ this.tempToken | prompt }}
+            </span>
+            <span class="bold-on-hover"
+              (click)="this.alternativesEdit = true; this.textEdit = false;"
+              matTooltip="click to edit alternatives">
+              {{ this.tempToken | solution }}
+              <span class="badge" *ngIf="this.tempToken.alternatives.length > 0">+{{this.tempToken.alternatives.length}}</span>
+            </span>
+          </div>
+
+          <button mat-icon-button
+            (click)="incrementIndex()"
+            matTooltip="move gap to the right">
+            <mat-icon>keyboard_arrow_right</mat-icon>
+          </button>
+        </ng-container>
+
+        <ng-container *ngIf="this.textEdit">
+          <mat-form-field *ngIf="this.textEdit"
+            class="edit-field">
+            <input matInput
               autofocus
-              placeholder="solutions">
-          </mat-chip-list>
-          <button
-            mat-icon-button
-            matSuffix
-            color="primary"
-            (click)="this.alternativesEdit = false;"
-            matTooltip="close">
-            <mat-icon>clear</mat-icon>
-          </button>
-        </mat-form-field>
-      </ng-container>
-    </div>
+              placeholder="text"
+              [(ngModel)]="this.tempToken.value"
+              (keyup)="closeEditFieldsIfEnter($event)">
+            <button
+              mat-icon-button
+              matSuffix
+              color="primary"
+              (click)="this.textEdit = false;"
+              matTooltip="close">
+              <mat-icon>clear</mat-icon>
+            </button>
+          </mat-form-field>
+        </ng-container>
 
-    <div #secondRow fxLayoutAlign="center center">
-      <mat-slide-toggle
-        [checked]="this.tempToken.gapStatus"
-        (change)="this.tempToken.gapStatus = !this.tempToken.gapStatus"
-        labelPosition="before"
-        matTooltip="toggle gap">
-        Gap
-      </mat-slide-toggle>
-      <button mat-icon-button
-        (click)="this.locked = !this.locked"
-        matTooltip="toggle lock">
-        <mat-icon *ngIf="this.locked">lock</mat-icon>
-        <mat-icon *ngIf="!this.locked">lock_open</mat-icon>
-      </button>
-      <button mat-icon-button
-        (click)="delete()"
-        matTooltip="delete token">
-        <mat-icon>delete_outlined</mat-icon>
-      </button>
-    </div>
+        <ng-container *ngIf="this.alternativesEdit">
+          <mat-form-field *ngIf="this.alternativesEdit"
+            class="edit-field">
+            <mat-chip-list #solutionChips>
+              <mat-chip
+                selected="true"
+                color="primary">
+                {{ this.tempToken.value.substring(this.tempToken.offset, this.tempToken.value.length) }}
+              </mat-chip>
 
-    <mat-divider [inset]="true"></mat-divider>
+              <mat-chip *ngFor="let solution of this.tempToken.alternatives"
+                [removable]="true"
+                (removed)="removeAlternative(solution)">
+                {{solution}}
+                <mat-icon matChipRemove>cancel</mat-icon>
+              </mat-chip>
 
-    <div #thirdRow fxLayoutAlign="center center">
-      <button mat-button
-        fxFlex="1 1 50%"
-        (click)="apply()"
-        matTooltip="apply changes"
-        color="primary">
-        <mat-icon>done</mat-icon>
-      </button>
-      <button mat-button
-        fxFlex="1 1 50%"
-        (click)="discard()"
-        matTooltip="discard changes"
-        color="warn">
-        <mat-icon>clear</mat-icon>
-      </button>
-    </div>
-  </mat-card>
-</ng-template>
+              <input [matChipInputFor]="solutionChips"
+                [matChipInputSeparatorKeyCodes]="alternativesAddKeys"
+                [matChipInputAddOnBlur]="true"
+                (matChipInputTokenEnd)="addAlternative($event)"
+                (keyup)="closeEditFieldsIfEnter($event)"
+                autofocus
+                placeholder="solutions">
+            </mat-chip-list>
 
+            <button mat-icon-button
+              matSuffix
+              color="primary"
+              (click)="this.alternativesEdit = false;"
+              matTooltip="close">
+              <mat-icon>clear</mat-icon>
+            </button>
+          </mat-form-field>
+        </ng-container>
+      </div>
+
+      <div #secondRow fxLayoutAlign="center center">
+        <mat-slide-toggle
+          [checked]="this.tempToken.gapStatus"
+          (change)="this.tempToken.gapStatus = !this.tempToken.gapStatus"
+          labelPosition="before"
+          matTooltip="toggle gap">
+          Gap
+        </mat-slide-toggle>
+
+        <button mat-icon-button
+          (click)="this.locked = !this.locked"
+          matTooltip="toggle lock">
+          <mat-icon *ngIf="this.locked">lock</mat-icon>
+          <mat-icon *ngIf="!this.locked">lock_open</mat-icon>
+        </button>
+
+        <button mat-icon-button
+          (click)="delete()"
+          matTooltip="delete token">
+          <mat-icon>delete_outlined</mat-icon>
+        </button>
+      </div>
+
+      <mat-divider [inset]="true"></mat-divider>
+
+      <div #thirdRow fxLayoutAlign="center center">
+        <button mat-button
+          fxFlex="1 1 50%"
+          (click)="apply()"
+          matTooltip="apply changes"
+          color="primary">
+          <mat-icon>done</mat-icon>
+        </button>
+
+        <button mat-button
+          fxFlex="1 1 50%"
+          (click)="discard()"
+          matTooltip="discard changes"
+          color="warn">
+          <mat-icon>clear</mat-icon>
+        </button>
+      </div>
+    </mat-card>
+  </ng-template>
 </ng-container>

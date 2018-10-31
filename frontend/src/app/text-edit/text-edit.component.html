@@ -45,7 +45,8 @@
           (select)="onTokenSelection($event)"
           (gapChange)="reapplyGapscheme($event)"
           (delete)="deleteToken($event)"
-          ngxDraggable="wordArea,deleteArea">
+          ngxDraggable="wordArea,deleteArea"
+          [model]="word">
         </tp-token>
       </ng-container>
 
