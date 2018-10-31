@@ -251,8 +251,14 @@ export class TextEditComponent implements OnInit {
     }
   }
 
-  public print(val: any) {
-    console.log(val)
+  /**
+   * Deletes the given token from the list of tokens.
+   */
+  public deleteToken(token: Word) {
+    const index: number = this.words.indexOf(token);
+    if (index !== -1) {
+      this.words.splice(index, 1);
+    }
   }
 
   /**

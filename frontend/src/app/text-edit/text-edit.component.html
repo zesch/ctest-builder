@@ -50,6 +50,7 @@
             [backdrop]="true"
             (select)="onTokenSelection($event)"
             (gapChange)="reapplyGapscheme($event)"
+            (delete)="deleteToken($event)"
             ngxDraggable="wordArea,deleteArea">
           </tp-token>
         </ng-container>
