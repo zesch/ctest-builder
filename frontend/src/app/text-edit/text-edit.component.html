@@ -1,94 +1,73 @@
-<!-- Warnings -->
-<h5>Warnings:</h5>
-<p><ng-container *ngFor="let warning of (warnings$ | async)">
-  <span style="color: rgb(255, 66, 66);">{{warning}}</span><br>
-</ng-container></p>
+<div fxLayout="column"
+  fxLayoutAlign="space-between space-between"
+  fxLayoutGap="10px">
 
-<!-- Report Card -->
-<div *ngIf="this.words"
-  class="report_card"
-  fxLayoutAlign="start"
-  fxLayoutGap="25px">
-  <div class="report_card__preview">
+  <div>
+    <h5>Warnings:</h5>
+    <p>
+      <span *ngFor="let warning of (warnings$ | async)" style="color: rgb(255, 66, 66);">{{warning}}<br></span>
+    </p>
+  </div>
+
+  <div *ngIf="this.words"
+    fxLayoutAlign="start"
+    fxLayoutGap="25px">
+
     <mat-slide-toggle
       [(ngModel)]="showPreview"
       color="primary">
-      Show Preview
+      Preview Mode
     </mat-slide-toggle>
+
+    <!-- FIXME: Does not do anything -->
     <mat-slide-toggle
       (change)="toggleAlternativesView()"
       color="primary">
       Show Alternatives
     </mat-slide-toggle>
-  </div>
-  <p>
-    gaps: {{calculateGaps()}}
-  </p>
-  <p>
-    total words: {{words.length}}
-  </p>
-</div>
 
-<div class="text_editor"
-  fxLayout fxLayout.xs="column"
-  fxLayoutAlign="center"
-  fxLayoutGap="10px"
-  fxLayoutGap.xs="0">
+    <span>Gaps: {{ calculateGaps() }}</span>
 
-  <!-- Middle Container -->
-  <div fxFlex="80%">
-    <mat-card class="text_editor__main">
-      <div class="ngx-dnd-container"
-        *ngIf="!showPreview"
-        ngxDroppable="wordArea"
-        [model]="words">
-
-        <!-- Draggable Words  -->
-        <ng-container *ngFor="let word of words">
-          <tp-token
-            [token]="word"
-            [backdrop]="true"
-            (select)="onTokenSelection($event)"
-            (gapChange)="reapplyGapscheme($event)"
-            (delete)="deleteToken($event)"
-            ngxDraggable="wordArea,deleteArea">
-          </tp-token>
-        </ng-container>
-
-        <button mat-mini-fab
-          (click)="addNewWord()"
-          color="primary">
-          <mat-icon matTooltip="Add new word next">add</mat-icon>
-        </button>
-      </div>
-      <div *ngIf="showPreview"><!-- FIXME: Does not work --></div>
-    </mat-card>
+    <span>Words: {{ words.length }}</span>
   </div>
 
-  <!-- Right Container -->
-  <div class="text_editor__right"
-    fxLayout="column"
-    fxLayout.xs="column"
-    fxLayoutAlign="center"
-    fxLayoutGap="10px"
-    fxLayoutGap.xs="0"
-    fxFlex="20%">
-    <mat-card>
-      <mat-card-content>
-        <div
-          fxLayout="row"
-          fxLayoutAlign="space-evenly center">
-          <button mat-raised-button
-            (click)="openDialogExport()"
-            color="primary">
-            Export
-          </button>
-          <button mat-raised-button
-            (click)="this.router.navigate([''])">
-            New C-Test
-          </button>
-        </div>
-      </mat-card-content>
-    </mat-card>
+  <mat-card class="text_editor">
+    <div class="ngx-dnd-container"
+      *ngIf="!showPreview"
+      ngxDroppable="wordArea"
+      [model]="words">
+
+      <!-- Draggable Words  -->
+      <ng-container *ngFor="let word of words">
+        <tp-token
+          [token]="word"
+          [backdrop]="true"
+          (select)="onTokenSelection($event)"
+          (gapChange)="reapplyGapscheme($event)"
+          (delete)="deleteToken($event)"
+          ngxDraggable="wordArea,deleteArea">
+        </tp-token>
+      </ng-container>
+
+      <button mat-mini-fab
+        (click)="addNewWord()"
+        color="primary">
+        <mat-icon matTooltip="Add new word next">add</mat-icon>
+      </button>
+    </div>
+    <div *ngIf="showPreview"><!-- FIXME: Does not work --></div>
+  </mat-card>
+
+  <div>
+    <button mat-raised-button
+      (click)="openDialogExport()"
+      color="primary">
+      Export
+    </button>
+
+    <button mat-raised-button
+      (click)="this.router.navigate([''])">
+      New C-Test
+    </button>
   </div>
 </div>

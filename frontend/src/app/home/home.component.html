@@ -1,49 +1,50 @@
-<h4>Enter a text below or select a text file to upload</h4>
-<mat-card-content>
-  <form [formGroup]="form" (ngSubmit)="submit()">
-      <div class="home__group2">
-        <label fxFlex="12" fxLayoutAlign="space-evenly" for="file"  mat-button class="mat-raised-button" >
-          <div>
-            <mat-icon matTooltip="start uploading file">cloud_upload</mat-icon>
-          </div>
-          <div class="home__group2__btn_text">
-            Upload file (*.txt)
-          </div>
-        </label>
-          <!-- Import File Control-->
-          <input
-            id="file"
-            accept=".txt"
-            (change)="load($event)"
-            class="home__group2__file"
-            type="file">
-          <mat-error *ngIf="invalidType ">
-              Invalid file format. Only .txt files are accepted.
-          </mat-error>
-        </div>
-    <div class="home__group1">
-      <mat-form-field class="example-full-width">
-        <!-- Text To Translate Control-->
-        <textarea
-            formControlName="ctestText"
-            matInput
-            placeholder="Text to convert to C-Test"
-            matTextareaAutosize
-            matAutosizeMinRows="6"
-            matAutosizeMaxRows="10">
-        </textarea>
-        <mat-error *ngIf="this.form.controls.ctestText.errors">You need to enter a text.</mat-error>
-      </mat-form-field>
+<p>Enter a text below or select a text file to upload.</p>
+<mat-card>
+  <form [formGroup]="form"
+    (ngSubmit)="submit()">
+    <div>
+      <label mat-button
+        fxFlex="18"
+        fxLayoutAlign="space-between center"
+        for="file"
+        class="mat-raised-button"
+        matTooltip="start uploading file">
+        <mat-icon>cloud_upload</mat-icon>
+        <span> Upload file (*.txt) </span>
+      </label>
+
+      <input
+        id="file"
+        accept=".txt"
+        (change)="load($event)"
+        type="file">
+
+      <mat-error *ngIf="invalidType ">
+          Invalid file format. Only .txt files are accepted.
+      </mat-error>
     </div>
 
+    <mat-form-field>
+      <!-- Text To Translate Control-->
+      <textarea
+          formControlName="ctestText"
+          matInput
+          placeholder="Text to convert to C-Test"
+          matTextareaAutosize
+          matAutosizeMinRows="6"
+          matAutosizeMaxRows="10">
+      </textarea>
+      <mat-error *ngIf="this.form.controls.ctestText.errors">You need to enter a text.</mat-error>
+    </mat-form-field>
+
     <div fxLayoutAlign="space-between" fxLayoutGap="20px">
-      <div flex="60">
-        <button type="submit" class="mat-raised-button"
-          mat-button
-          color="primary">
-          Create C-Test
-        </button>
-      </div>
+      <button mat-button
+        flex="60"
+        type="submit"
+        class="mat-raised-button"
+        color="primary">
+        Create C-Test
+      </button>
     </div>
   </form>
-</mat-card-content>
+</mat-card>
