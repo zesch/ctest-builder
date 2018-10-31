@@ -4,6 +4,7 @@ mat-card {
 
 .bold-on-hover:hover {
   font-weight: 700;
+  cursor: pointer;
 }
 
 .token {
@@ -28,4 +29,27 @@ mat-card {
 .edit-field {
   padding: 8px;
   min-width: 160px;
+}
+
+.badge {
+  position: relative;
+  font-weight: normal !important;
+  top: -8px;
+  left: -4px;
+  z-index: 2;
+  font-size: 12px;
+  line-height: 13px;
+  border-radius: 50%;
+  min-width: 13px;
+  min-height: 13px;
+  max-width: 13px;
+  max-height: 13px;
+  background-color: rgba(233,30,99, .75);
+  border: 3px solid transparent;
+  color: #ffffff;
+  text-align: center;
+}
+
+.badge:hover {
+  background-color: rgba(233,30,99, 1);
 }

@@ -35,6 +35,7 @@
             (click)="this.alternativesEdit = true; this.textEdit = false;"
             matTooltip="click to edit alternatives">
             {{ this.tempToken | solution }}
+            <span class="badge" *ngIf="this.tempToken.alternatives.length > 0">+{{this.tempToken.alternatives.length}}</span>
           </span>
         </div>
 
