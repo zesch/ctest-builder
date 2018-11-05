@@ -82,7 +82,6 @@ export class TokenComponent implements OnInit {
     this.selected = false;
     this.textEdit = false;
     this.alternativesEdit = false;
-    this.locked = false;
   }
 
   ngOnInit() {

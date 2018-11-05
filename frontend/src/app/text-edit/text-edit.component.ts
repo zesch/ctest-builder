@@ -75,10 +75,10 @@ export class TextEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.newValue.value = '';
-    this.newValue.showAlternatives = false;
     this.newValue.gapStatus = false;
-    this.newValue.boldStatus = false;
     this.newValue.alternatives = []
+    this.newValue.id = -1;
+    this.newValue.isNormal = true;
 
     // This is just a workaround until this gets refactored. Should use observables below.
     this.ctestService.getCTest().subscribe(
@@ -175,8 +175,6 @@ export class TextEditComponent implements OnInit {
     if (this.currentWord !== word) {
       this.previousWord = this.currentWord;
       this.currentWord = word;
-      word.boldStatus = true;
-      this.previousWord.boldStatus = false;
     }
   }
 
@@ -211,9 +209,7 @@ export class TextEditComponent implements OnInit {
    * Toggles whether alternative solutions should be shown in the preview.
    */
   public toggleAlternativesView() {
-    this.words.forEach((word: Word) => {
-      word.showAlternatives = !word.showAlternatives;
-    })
+    //TODO: Implement
   }
 
   /**
@@ -282,12 +278,11 @@ export class TextEditComponent implements OnInit {
     let result = this.words.length - 1;
     this.words.splice(++result, 0, ({
       offset: 3,
-      showAlternatives: false,
       value: 'new word',
       alternatives: [],
-      boldStatus: false,
       id: Math.random() * 15,
-      gapStatus: false
+      gapStatus: false,
+      isNormal: true
     } as Word));
     this.currentWord = this.words[result];
     setTimeout(() => {
