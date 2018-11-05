@@ -6,10 +6,9 @@ package de.unidue.ltl.ctestbuilder.service.gapscheme;
  */
 public abstract class FrontendCTestToken {
 	public int id;
-	public boolean showAlternatives;
 	public String[] alternatives;
-	public boolean boldStatus;
 	public boolean gapStatus;
 	public int offset;
 	public String value;
+	public boolean isLocked;
 }

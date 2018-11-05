@@ -7,7 +7,7 @@
 	<groupId>de.unidue.ltl.ctestbuilder.service</groupId>
 	<artifactId>de.unidue.ltl.ctestbuilder.service.GapScheme</artifactId>
 	<packaging>war</packaging>
-	<version>0.0.2-SNAPSHOT</version>
+	<version>0.0.3-SNAPSHOT</version>
 	<name>de.unidue.ltl.ctestbuilder.service.GapScheme</name>
 
 	<properties>
@@ -68,7 +68,7 @@
 		<dependency>
 			<groupId>de.unidue.ltl.ctest</groupId>
 			<artifactId>de.unidue.ltl.ctest.gapscheme</artifactId>
-			<version>0.0.2-SNAPSHOT</version>
+			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

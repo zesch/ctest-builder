@@ -161,15 +161,16 @@ public class GapScheme {
 	 * Converts a single CTestToken to a JSON Object, complying with the FrontendCTestToken Interface.
 	 */
 	protected JsonObjectBuilder toJson(CTestToken token) {
-		JsonArrayBuilder jsonArr = Json.createArrayBuilder();
+		JsonArrayBuilder jsonAlternatives = Json.createArrayBuilder();
+		token.getOtherSolutions().stream().forEach(jsonAlternatives::add);
+		
 		JsonObjectBuilder jsonObj = Json.createObjectBuilder()
 				.add("id", token.getId())
-				.add("showAlternatives", false)
-				.add("alternatives", jsonArr.build())
-				.add("boldstatus", false)
+				.add("alternatives", jsonAlternatives.build())
 				.add("gapStatus", token.isGap())
 				.add("offset", token.getGapIndex())
-				.add("value", token.getText());
+				.add("value", token.getText())
+				.add("isNormal", token.isCandidate());
 
 		return jsonObj;
 	}
