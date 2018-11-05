@@ -1,12 +1,16 @@
 package de.unidue.ltl.ctestbuilder.service.gapscheme;
 
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
 import javax.json.Json;
+import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -63,7 +67,7 @@ public class GapScheme {
 		System.out.println("verify endpoint called");
 		return Response
 				.status(Response.Status.OK)
-				.entity("GapScheme service successfully started. Version: 0.0.2-SNAPSHOT")
+				.entity("GapScheme service successfully started. Version: 0.0.3-SNAPSHOT")
 				.header("Access-Control-Allow-Origin", corsOrigins)
 				.header("Access-Control-Allow-Methods", "GET")
 				.build();
@@ -157,13 +161,118 @@ public class GapScheme {
 		return response;
 	}
 	
+	/**
+	 * Updates the gap status of the given JSON Array of FrontendCTestTokens.
+	 * <p>
+	 * The request body must contain a JSON Array of FrontendCTestTokens.
+	 * The gap status of the tokens is updated, following the usual Gapping rules.
+	 * If a given token is flagged as not normal, it remains unchanged.
+	 * If the "gapfirst" parameter is set to "true", gapping starts with the first token.
+	 * 
+	 * @param request The request body. Should represent a JSON Array of FrontendCTestTokens.
+	 * @param gapFirst Indicates whether the gapping should start with the first token.
+	 * @return A Response containing a JSON Array of FrontendCTestTokens with updated gaps.
+	 */
+	@POST
+	@Path("/update-gaps")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response updateGaps(String request, @QueryParam("gapfirst") Boolean gapFirst) {
+		if (gapFirst == null)
+			return Response
+					.status(Response.Status.BAD_REQUEST)
+					.entity("{\"message\" : \"ERROR: Query parameter 'gapfirst' must not be null.\"}")
+					.header("Access-Control-Allow-Origin", corsOrigins)
+					.header("Access-Control-Allow-Methods", "POST")
+					.build();
+		
+		if (request == null)
+			return Response
+					.status(Response.Status.BAD_REQUEST)
+					.entity("{\"message\" : \"ERROR: Request body must not be empty. See API Specification for details. \"}")
+					.header("Access-Control-Allow-Origin", corsOrigins)
+					.header("Access-Control-Allow-Methods", "POST")
+					.build();
+		
+		Response response;
+		
+		try {
+			JsonArray jsonTokens = Json.createReader(new StringReader(request)).readArray();
+			
+			List<CTestToken> tokens = toCTestToken(jsonTokens);
+					
+			tokens = builder.updateGaps(tokens, gapFirst);
+			
+			response = Response
+					.status(Response.Status.OK)
+					.entity(toJson(tokens).toString())
+					.header("Access-Control-Allow-Origin", corsOrigins)
+					.header("Access-Control-Allow-Methods", "POST")
+					.build();
+		} catch (Exception e) {
+			response = Response
+					.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity("{\"message\" : \"ERROR: Could not create c-test.\"}")
+					.header("Access-Control-Allow-Origin", corsOrigins)
+					.header("Access-Control-Allow-Methods", "POST")
+					.build();
+			e.printStackTrace();
+		}
+
+		return response;
+	}
+	
+	/**
+	 * Converts the given JsonObject to CTestToken.
+	 * 
+	 * @param json The JsonObject to convert. Must comply with the {@code FrontendCTestToken} interface.
+	 * @return  The converted CTestToken
+	 * 
+	 * @throws IllegalArgumentException if JsonObject cannot be converted.
+	 */
+	protected CTestToken toCTestToken(JsonObject json) throws IllegalArgumentException {
+		try {
+			String id = Integer.toString(json.getInt("id"));
+			String text = json.getString("value");
+			int offset = json.getInt("offset");
+			boolean gapStatus = json.getBoolean("gapStatus");
+			boolean isNormal = json.getBoolean("isNormal");
+			List<String> alternatives = json.getJsonArray("alternatives").getValuesAs(JsonString::getString);			
+			
+			CTestToken token = new CTestToken(text);
+			token.setId(id);
+			token.setGap(gapStatus);
+			token.setGapIndex(offset);
+			token.setCandidate(isNormal);
+			token.setOtherSolutions(alternatives);
+			
+			return token;
+		} catch (NullPointerException | ClassCastException e) {
+			throw new IllegalArgumentException(e);
+		}
+	}
+	
+	/**
+	 * Converts a JsonArray of FrontendCTestTokens to a List of CTestTokens
+	 * @param array The array to be converted. Must contain JsonObjects, complying with the FrontendCTestToken interface.
+	 * @return  The converted tokens.
+	 */
+	protected List<CTestToken> toCTestToken(JsonArray jsonTokens) {
+		List<CTestToken> tokens = new ArrayList<>();
+
+		for (JsonValue value : jsonTokens) {
+			CTestToken cToken = toCTestToken(value.asJsonObject());
+			tokens.add(cToken);
+		}
+		
+		return tokens;
+	}
+	
 	/* 
 	 * Converts a single CTestToken to a JSON Object, complying with the FrontendCTestToken Interface.
 	 */
 	protected JsonObjectBuilder toJson(CTestToken token) {
-		JsonArrayBuilder jsonAlternatives = Json.createArrayBuilder();
-		token.getOtherSolutions().stream().forEach(jsonAlternatives::add);
-		
+		JsonArrayBuilder jsonAlternatives = Json.createArrayBuilder(token.getOtherSolutions());
 		JsonObjectBuilder jsonObj = Json.createObjectBuilder()
 				.add("id", token.getId())
 				.add("alternatives", jsonAlternatives.build())
@@ -173,6 +282,18 @@ public class GapScheme {
 				.add("isNormal", token.isCandidate());
 
 		return jsonObj;
+	}
+	
+	/**
+	 * Converts a list of CTestTokens to an JsonArray
+	 */
+	protected JsonArray toJson(List<CTestToken> tokens) {
+		JsonArrayBuilder builder = Json.createArrayBuilder();
+		for (CTestToken token : tokens) {
+			builder.add(toJson(token).build());
+		}
+		
+		return builder.build(); 
 	}
 	
 	/* 

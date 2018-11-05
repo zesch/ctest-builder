@@ -10,5 +10,5 @@ public abstract class FrontendCTestToken {
 	public boolean gapStatus;
 	public int offset;
 	public String value;
-	public boolean isLocked;
+	public boolean isNormal;
 }
