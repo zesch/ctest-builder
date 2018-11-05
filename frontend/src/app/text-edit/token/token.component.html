@@ -106,17 +106,18 @@
       <div #secondRow fxLayoutAlign="center center">
         <mat-slide-toggle
           [checked]="this.tempToken.gapStatus"
-          (change)="this.tempToken.gapStatus = !this.tempToken.gapStatus"
+          (change)="this.toggleGap()"
           labelPosition="before"
           matTooltip="toggle gap">
           Gap
         </mat-slide-toggle>
 
         <button mat-icon-button
-          (click)="this.locked = !this.locked"
+          disableRipple="false"
+          (click)="this.toggleLock()"
           matTooltip="toggle lock">
-          <mat-icon *ngIf="this.locked">lock</mat-icon>
-          <mat-icon *ngIf="!this.locked">lock_open</mat-icon>
+          <mat-icon *ngIf="!this.tempToken.isNormal">lock</mat-icon>
+          <mat-icon *ngIf="this.tempToken.isNormal">lock_open</mat-icon>
         </button>
 
         <button mat-icon-button

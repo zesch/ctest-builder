@@ -65,11 +65,6 @@ export class TokenComponent implements OnInit {
   private alternativesEdit: boolean;
 
   /**
-   * Indicates whether this token should be ignored by the automatic gapping procedure.
-   */
-  private locked: boolean;
-
-  /**
    * The keycodes which trigger an alternative to be added to the list of alternatives.
    */
   private alternativesAddKeys: number[] = [
@@ -146,9 +141,25 @@ export class TokenComponent implements OnInit {
   }
 
   /**
+   * Toggles the gap status of the temporary token.
+   */
+  public toggleGap() {
+    this.tempToken.gapStatus = !this.tempToken.gapStatus;
+    this.tempToken.isNormal = false; // locks the token due to user input
+  }
+
+  /**
+   * Toggles the gap lock status of the temporary token.
+   * Locked tokens will be ignored by the gapscheme, when reallocating gaps.
+   */
+  public toggleLock() {
+    this.tempToken.isNormal = !this.tempToken.isNormal;
+  }
+
+  /**
    * Removes the given alternative from the alternative solutions list of the token.
    */
-  removeAlternative(alternative: string) {
+  public removeAlternative(alternative: string) {
     const index: number = this.tempToken.alternatives.indexOf(alternative);
     if(index !== -1) {
       this.tempToken.alternatives.splice(index, 1);
