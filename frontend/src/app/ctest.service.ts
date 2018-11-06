@@ -1,5 +1,5 @@
 import { Injectable, OnInit, RendererFactory2 } from '@angular/core';
-import { HttpClient } from '../../node_modules/@angular/common/http';
+import { HttpClient, HttpHeaders } from '../../node_modules/@angular/common/http';
 import { Observable } from '../../node_modules/rxjs/observable';
 import { environment } from '../environments/environment';
 import { Word } from './shared/models/word';
@@ -11,6 +11,7 @@ export class CtestService {
   private rootPath: string;
   private serviceEndpoint: any;
   private partialEndpoint: any;
+  private updateGapEndpoint: any;
   private verifyEndpoint: any;
 
   private langIdRootPath: string;
@@ -25,6 +26,7 @@ export class CtestService {
     this.rootPath = environment.api.services.gapscheme.root;
     this.serviceEndpoint = environment.api.services.gapscheme.endpoints.service;
     this.partialEndpoint = environment.api.services.gapscheme.endpoints.partial;
+    this.updateGapEndpoint = environment.api.services.gapscheme.endpoints.updateGaps;
     this.verifyEndpoint = environment.api.services.gapscheme.endpoints.verify;
 
     this.langIdRootPath = environment.api.services.langid.root;
@@ -75,6 +77,24 @@ export class CtestService {
     this.language = language;
     this.ctest$ = this.http.post(url, text, options);
     return this.ctest$;
+  }
+
+  /**
+   * Queries the API for an update of the gap status of the given tokens.
+   *
+   * @param tokens The c-test tokens to be updated.
+   * @param gapFirst Whether the first token should be gapped or not.
+   * @return The result of the request as an observable.
+   */
+  public fetchUpdatedGaps(tokens: Word[], gapFirst: boolean): Observable<any> {
+    const url: string = [
+      this.host,
+      this.rootPath,
+      this.updateGapEndpoint.path + `?gapfirst=${gapFirst}`
+    ].join('/')
+    const options = this.updateGapEndpoint.options;
+
+    return this.http.post(url, tokens);
   }
 
   /**

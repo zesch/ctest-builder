@@ -179,6 +179,24 @@ export class TextEditComponent implements OnInit {
   }
 
   /**
+   * Update the gaps in the c-test, starting from the given token.
+   *
+   * All tokens following the given token are sent to the webservice
+   * and their gap status is updated according to normal gapping rules.
+   */
+  updateGaps(word: Word) {
+    let start: number = this.words.indexOf(word) + 1;
+    let toUpdate: Word[] = this.words.slice(start);
+    this.ctestService.fetchUpdatedGaps(toUpdate, !word.gapStatus).subscribe(
+      success => {
+        let words = success;
+        this.words.splice(start, words.length, ...words)
+      },
+      failure => console.error(failure)
+    );
+  }
+
+  /**
    * Reapplies the gapscheme starting at the given word.
    */
   public reapplyGapscheme(word: Word) {

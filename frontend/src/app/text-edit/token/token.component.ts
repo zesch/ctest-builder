@@ -144,7 +144,6 @@ export class TokenComponent implements OnInit {
    */
   public toggleGap() {
     this.tempToken.gapStatus = !this.tempToken.gapStatus;
-    this.tempToken.isNormal = false; // locks the token due to user input
   }
 
   /**
@@ -179,12 +178,20 @@ export class TokenComponent implements OnInit {
    * Applies changes to the actual token.
    */
   private apply() {
-    if(this.token.gapStatus !== this.tempToken.gapStatus) {
-      this.gapChange$.emit(this.tempToken);
+    let gapChange = this.token.gapStatus !== this.tempToken.gapStatus;
+
+    this.token.id = this.tempToken.id;
+    this.token.alternatives = this.tempToken.alternatives.concat();
+    this.token.gapStatus = this.tempToken.gapStatus;
+    this.token.offset = this.tempToken.offset;
+    this.token.value = this.tempToken.value;
+    this.token.isNormal = this.tempToken.isNormal;
+
+    if(gapChange) {
+      this.gapChange$.emit(this.token);
     }
-    this.token = this.tempToken;
-    this.tempToken = new Token();
-    this.tempToken.set(this.token);
+
+    this.tempToken = new Token(this.token);
     this.close()
   }
 

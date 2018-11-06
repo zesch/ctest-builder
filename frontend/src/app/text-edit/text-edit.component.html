@@ -43,7 +43,7 @@
           [token]="word"
           [backdrop]="true"
           (select)="onTokenSelection($event)"
-          (gapChange)="reapplyGapscheme($event)"
+          (gapChange)="updateGaps($event)"
           (delete)="deleteToken($event)"
           ngxDraggable="wordArea,deleteArea"
           [model]="word">

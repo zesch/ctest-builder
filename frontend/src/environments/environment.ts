@@ -33,6 +33,15 @@ export const environment = {
             headers: {
               'Content-Type': 'text/plain'
             }
+          },
+          updateGaps: {
+            path: 'update-gaps',
+            queryParameters: { gapFirst: 'gapfirst' },
+            options : {
+              headers: {
+                'Content-Type' : 'application/json'
+              }
+            }
           }
         },
       },
