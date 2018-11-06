@@ -69,8 +69,6 @@ public class TextCat {
 		// TODO proper response
 		return Response
 				.status(Response.Status.OK)
-				.header("Access-Control-Allow-Origin", corsOrigins)
-				.header("Access-Control-Allow-Methods", "GET")
 				.entity("TextCat language identification service successfully started.")
 				.build();
 	}
@@ -88,7 +86,6 @@ public class TextCat {
 		System.out.println(result);
 		return Response
 				.status(Response.Status.OK)
-				.header("Access-Control-Allow-Origin", corsOrigins)
 				.entity(langName2ISO.get(result))
 				.build();
 	}

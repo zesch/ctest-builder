@@ -32,6 +32,8 @@ import de.unidue.ltl.ctest.gapscheme.CTestGenerator;
  * <li>{@code /} Offers information about the usage of the API.
  * <li>{@code /verify} Offers information about the status and version of the service.
  * <li>{@code /gapify} Offers the c-test generation of the service. 
+ * <li>{@code /gapify-partial} Offers a simplified c-test generation.
+ * <li>{@code /update-gaps} Offers a re-gapping of a list of CTestTokens.  
  * </ul><p>
  * The {@code /gapify} endpoint can be accessed with a {@code POST} Request.
  * The request must contain the text to be converted to a c-test and the the language of the text.
@@ -68,8 +70,6 @@ public class GapScheme {
 		return Response
 				.status(Response.Status.OK)
 				.entity("GapScheme service successfully started. Version: 0.0.3-SNAPSHOT")
-				.header("Access-Control-Allow-Origin", corsOrigins)
-				.header("Access-Control-Allow-Methods", "GET")
 				.build();
 	}
 	
@@ -89,8 +89,6 @@ public class GapScheme {
 			return Response
 					.status(Response.Status.BAD_REQUEST)
 					.entity("{\"message\" : \"ERROR: language and text must not be null.\"}")
-					.header("Access-Control-Allow-Origin", corsOrigins)
-					.header("Access-Control-Allow-Methods", "POST")
 					.build();
 		
 		Response response;
@@ -100,15 +98,11 @@ public class GapScheme {
 			response = Response
 					.status(Response.Status.OK)
 					.entity(cTest.toString())
-					.header("Access-Control-Allow-Origin", corsOrigins)
-					.header("Access-Control-Allow-Methods", "POST")
 					.build();
 		} catch (Exception e) {
 			response = Response
 					.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity("{\"message\" : \"ERROR: Could not create c-test.\"}")
-					.header("Access-Control-Allow-Origin", corsOrigins)
-					.header("Access-Control-Allow-Methods", "POST")
 					.build();
 			e.printStackTrace();
 		}
@@ -134,8 +128,6 @@ public class GapScheme {
 			return Response
 					.status(Response.Status.BAD_REQUEST)
 					.entity("{\"message\" : \"ERROR: Query parameters 'language', 'text' and 'gapfirst' must not be null.\"}")
-					.header("Access-Control-Allow-Origin", corsOrigins)
-					.header("Access-Control-Allow-Methods", "POST")
 					.build();
 		
 		Response response;
@@ -145,15 +137,11 @@ public class GapScheme {
 			response = Response
 					.status(Response.Status.OK)
 					.entity(cTest.toString())
-					.header("Access-Control-Allow-Origin", corsOrigins)
-					.header("Access-Control-Allow-Methods", "POST")
 					.build();
 		} catch (Exception e) {
 			response = Response
 					.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity("{\"message\" : \"ERROR: Could not create c-test.\"}")
-					.header("Access-Control-Allow-Origin", corsOrigins)
-					.header("Access-Control-Allow-Methods", "POST")
 					.build();
 			e.printStackTrace();
 		}
@@ -182,16 +170,12 @@ public class GapScheme {
 			return Response
 					.status(Response.Status.BAD_REQUEST)
 					.entity("{\"message\" : \"ERROR: Query parameter 'gapfirst' must not be null.\"}")
-					.header("Access-Control-Allow-Origin", corsOrigins)
-					.header("Access-Control-Allow-Methods", "POST")
 					.build();
 		
 		if (request == null)
 			return Response
 					.status(Response.Status.BAD_REQUEST)
 					.entity("{\"message\" : \"ERROR: Request body must not be empty. See API Specification for details. \"}")
-					.header("Access-Control-Allow-Origin", corsOrigins)
-					.header("Access-Control-Allow-Methods", "POST")
 					.build();
 		
 		Response response;
@@ -206,15 +190,11 @@ public class GapScheme {
 			response = Response
 					.status(Response.Status.OK)
 					.entity(toJson(tokens).toString())
-					.header("Access-Control-Allow-Origin", corsOrigins)
-					.header("Access-Control-Allow-Methods", "POST")
 					.build();
 		} catch (Exception e) {
 			response = Response
 					.status(Response.Status.INTERNAL_SERVER_ERROR)
 					.entity("{\"message\" : \"ERROR: Could not create c-test.\"}")
-					.header("Access-Control-Allow-Origin", corsOrigins)
-					.header("Access-Control-Allow-Methods", "POST")
 					.build();
 			e.printStackTrace();
 		}
@@ -232,7 +212,7 @@ public class GapScheme {
 	 */
 	protected CTestToken toCTestToken(JsonObject json) throws IllegalArgumentException {
 		try {
-			String id = Integer.toString(json.getInt("id"));
+			String id = json.getString("id");
 			String text = json.getString("value");
 			int offset = json.getInt("offset");
 			boolean gapStatus = json.getBoolean("gapStatus");
