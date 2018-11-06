@@ -25,6 +25,7 @@ import { SolutionsPipe } from './shared/pipes/solutions.pipe';
 import { IosviewPipe } from './shared/pipes/iosview.pipe';
 import { TestviewPipe } from './shared/pipes/testview.pipe';
 import { SolutionPipe } from './shared/pipes/solution.pipe';
+import { ExportComponent } from './text-edit/export/export.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +39,8 @@ import { SolutionPipe } from './shared/pipes/solution.pipe';
     SolutionsPipe,
     IosviewPipe,
     TestviewPipe,
-    SolutionPipe
+    SolutionPipe,
+    ExportComponent
   ],
   imports: [
     NgxDnDModule,

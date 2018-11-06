@@ -1,11 +1,6 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material';
-import { ModalDialogComponent } from '../modal-dialog/modal-dialog.component';
 import { Router } from '@angular/router';
 import { Word } from '../shared/models/word';
-import { TestviewPipe } from '../shared/pipes/testview.pipe';
-import { IosviewPipe } from '../shared/pipes/iosview.pipe';
-import * as jsPDF from 'jspdf';
 import { CtestService } from '../ctest.service';
 import { Observable } from '../../../node_modules/rxjs/Observable';
 import { map } from '../../../node_modules/rxjs/operators/map';
@@ -45,7 +40,7 @@ export class TextEditComponent implements OnInit {
   public previousWord: Word = null;
 
   /**
-   * The {@code TokenComponent} associated with the current word.
+   * The TokenComponent associated with the current word.
    */
   public currentComponent: TokenComponent = null;
 
@@ -68,7 +63,6 @@ export class TextEditComponent implements OnInit {
   @ViewChild('input_currentValue') input_currentValue;
 
   constructor(
-    public dialog: MatDialog,
     private router: Router,
     private ctestService: CtestService
   ) { }
@@ -97,78 +91,6 @@ export class TextEditComponent implements OnInit {
   }
 
   /**
-   * Exports the current c-test as PDF
-   */
-  private exportAsPDF(title: string) {
-    const doc = new jsPDF();
-    const view = new TestviewPipe();
-    const text = this.words
-        .map(view.transform)
-        .join(' ');
-
-    doc.fromHTML(text, 15, 15, { 'width': 180 });
-    doc.save(title);
-    return;
-  }
-
-  /**
-   * Exports the current c-test as PDF
-   */
-  private exportAsTXT(filename: string) {
-    const div = document.createElement('div');
-    const view = new IosviewPipe();
-    div.innerHTML = this.words.map(view.transform).join(' ');
-    const doc = document.createElement('a');
-    doc.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(div.innerText)),
-      doc.setAttribute('download', (filename + '.txt'));
-    doc.click();
-  }
-
-  /**
-   * Cancel Changes and return back home
-   */
-  public openDialogCancel(): void {
-    const dialogRef = this.dialog.open(ModalDialogComponent, {
-      width: '',
-      data: { title: 'Go Back', content: 'All data will be lost, do you want to continue', no: 'No', yes: 'Yes' }
-    });
-    dialogRef.afterClosed().subscribe(result => {
-      if (result === 'Yes') {
-        // Yes Case
-        this.router.navigate(['/']);
-      }
-    });
-  }
-
-  /**
-   * Opens export dialogue.
-   */
-  public openDialogExport(): void {
-    const data = {
-      file: { placeholder: 'Name', title: '' },
-      options: {
-        title: 'Format',
-        values: [
-          'PDF',
-          'Text'
-        ],
-        selectedValue: 'Text'
-      },
-      title: 'Export As', action: () => {
-        switch (data.options.selectedValue) {
-          case 'PDF':
-            this.exportAsPDF(data.file.title);
-            break;
-          case 'Text':
-            this.exportAsTXT(data.file.title);
-            break;
-        }
-      }, no: 'Cancel', yes: 'Export'
-    };
-    this.dialog.open(ModalDialogComponent, { width: '', data });
-  }
-
-  /**
    * Sets the given word as the current word. Also sets the previously selected word.
    */
   public onWordClick(word: Word) {
@@ -191,33 +113,6 @@ export class TextEditComponent implements OnInit {
       success => {
         let words = success;
         this.words.splice(start, words.length, ...words)
-      },
-      failure => console.error(failure)
-    );
-  }
-
-  /**
-   * Reapplies the gapscheme starting at the given word.
-   */
-  public reapplyGapscheme(word: Word) {
-    let startId = word.id;
-    let text = this.words
-      .slice(startId)
-      .map((token: Word) => token.value)
-      .join(" ")
-
-    this.ctestService.fetchPartialCTest(text, this.ctestService.getLanguage(), !word.gapStatus).subscribe(
-      success => {
-        console.log(success.words[0].id);
-        let words = success.words;
-
-        for (let i = 0; i < words.length; i++) {
-            words[i].id = startId + i;
-        }
-
-        console.log(this.words.slice(startId))
-        this.words.splice(startId, words.length, ...words);
-        console.log(this.words.slice(startId))
       },
       failure => console.error(failure)
     );

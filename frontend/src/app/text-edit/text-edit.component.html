@@ -60,11 +60,7 @@
   </mat-card>
 
   <div>
-    <button mat-raised-button
-      (click)="openDialogExport()"
-      color="primary">
-      Export
-    </button>
+    <tp-export [words]="this.words"></tp-export>
 
     <button mat-raised-button
       (click)="this.router.navigate([''])">
