@@ -1,5 +1,7 @@
+import { v4 as uuid } from "uuid";
+
 export interface Word {
-    id: number;
+    id: string;
     alternatives: string[];
     gapStatus: boolean;
     offset: number;
@@ -8,7 +10,7 @@ export interface Word {
 }
 
 const DEFAULT_WORD: Word = {
-  id: -1,
+  id: "",
   alternatives: [],
   gapStatus: false,
   offset: 0,
@@ -17,7 +19,7 @@ const DEFAULT_WORD: Word = {
 }
 
 export class Token implements Word {
-  public id: number;
+  public id: string;
   public alternatives: string[];
   public gapStatus: boolean;
   public offset: number;
@@ -30,6 +32,7 @@ export class Token implements Word {
    */
   constructor(word: Word = DEFAULT_WORD) {
     this.set(word);
+    this.id = uuid();
   }
 
   /**

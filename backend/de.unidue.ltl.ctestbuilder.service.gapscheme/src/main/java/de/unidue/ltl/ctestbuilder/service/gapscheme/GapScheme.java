@@ -202,6 +202,7 @@ public class GapScheme {
 		return response;
 	}
 	
+	//TODO: Move all conversions to own class.
 	/**
 	 * Converts the given JsonObject to CTestToken.
 	 * 
@@ -286,11 +287,8 @@ public class GapScheme {
 	protected JsonObject toJson(CTestObject ctest, List<String> warningList) {
 		JsonArrayBuilder words = Json.createArrayBuilder();
 
-		int id = 1;
 		for (CTestToken token : ctest.getTokens()) {
-			token.setId(Integer.toString(id));
 			words.add(toJson(token));
-			id++;
 		}
 
 		JsonArrayBuilder warnings = Json.createArrayBuilder();

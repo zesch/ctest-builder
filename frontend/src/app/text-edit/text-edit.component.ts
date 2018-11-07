@@ -5,6 +5,7 @@ import { CtestService } from '../ctest.service';
 import { Observable } from '../../../node_modules/rxjs/Observable';
 import { map } from '../../../node_modules/rxjs/operators/map';
 import { TokenComponent } from './token/token.component';
+import { v4 as uuid } from 'uuid';
 
 @Component({
   selector: 'tp-text-edit',
@@ -71,7 +72,7 @@ export class TextEditComponent implements OnInit {
     this.newValue.value = '';
     this.newValue.gapStatus = false;
     this.newValue.alternatives = []
-    this.newValue.id = -1;
+    this.newValue.id = uuid();
     this.newValue.isNormal = true;
 
     // This is just a workaround until this gets refactored. Should use observables below.
@@ -193,7 +194,7 @@ export class TextEditComponent implements OnInit {
       offset: 3,
       value: 'new word',
       alternatives: [],
-      id: Math.random() * 15,
+      id: uuid(),
       gapStatus: false,
       isNormal: true
     } as Word));
