@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Word, Token } from '../models/word';
-import { createStore, Store, Reducer } from 'redux';
+import { createStore, Store, Reducer, combineReducers } from 'redux';
+import undoable, { distinctState } from 'redux-undo';
 
 /**
  * Reducer handling incoming WordChangeEvents
@@ -36,31 +37,40 @@ export class StateManagementService {
   /**
    * Redux Store that manages the application's state.
    */
-  private store: Store = createStore(words);
+  private store: Store;
 
   constructor() {
     this.words$ = new BehaviorSubject([]);
-    this.store.subscribe(() => { this.words$.next(this.store.getState()) })
+
+    let stateModel: Reducer = combineReducers({ words: words });
+    let undoConfig = {
+      undoType: 'UNDO',
+      redoType: 'REDO'
+    }
+
+    this.store = createStore(undoable(stateModel, undoConfig));
+    this.store.subscribe(() => { this.words$.next(this.store.getState().present) })
+    this.store.subscribe(() => console.log(this.store.getState()))
   }
 
   /**
    * Handles the given event and adds it to the history.
    */
   public dispatch(event: ChangeEvent) {
-    //TODO: Implement.
+    this.store.dispatch(event);
   }
 
   /**
    * Undos the last action.
    */
   public undo() {
-    //TODO: Implement
+    this.store.dispatch({ type: 'UNDO' })
   }
 
   /**
    * Redoes the latest action that was reverted.
    */
   public redo() {
-    //TODO: Implement
+    this.store.dispatch({ type: 'REDO'})
   }
 }
