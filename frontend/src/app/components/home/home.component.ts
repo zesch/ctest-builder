@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CtestService } from '../ctest.service';
-import { MatSnackBar } from '../../../node_modules/@angular/material';
+import { CtestService } from '../../services/ctest.service';
+import { MatSnackBar } from '@angular/material';
 import { switchMap } from 'rxjs/operators';
 
 @Component({

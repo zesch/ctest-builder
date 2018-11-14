@@ -1,10 +1,10 @@
 import { Component, OnInit, Input } from '@angular/core';
 import * as jsPDF from 'jspdf';
-import { TestviewPipe } from '../../shared/pipes/testview.pipe';
-import { Word } from '../../shared/models/word';
-import { IosviewPipe } from '../../shared/pipes/iosview.pipe';
+import { TestviewPipe } from '../../../pipes/testview.pipe';
+import { Word } from '../../../models/word';
+import { IosviewPipe } from '../../../pipes/iosview.pipe';
 import { MatDialog } from '@angular/material';
-import { ModalDialogComponent } from '../../modal-dialog/modal-dialog.component';
+import { ModalDialogComponent } from '../../../components/modal-dialog/modal-dialog.component';
 import { Router } from '@angular/router';
 
 @Component({

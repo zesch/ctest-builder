@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { Word, Token } from '../../shared/models/word';
+import { Word, Token } from '../../../models/word';
 import { MatChipInputEvent } from '@angular/material';
 
 @Component({

@@ -1,9 +1,9 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Word } from '../shared/models/word';
-import { CtestService } from '../ctest.service';
-import { Observable } from '../../../node_modules/rxjs/Observable';
-import { map } from '../../../node_modules/rxjs/operators/map';
+import { Word } from '../../models/word';
+import { CtestService } from '../../services/ctest.service';
+import { Observable } from 'rxjs/Observable';
+import { map } from 'rxjs/operators/map';
 import { TokenComponent } from './token/token.component';
 import { v4 as uuid } from 'uuid';
 
