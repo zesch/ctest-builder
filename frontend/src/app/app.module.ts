@@ -24,6 +24,7 @@ import { IosviewPipe } from './pipes/iosview.pipe';
 import { TestviewPipe } from './pipes/testview.pipe';
 import { SolutionPipe } from './pipes/solution.pipe';
 import { ExportComponent } from './components/text-edit/export/export.component';
+import { StateManagementService } from './services/state-management.service';
 
 @NgModule({
   declarations: [
@@ -53,7 +54,8 @@ import { ExportComponent } from './components/text-edit/export/export.component'
   ],
   providers: [
     { provide: HAMMER_GESTURE_CONFIG, useClass: GestureConfig },
-    CtestService
+    CtestService,
+    StateManagementService
   ],
   entryComponents: [ModalDialogComponent],
   bootstrap: [AppComponent]

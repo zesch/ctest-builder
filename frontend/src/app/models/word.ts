@@ -32,7 +32,18 @@ export class Token implements Word {
    */
   constructor(word: Word = DEFAULT_WORD) {
     this.set(word);
-    this.id = uuid();
+    if(this.id === DEFAULT_WORD.id)
+      this.id = uuid();
+  }
+
+  /**
+   * Creates a new Token from the given word.
+   * Values of the new instance and the given instance are identical.
+   */
+  public static clone(word: Word) {
+    const token: Token = new Token();
+    token.set(word);
+    return token;
   }
 
   /**

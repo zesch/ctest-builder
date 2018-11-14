@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { StateManagementService } from './services/state-management.service';
 
 @Component({
   selector: 'tp-root',
@@ -7,5 +8,6 @@ import { Component } from '@angular/core';
 })
 export class AppComponent {
   public title = 'C-Test Builder';
-}
 
+  constructor(private stateService: StateManagementService) {}
+}
