@@ -95,7 +95,7 @@ export class StateManagementService {
    * Convenience Method for adding multiple words.
    * @param words
    */
-  public addAll(...words: Word[]) {
+  public addAll(words: Word[]) {
     for (let word of words) {
       this.add(word);
     }
@@ -105,7 +105,7 @@ export class StateManagementService {
    * Convenience Method for setting the current state to the given array of words.
    * @param words
    */
-  public set(...words: Word[]) {
+  public set(words: Word[]) {
     this.clear();
     for (let word of words) {
       this.add(word);

@@ -38,6 +38,12 @@ export class TokenComponent implements OnInit {
   public delete$: EventEmitter<Word>;
 
   /**
+   * Emits the token when it was modified.
+   */
+  @Output('modify')
+  public modify$: EventEmitter<Word>;
+
+  /**
    * Emits when the token was selected.
    */
   @Output('select')
@@ -78,6 +84,7 @@ export class TokenComponent implements OnInit {
     this.gapChange$ = new EventEmitter<Word>();
     this.delete$ = new EventEmitter<Word>();
     this.select$ = new EventEmitter<TokenComponent>();
+    this.modify$ = new EventEmitter<Word>();
     this.tempToken = new Token();
     this.selected = false;
     this.textEdit = false;
@@ -178,20 +185,11 @@ export class TokenComponent implements OnInit {
    * Applies changes to the actual token.
    */
   private apply() {
-    let gapChange = this.token.gapStatus !== this.tempToken.gapStatus;
-
-    this.token.id = this.tempToken.id;
-    this.token.alternatives = this.tempToken.alternatives.concat();
-    this.token.gapStatus = this.tempToken.gapStatus;
-    this.token.offset = this.tempToken.offset;
-    this.token.value = this.tempToken.value;
-    this.token.isNormal = this.tempToken.isNormal;
-
-    if(gapChange) {
-      this.gapChange$.emit(this.token);
+    this.modify$.emit(this.tempToken);
+    if(this.token.gapStatus !== this.tempToken.gapStatus) {
+      this.gapChange$.emit(this.tempToken);
     }
-
-    this.tempToken = new Token(this.token);
+    this.token = new Token(this.tempToken);
     this.close()
   }
 

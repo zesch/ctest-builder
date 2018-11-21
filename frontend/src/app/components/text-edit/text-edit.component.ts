@@ -1,11 +1,12 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Word } from '../../models/word';
+import { Word, Token } from '../../models/word';
 import { CtestService } from '../../services/ctest.service';
 import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators/map';
 import { TokenComponent } from './token/token.component';
 import { v4 as uuid } from 'uuid';
+import { StateManagementService } from '../../services/state-management.service';
 
 @Component({
   selector: 'tp-text-edit',
@@ -65,7 +66,8 @@ export class TextEditComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private ctestService: CtestService
+    private ctestService: CtestService,
+    private stateService: StateManagementService
   ) { }
 
   ngOnInit(): void {
@@ -75,9 +77,11 @@ export class TextEditComponent implements OnInit {
     this.newValue.id = uuid();
     this.newValue.isNormal = true;
 
+    this.stateService.words$.subscribe(success => this.words = success);
+
     // This is just a workaround until this gets refactored. Should use observables below.
     this.ctestService.getCTest().subscribe(
-      success => this.words = success.words,
+      success => this.stateService.addAll(success.words),
       failure => console.error(failure)
     )
 
@@ -161,10 +165,14 @@ export class TextEditComponent implements OnInit {
     }
   }
 
+  public onTokenModification(token: Word) {
+    this.stateService.modify(token);
+  }
+
   /**
    * Deletes the given token from the list of tokens.
    */
-  public deleteToken(token: Word) {
+  public onTokenDeletion(token: Word) {
     const index: number = this.words.indexOf(token);
     if (index !== -1) {
       this.words.splice(index, 1);
@@ -172,12 +180,11 @@ export class TextEditComponent implements OnInit {
   }
 
   /**
-   * Calculate total gapes enabled for each word
+   * Calculate total gaps enabled for each word
    */
   public calculateGaps() {
     return this.words.filter((word: Word) => Boolean(word.gapStatus)).length;
   }
-
 
   /**
    * Deletes the currently selected word.
@@ -187,21 +194,9 @@ export class TextEditComponent implements OnInit {
     this.currentWord = null;
   }
 
-  public addNewWord(input: any) {
-
-    let result = this.words.length - 1;
-    this.words.splice(++result, 0, ({
-      offset: 3,
-      value: 'new word',
-      alternatives: [],
-      id: uuid(),
-      gapStatus: false,
-      isNormal: true
-    } as Word));
-    this.currentWord = this.words[result];
-    setTimeout(() => {
-      this.input_currentValue.nativeElement.select();
-      console.log(this.input_currentValue.nativeElement.focus());
-    });
+  public addNewWord() {
+    const word: Token = new Token();
+    word.value = 'new word';
+    this.stateService.add(word);
   }
 }

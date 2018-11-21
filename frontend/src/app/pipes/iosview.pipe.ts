@@ -2,8 +2,7 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Word } from '../models/word';
 
 @Pipe({
-  name: 'iosview',
-  pure: false
+  name: 'iosview'
 })
 export class IosviewPipe implements PipeTransform {
 

@@ -44,7 +44,8 @@
           [backdrop]="true"
           (select)="onTokenSelection($event)"
           (gapChange)="updateGaps($event)"
-          (delete)="deleteToken($event)"
+          (modify)="onTokenModification($event)"
+          (delete)="onTokenDeletion($event)"
           ngxDraggable="wordArea,deleteArea"
           [model]="word">
         </tp-token>
