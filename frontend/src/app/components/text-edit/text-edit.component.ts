@@ -116,8 +116,9 @@ export class TextEditComponent implements OnInit {
     let toUpdate: Word[] = this.words.slice(start);
     this.ctestService.fetchUpdatedGaps(toUpdate, !word.gapStatus).subscribe(
       success => {
-        let words = success;
-        this.words.splice(start, words.length, ...words)
+        const regapped: Word[] = success;
+        const unchanged: Word[] = this.words.slice(0,start);
+        this.stateService.set([...unchanged, ...regapped]);
       },
       failure => console.error(failure)
     );

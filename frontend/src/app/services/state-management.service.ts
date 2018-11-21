@@ -5,13 +5,15 @@ import { createStore, Store, Reducer, combineReducers } from 'redux';
 import undoable, { distinctState } from 'redux-undo';
 
 export interface ChangeEvent { type: Action }
-export interface WordChangeEvent extends ChangeEvent { word: Word }
+export interface WordChangeEvent extends ChangeEvent { words: Word[] }
 
 export enum Action {
   Add = 'ADD_WORD',
+  AddAll = 'ADD_WORDS',
   Delete = 'DELETE_WORD',
   Modify = 'MODIFY_WORD',
   Clear = 'CLEAR_WORDS',
+  Set = 'SET_WORDS',
   Undo = 'UNDO',
   Redo = 'REDO'
 }
@@ -24,14 +26,19 @@ export enum Action {
  * @return  a new array of Words, representing the new state
  */
 const handleWordChange: Reducer = (state: Word[]=[], action: WordChangeEvent) => {
-  const target: Word = action.word;
+  const targets: Word[] = action.words;
+  const target: Word = targets ? targets[0] : null;
   switch(action.type) {
     case Action.Add:
       return state.concat(target);
-    case Action.Delete:
-      return state.filter(word => word.id !== target.id);
+    case Action.AddAll:
+      return state.concat(targets);
     case Action.Modify:
       return state.map(word => word.id === target.id ? target : word);
+    case Action.Delete:
+      return state.filter(word => word.id !== target.id);
+    case Action.Set:
+      return targets.concat();
     case Action.Clear:
       return [];
     default:
@@ -87,29 +94,24 @@ export class StateManagementService {
    * Adds the given word to the current state model.
    */
   public add(word: Word) {
-    const event: WordChangeEvent = { type: Action.Add, word: word };
+    const event: WordChangeEvent = { type: Action.Add, words: [word] };
     this.store.dispatch(event);
   }
 
   /**
-   * Convenience Method for adding multiple words.
-   * @param words
+   * Sets the current state to the given words.
    */
   public addAll(words: Word[]) {
-    for (let word of words) {
-      this.add(word);
-    }
+    const action: WordChangeEvent = { type: Action.AddAll, words: words};
+    this.store.dispatch(action);
   }
 
   /**
-   * Convenience Method for setting the current state to the given array of words.
-   * @param words
+   * Adds the given words to the current state.
    */
   public set(words: Word[]) {
-    this.clear();
-    for (let word of words) {
-      this.add(word);
-    }
+    const action: WordChangeEvent = { type: Action.Set, words: words };
+    this.store.dispatch(action);
   }
 
   /**
@@ -124,7 +126,7 @@ export class StateManagementService {
    * Deletes the given word from the current state model.
    */
   public delete(word: Word) {
-    const event: WordChangeEvent = { type: Action.Delete, word: word };
+    const event: WordChangeEvent = { type: Action.Delete, words: [word] };
     this.store.dispatch(event);
   }
 
@@ -135,7 +137,7 @@ export class StateManagementService {
    * nothing is changed.
    */
   public modify(word: Word) {
-    const event: WordChangeEvent = { type: Action.Modify, word: word };
+    const event: WordChangeEvent = { type: Action.Modify, words: [word] };
     this.store.dispatch(event);
   }
 
