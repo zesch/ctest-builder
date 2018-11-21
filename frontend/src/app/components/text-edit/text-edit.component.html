@@ -2,16 +2,35 @@
   fxLayoutAlign="space-between space-between"
   fxLayoutGap="10px">
 
-  <div>
+  <div *ngIf="(this.warnings$ | async)">
     <h5>Warnings:</h5>
     <p>
       <span *ngFor="let warning of (warnings$ | async)" style="color: rgb(255, 66, 66);">{{warning}}<br></span>
     </p>
   </div>
 
+  <div>
+    <span>Gaps: {{ calculateGaps() }}</span>
+    <span>Words: {{ words.length }}</span>
+  </div>
+
   <div *ngIf="this.words"
-    fxLayoutAlign="start"
+    fxLayoutAlign="start center"
     fxLayoutGap="25px">
+
+    <div>
+      <button mat-raised-button
+        (click)="this.stateService.undo()"
+        matTooltip="undo last change">
+        <mat-icon>undo</mat-icon>
+      </button>
+
+      <button mat-raised-button
+        (click)="this.stateService.redo()"
+        matTooltip="redo last change">
+        <mat-icon>redo</mat-icon>
+      </button>
+    </div>
 
     <mat-slide-toggle
       [(ngModel)]="showPreview"
@@ -26,10 +45,8 @@
       Show Alternatives
     </mat-slide-toggle>
 
-    <span>Gaps: {{ calculateGaps() }}</span>
-
-    <span>Words: {{ words.length }}</span>
   </div>
+
 
   <mat-card class="text_editor">
     <div class="ngx-dnd-container"
