@@ -73,7 +73,13 @@
         <mat-icon matTooltip="Add new word next">add</mat-icon>
       </button>
     </div>
-    <div *ngIf="showPreview"><!-- FIXME: Does not work --></div>
+    <div *ngIf="showPreview">
+      <p>
+        <ng-container *ngFor="let word of words">
+          {{ word | testview }}
+        </ng-container>
+      </p>
+    </div>
   </mat-card>
 
   <div>
