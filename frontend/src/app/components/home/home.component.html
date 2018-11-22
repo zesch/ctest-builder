@@ -3,21 +3,19 @@
   <form [formGroup]="form"
     (ngSubmit)="submit()">
     <div>
-      <label mat-button
-        fxFlex="18"
-        fxLayoutAlign="space-between center"
-        for="file"
-        class="mat-raised-button"
+      <button mat-raised-button
+        type="button"
+        (click)="fileIn.click()"
         matTooltip="start uploading file">
         <mat-icon>cloud_upload</mat-icon>
         <span> Upload file (*.txt) </span>
-      </label>
+      </button>
 
-      <input
-        id="file"
+      <input #fileIn
+        type="file"
         accept=".txt"
-        (change)="load($event)"
-        type="file">
+        hidden="hidden"
+        (change)="load($event)">
 
       <mat-error *ngIf="invalidType ">
           Invalid file format. Only .txt files are accepted.

@@ -40,11 +40,11 @@ export const environment = {
         }
       },
       langid: {
-        root: '/langid/rest',
+        root: 'langid/rest',
         endpoints: {
           verify: { path: 'verify', queryParameters: false },
           service: {
-            path: 'classifiy',
+            path: 'classify',
             queryParameters: false,
             options : {
               headers: { 'Content-Type' : 'text/plain' },

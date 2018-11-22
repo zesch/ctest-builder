@@ -10,8 +10,10 @@
   </div>
 
   <div>
-    <span>Gaps: {{ calculateGaps() }}</span>
-    <span>Words: {{ words.length }}</span>
+    <p>
+      <span>Gaps: {{ calculateGaps() }}</span>
+      <span>Words: {{ words.length }}</span>
+    </p>
   </div>
 
   <div *ngIf="this.words"
@@ -37,14 +39,6 @@
       color="primary">
       Preview Mode
     </mat-slide-toggle>
-
-    <!-- FIXME: Does not do anything -->
-    <mat-slide-toggle
-      (change)="toggleAlternativesView()"
-      color="primary">
-      Show Alternatives
-    </mat-slide-toggle>
-
   </div>
 
   <mat-card class="text_editor">
