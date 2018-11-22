@@ -1,6 +1,6 @@
 FROM node:6-alpine
 
-COPY dist/* ctest_builder/
+COPY dist/ ctest_builder/
 
 RUN npm install -g http-server
 
