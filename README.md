@@ -97,7 +97,7 @@ cd <tomcat>/bin
 Deployment using Eclipse requires the local Tomcat installation to be added as a server in the Workspace. Follow these steps in Eclipse:
 
 + Add the project to your workspace.
-+ Navigate to the Servers View (`Window->Show View->Servers`) 
++ Navigate to the Servers View (`Window -> Show View -> Servers`) 
 + Add a new Server (`Servers View -> New... -> Server`)
   Server Type: `Apache/Tomcat v9.0 Server`  
   Server's host name: `localhost`  
@@ -113,11 +113,13 @@ Deployment on the server comprises three steps:
 2. Copying built services to the server
 3. Starting all Docker services
 
+When you need to perform this task more often, you may want to automate deployment in a custom shell script.
+
 **Note:** In case you never deployed the CTest Builder before, you may need to copy the `<c.test.builder>/docker` directory to some directory on the server (this may be your user's home directory). `<c.test.builder>` refers to the full path to the project's repository.
 
 ### Building all required services
 
-Run the following commands to build all services using the following commands or a suitable alternative.
+Run the following commands to build all services using the following commands, the `build.sh` script or a suitable alternative.
 
 ```
 cd <c.test.builder>/backend/de.unidue.ltl.ctestbuilder.service.gapscheme/
@@ -150,5 +152,5 @@ docker-compose up -d
 
 **Note:** The build process produces unused images. To remove them, run `docker rmi $(docker images -f 'dangling=true' -q)`. This will remove all untagged images.
 
-**Note:** In case something went wrong at some earlier deployment, you may need to remove orphaned containers from earlier builds. Identify the orphaned containers, using `docker ps -a` and remove them manually.
+**Note:** In case something went wrong at some earlier deployment, you may need to remove orphaned containers from earlier builds. Identify the orphaned containers, using `docker ps -a` and remove them manually or simply add the `--remove-orphans` to the `docker-compose up` command.
 

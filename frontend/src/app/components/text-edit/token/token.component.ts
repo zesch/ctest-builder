@@ -58,7 +58,7 @@ export class TokenComponent implements OnInit {
   /**
    * Indicates whether the component is selected.
    */
-  private selected: boolean;
+  public selected: boolean;
 
   /**
    * Indicates whether text is being edited.
@@ -174,7 +174,7 @@ export class TokenComponent implements OnInit {
   /**
    * Handles user input in textedit mode.
    */
-  private closeEditFieldsIfEnter(event: KeyboardEvent) {
+  public closeEditFieldsIfEnter(event: KeyboardEvent) {
     if (event.keyCode == 13) {
       this.textEdit = false;
       this.alternativesEdit = false;
@@ -184,7 +184,7 @@ export class TokenComponent implements OnInit {
   /**
    * Applies changes to the actual token.
    */
-  private apply() {
+  public apply() {
     this.modify$.emit(this.tempToken);
     if(this.token.gapStatus !== this.tempToken.gapStatus) {
       this.gapChange$.emit(this.tempToken);
@@ -196,7 +196,7 @@ export class TokenComponent implements OnInit {
   /**
    * Discards changes made to the temporary token.
    */
-  private discard() {
+  public discard() {
     this.tempToken.set(this.token);
     this.close();
   }
@@ -206,7 +206,7 @@ export class TokenComponent implements OnInit {
    * Note that this does not directly delete the token.
    * The actual deletion has to be handled by the parent component.
    */
-  private delete() {
+  public delete() {
     this.delete$.emit(this.token);
     this.close();
   }
@@ -214,7 +214,7 @@ export class TokenComponent implements OnInit {
   /**
    * Selects this component and sets the edit UI active.
    */
-  private select() {
+  public select() {
     this.selected = true;
     this.select$.emit(this);
   }

@@ -19,7 +19,7 @@
 *.sublime-workspace
 
 # custom shell scripts
-upload-dockerfiles.sh
+deploy.sh
 
 # IDE - VSCode
 .vscode/*

@@ -54,12 +54,12 @@ export class TextEditComponent implements OnInit {
   /**
    * Observable of words in the c-test.
    */
-  private words$: Observable<Word[]>;
+  public words$: Observable<Word[]>;
 
   /**
    * Observable of warning messages to be displayed.
    */
-  private warnings$: Observable<string[]>;
+  public warnings$: Observable<string[]>;
 
   //TODO: What does this do?
   @ViewChild('input_currentValue') input_currentValue;
@@ -199,5 +199,9 @@ export class TextEditComponent implements OnInit {
     const word: Token = new Token();
     word.value = 'new word';
     this.stateService.add(word);
+  }
+
+  public routeToHome() {
+    this.router.navigate(['']);
   }
 }
