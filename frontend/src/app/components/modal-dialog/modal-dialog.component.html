@@ -1,18 +1,43 @@
 <h1 mat-dialog-title>{{data.title}}</h1>
-<div mat-dialog-content>
+
+<div mat-dialog-content fxLayout="column">
   <p *ngIf="data.content">{{data.content}}?</p>
   <mat-form-field *ngIf="data.file" >
-    <input matInput [placeholder]="data.file.placeholder" [(ngModel)]="data.file.title">
+    <input matInput
+      [placeholder]="data.file.placeholder"
+      [(ngModel)]="data.file.title">
   </mat-form-field>
-  <mat-form-field *ngIf="data.options">
-      <mat-select [placeholder]="data.options.title" [(ngModel)]="data.options.selectedValue" name="format">
-        <mat-option *ngFor="let opt of data.options.values" [value]="opt">
-          {{opt}}
-        </mat-option>
-      </mat-select>
+  <mat-form-field *ngIf="data.fileTypes">
+    <mat-select
+      name="fileType"
+      [placeholder]="data.fileTypes.title"
+      [(ngModel)]="data.fileTypes.selectedValue">
+      <mat-option *ngFor="let fileType of data.fileTypes.values" [value]="fileType">
+        {{fileType}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field>
+    <mat-select
+      name="format"
+      [placeholder]="data.formats.title"
+      [(ngModel)]="data.formats.selectedValue">
+      <mat-option *ngFor="let format of data.formats.values" [value]="format">
+        {{format}}
+      </mat-option>
+    </mat-select>
   </mat-form-field>
 </div>
+
 <div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">{{data.no}}</button>
-  <button mat-button [mat-dialog-close]="data.yes" (click)="onYesHandler()" cdkFocusInitial>{{data.yes}}</button>
+  <button mat-button
+    (click)="onNoClick()">
+    {{data.no}}
+  </button>
+  <button mat-button
+    [mat-dialog-close]="data.yes"
+    (click)="onYesHandler()"
+    cdkFocusInitial>
+    {{data.yes}}
+  </button>
 </div>

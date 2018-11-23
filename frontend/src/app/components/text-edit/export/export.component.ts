@@ -46,25 +46,55 @@ export class ExportComponent implements OnInit {
    */
   public openDialogExport(): void {
     const data = {
-      file: { placeholder: 'Name', title: '' },
-      options: {
-        title: 'Format',
-        values: [
-          'PDF',
-          'Text'
-        ],
-        selectedValue: 'Text'
+      title: 'Export As',
+      file: {
+        placeholder: 'Name',
+        title: ''
       },
-      title: 'Export As', action: () => {
-        switch (data.options.selectedValue) {
-          case 'PDF':
-            this.exportAsPDF(data.file.title);
+      fileTypes: {
+        title: 'File Type',
+        values: [
+          'pdf',
+          'txt'
+        ],
+        selectedValue: 'pdf'
+      },
+      formats: {
+        title: 'Gap Format',
+        values: [
+          'edit -> ed{it}',
+          'test -> te__'
+        ],
+        selectedValue: 'test -> te__'
+      },
+      action: () => {
+        let formatFunc;
+        let exportFunc;
+
+        switch(data.formats.selectedValue) {
+          case 'edit -> ed{it}':
+            formatFunc = new IosviewPipe().transform;
             break;
-          case 'Text':
-            this.exportAsTXT(data.file.title);
+          case 'test -> te__':
+            formatFunc = new TestviewPipe().transform;
             break;
+          default:
+            formatFunc = new TestviewPipe().transform;
         }
-      }, no: 'Cancel', yes: 'Export'
+
+        switch (data.fileTypes.selectedValue) {
+          case 'pdf':
+            exportFunc = this.exportAsPDF(data.file.title, formatFunc);
+            break;
+          case 'txt':
+            exportFunc = this.exportAsTXT(data.file.title, formatFunc);
+            break;
+          default:
+            exportFunc = this.exportAsTXT(data.file.title, formatFunc);
+        }
+      },
+      no: 'Cancel',
+      yes: 'Export'
     };
     this.dialog.open(ModalDialogComponent, { width: '', data });
   }
@@ -73,12 +103,9 @@ export class ExportComponent implements OnInit {
   /**
    * Exports the current c-test as PDF
    */
-  private exportAsPDF(title: string) {
+  private exportAsPDF(title: string, transform: (Word) => string) {
     const doc = new jsPDF();
-    const view = new TestviewPipe();
-    const text = this.words
-        .map(view.transform)
-        .join(' ');
+    const text = this.words.map(transform).join(' ');
 
     doc.fromHTML(text, 15, 15, { 'width': 180 });
     doc.save(title);
@@ -88,13 +115,12 @@ export class ExportComponent implements OnInit {
   /**
    * Exports the current c-test as PDF
    */
-  private exportAsTXT(filename: string) {
-    const div = document.createElement('div');
-    const view = new IosviewPipe();
-    div.innerHTML = this.words.map(view.transform).join(' ');
-    const doc = document.createElement('a');
-    doc.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(div.innerText)),
-      doc.setAttribute('download', (filename + '.txt'));
-    doc.click();
+  private exportAsTXT(filename: string, transform: (Word) => string) {
+    const text = document.createElement('div');
+    text.innerHTML = this.words.map(transform).join(' ');
+    const download = document.createElement('a');
+    download.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text.innerText)),
+      download.setAttribute('download', (filename + '.txt'));
+    download.click();
   }
 }
