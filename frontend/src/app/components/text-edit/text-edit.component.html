@@ -2,12 +2,14 @@
   fxLayoutAlign="space-between space-between"
   fxLayoutGap="10px">
 
+  <!-- removed until fixed in backend.
   <div *ngIf="(this.warnings$ | async)">
-    <h5>Warnings:</h5>
+    <h5>Info:</h5>
     <p>
       <span *ngFor="let warning of (warnings$ | async)" style="color: rgb(255, 66, 66);">{{warning}}<br></span>
     </p>
   </div>
+  -->
 
   <div>
     <p>
