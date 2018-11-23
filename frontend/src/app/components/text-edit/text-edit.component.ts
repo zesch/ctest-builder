@@ -47,11 +47,6 @@ export class TextEditComponent implements OnInit {
   public currentComponent: TokenComponent = null;
 
   /**
-   * An empty word. To be used as a template for new words.
-   */
-  public newValue: Word = new Object() as Word;
-
-  /**
    * Observable of words in the c-test.
    */
   public words$: Observable<Word[]>;
@@ -71,12 +66,6 @@ export class TextEditComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.newValue.value = '';
-    this.newValue.gapStatus = false;
-    this.newValue.alternatives = []
-    this.newValue.id = uuid();
-    this.newValue.isNormal = true;
-
     this.stateService.words$.subscribe(success => this.words = success);
 
     // This is just a workaround until this gets refactored. Should use observables below.

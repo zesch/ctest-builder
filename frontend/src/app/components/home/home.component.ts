@@ -29,7 +29,7 @@ export class HomeComponent implements OnInit {
     { value: 'it', viewValue: 'Italian' }
   ];
 
-  private serviceAvailable: boolean;
+  public serviceAvailable: boolean;
 
   // Life Cycle Hooks
   constructor(
@@ -75,6 +75,25 @@ export class HomeComponent implements OnInit {
       this.invalidType = true;
       this.form.controls.ctestText.reset('');
     }
+  }
+
+  /**
+   * Imports a c-test from file.
+   */
+  import($event) {
+    const input = $event.target as HTMLInputElement;
+    const reader = new FileReader();
+    reader.onloadstart = () => {
+      this.snackBar.open('Importing C-Test...', 'OK');
+    }
+    reader.onload = () => {
+      this.snackBar.open('Done!', 'OK', {duration: 1250});
+      const text = reader.result as string;
+      const ctest = JSON.parse(text);
+      this.ctestService.setCTest(ctest);
+      this.router.navigate(['/text-editor'])
+    }
+    reader.readAsText(input.files[0]);
   }
 
   /**

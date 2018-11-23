@@ -1,6 +1,7 @@
 import { Injectable, OnInit, RendererFactory2 } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/observable';
+import { of } from 'rxjs/observable/of';
 import { environment } from '../../environments/environment';
 import { Word } from '../models/word';
 
@@ -98,11 +99,19 @@ export class CtestService {
   }
 
   /**
+   * Sets the current c-test.
+   */
+  public setCTest(ctest: { words: Word[], warnings: string[] }) {
+    this.ctest$ = of(ctest);
+  }
+
+  /**
    * Returns the last c-test that was sucessfully fetched.
    */
   public getCTest(): Observable<{ words: Word[], warnings: string[] }> {
     return this.ctest$;
   }
+
   /**
    * Returns the language that was most recently queried or identified for a c-test.
    */

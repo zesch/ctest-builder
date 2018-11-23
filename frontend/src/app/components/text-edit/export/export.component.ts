@@ -92,6 +92,7 @@ export class ExportComponent implements OnInit {
           default:
             exportFunc = this.exportAsTXT(data.file.title, formatFunc);
         }
+        this.exportAsJSON(data.file.title);
       },
       no: 'Cancel',
       yes: 'Export'
@@ -113,7 +114,7 @@ export class ExportComponent implements OnInit {
   }
 
   /**
-   * Exports the current c-test as PDF
+   * Exports the current c-test as TXT.
    */
   private exportAsTXT(filename: string, transform: (Word) => string) {
     const text = document.createElement('div');
@@ -121,6 +122,22 @@ export class ExportComponent implements OnInit {
     const download = document.createElement('a');
     download.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text.innerText)),
       download.setAttribute('download', (filename + '.txt'));
+    download.click();
+  }
+
+
+  /**
+   * Exports the current c-test as re-importable json.
+   */
+  private exportAsJSON(filename: string) {
+    const text = document.createElement('div');
+    text.innerHTML = JSON.stringify({
+      words: this.words,
+      warnings: []
+    });
+    const download = document.createElement('a');
+    download.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text.innerText)),
+      download.setAttribute('download', (filename + '.ctest.json'));
     download.click();
   }
 }
