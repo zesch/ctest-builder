@@ -187,6 +187,7 @@ export class TextEditComponent implements OnInit {
   public addNewWord() {
     const word: Token = new Token();
     word.value = 'new word';
+    word.offset = 4;
     this.stateService.add(word);
   }
 

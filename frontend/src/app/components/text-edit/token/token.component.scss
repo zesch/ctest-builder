@@ -8,13 +8,14 @@ mat-card {
 }
 
 .token {
-  padding: 1px;
   display: inline-block;
   color: rgba(0, 0, 0, .87);
+  transition: background-color 0.25s;
+  transition-timing-function: ease-in-out;
 }
 
 .token:hover {
-  font-weight: 700;
+  background-color: lightgrey;
   cursor: pointer;
 }
 

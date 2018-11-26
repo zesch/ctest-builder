@@ -12,7 +12,7 @@
     [open]="this.selected"
     [cdkConnectedOverlayHasBackdrop]="backdrop"
     cdkConnectedOverlayBackdropClass="transparent"
-    (backdropClick)="this.close()"
+    (backdropClick)="this.apply()"
     (detach)="this.close()">
     <mat-card fxLayout="column">
       <div #firstRow

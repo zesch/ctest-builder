@@ -19,7 +19,7 @@
 *.sublime-workspace
 
 # custom shell scripts
-deploy.sh
+deploy*.sh
 
 # IDE - VSCode
 .vscode/*
