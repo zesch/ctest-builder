@@ -46,8 +46,8 @@
   <mat-card class="text_editor">
     <div class="ngx-dnd-container"
       *ngIf="!showPreview"
-      ngxDroppable="wordArea"
-      [model]="words">
+      ngxDroppable
+      (drop)="this.onDrop($event)">
 
       <!-- Draggable Words  -->
       <ng-container *ngFor="let word of words">
@@ -58,7 +58,7 @@
           (gapChange)="updateGaps($event)"
           (modify)="onTokenModification($event)"
           (delete)="onTokenDeletion($event)"
-          ngxDraggable="wordArea,deleteArea"
+          ngxDraggable
           [model]="word">
         </tp-token>
       </ng-container>

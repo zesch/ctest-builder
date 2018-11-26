@@ -191,6 +191,16 @@ export class TextEditComponent implements OnInit {
     this.stateService.add(word);
   }
 
+  /**
+   * Updates the model, when a word is dropped.
+   * @param $event a ngxDragAndDrop Event.
+   */
+  public onDrop($event) {
+    const token: Word = $event.value;
+    const index: number = $event.dropIndex;
+    this.stateService.move(token, index);
+  }
+
   public routeToHome() {
     this.router.navigate(['']);
   }

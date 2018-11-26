@@ -5,13 +5,14 @@ import { createStore, Store, Reducer, combineReducers } from 'redux';
 import undoable, { distinctState } from 'redux-undo';
 
 export interface ChangeEvent { type: Action }
-export interface WordChangeEvent extends ChangeEvent { words: Word[] }
+export interface WordChangeEvent extends ChangeEvent { words: Word[], index?: number }
 
 export enum Action {
   Add = 'ADD_WORD',
   AddAll = 'ADD_WORDS',
   Delete = 'DELETE_WORD',
   Modify = 'MODIFY_WORD',
+  Move = 'MOVE_WORD',
   Clear = 'CLEAR_WORDS',
   Set = 'SET_WORDS',
   Undo = 'UNDO',
@@ -28,19 +29,24 @@ export enum Action {
 const handleWordChange: Reducer = (state: Word[]=[], action: WordChangeEvent) => {
   const targets: Word[] = action.words;
   const target: Word = targets ? targets[0] : null;
+  const index: number = action.index;
   switch(action.type) {
     case Action.Add:
       return state.concat(target);
     case Action.AddAll:
       return state.concat(targets);
-    case Action.Modify:
-      return state.map(word => word.id === target.id ? target : word);
-    case Action.Delete:
-      return state.filter(word => word.id !== target.id);
-    case Action.Set:
-      return targets.concat();
     case Action.Clear:
       return [];
+    case Action.Delete:
+      return state.filter(word => word.id !== target.id);
+    case Action.Modify:
+      return state.map(word => word.id === target.id ? target : word);
+    case Action.Move:
+      const newState: Word[] = state.filter(word => word.id != target.id); // remove target from old position
+      newState.splice(index, 0, target); // insert target at new position
+      return newState;
+    case Action.Set:
+      return targets.concat();
     default:
       return state.concat();
   }
@@ -138,6 +144,14 @@ export class StateManagementService {
    */
   public modify(word: Word) {
     const event: WordChangeEvent = { type: Action.Modify, words: [word] };
+    this.store.dispatch(event);
+  }
+
+  /**
+   * Moves the given word to the given index.
+   */
+  public move(word: Word, index: number) {
+    const event: WordChangeEvent = { type: Action.Move, words: [word], index: index };
     this.store.dispatch(event);
   }
 
