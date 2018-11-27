@@ -13,19 +13,20 @@
 
   <mat-card #controlPanel
     class="control-panel"
-    *ngIf="this.words"
-    fxLayoutAlign="start center"
+    fxLayoutAlign="space-between center"
     fxLayoutGap="25px">
 
-    <div>
-      <button mat-icon-button class="mat-raised-button"
+    <div fxLayoutAlign="center center">
+      <button mat-button
+        fxFlex="1 1 50%"
         (click)="this.stateService.undo()"
         [disabled]="!this.stateService.hasUndo"
         matTooltip="undo last change">
         <mat-icon>undo</mat-icon>
       </button>
 
-      <button mat-icon-button class="mat-raised-button"
+      <button mat-button
+        fxFlex="1 1 50%"
         (click)="this.stateService.redo()"
         [disabled]="!this.stateService.hasRedo"
         matTooltip="redo last change">
@@ -33,14 +34,27 @@
       </button>
     </div>
 
+    <div class="vertical-divider"></div>
+
     <mat-slide-toggle
       [(ngModel)]="showPreview"
       color="primary">
       Preview Mode
     </mat-slide-toggle>
 
-      <span>Gaps: {{ calculateGaps() }}</span>
-      <span>Words: {{ words.length }}</span>
+    <div class="vertical-divider"></div>
+
+    <span>Words: {{ ("" + this.words.length).padStart(3," ") }}</span>
+
+    <div>
+      <span>Gaps: {{ ("" + this.gaps).padStart(3," ") }}</span>
+      <button mat-icon-button
+        (click)="this.updateAllGaps()"
+        matTooltip="recalculate all gap positions">
+        <mat-icon>sync</mat-icon>
+      </button>
+    </div>
+
   </mat-card>
 
 

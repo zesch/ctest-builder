@@ -19,6 +19,11 @@ export class TextEditComponent implements OnInit {
   public words: Word[] = []; //TODO: replace with observables.
 
   /**
+   * The number of gaps in the current c-test.
+   */
+  public gaps: number = 0;
+
+  /**
    * Indicates whether text should be shown before export.
    */
   public showPreview = false;
@@ -40,7 +45,10 @@ export class TextEditComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.stateService.words$.subscribe(success => this.words = success);
+    this.stateService.words$.subscribe(success => {
+      this.words = success;
+      this.gaps = this.words.filter(word => word.gapStatus).length;
+    });
 
     // This is just a workaround until this gets refactored. Should use observables below.
     this.ctestService.getCTest().subscribe(
@@ -96,14 +104,6 @@ export class TextEditComponent implements OnInit {
     this.stateService.modify(word);
   }
 
-  //TODO: Make observable.
-  /**
-   * Calculate number of gaps in the c-test.
-   */
-  public calculateGaps(): number {
-    return this.words.filter((word: Word) => Boolean(word.gapStatus)).length;
-  }
-
   /**
    * Navigates back to the c-test upload page.
    */
@@ -130,5 +130,10 @@ export class TextEditComponent implements OnInit {
       },
       failure => console.error(failure)
     );
+  }
+
+  public updateAllGaps() {
+    const firstNormal = this.words.find(word => word.isNormal);
+    this.updateGaps(firstNormal);
   }
 }
