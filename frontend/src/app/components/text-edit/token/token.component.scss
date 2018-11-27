@@ -10,17 +10,25 @@ mat-card {
 .token {
   display: inline-block;
   color: rgba(0, 0, 0, .87);
-  transition: background-color 0.25s;
+  transition: background-color 0.3s;
   transition-timing-function: ease-in-out;
+  padding: 0px 3px 0px 3px;
+  margin: 0px -2px 0px -2px;
+  border-radius: 4px;
 }
 
 .token:hover {
-  background-color: lightgrey;
   cursor: pointer;
+  background-color: rgba(0, 0, 0, .14)
+}
+
+.locked {
+  color: rgba(0, 0, 0, .5);
 }
 
 .selected {
   font-weight: 600;
+  color: rgba(0, 0, 0, .87);
 }
 
 .transparent {

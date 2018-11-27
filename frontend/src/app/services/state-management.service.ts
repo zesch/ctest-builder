@@ -66,12 +66,24 @@ export class StateManagementService {
   public words$: BehaviorSubject<Word[]>;
 
   /**
+   * Indicates whether an undo action can be applied.
+   */
+  public hasUndo: boolean;
+
+  /**
+   * Indicates whether a redo action can be applied.
+   */
+  public hasRedo: boolean;
+
+  /**
    * Redux Store that manages the application's state.
    */
   private store: Store;
 
   constructor() {
     this.words$ = new BehaviorSubject([]);
+    this.hasUndo = false;
+    this.hasRedo = false;
 
     let stateModel: Reducer = combineReducers({
       words: handleWordChange
@@ -84,7 +96,12 @@ export class StateManagementService {
     }
 
     this.store = createStore(undoable(stateModel, undoConfig));
-    this.store.subscribe(() => { this.words$.next(this.store.getState().present.words) });
+    this.store.subscribe(() => {
+      const state = this.store.getState();
+      this.hasUndo = state.past.length !== 0;
+      this.hasRedo = state.future.length !== 0;
+      this.words$.next(state.present.words)
+    });
   }
 
   /**

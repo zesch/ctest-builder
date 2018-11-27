@@ -2,8 +2,10 @@
   <span cdk-overlay-origin
     #trigger="cdkOverlayOrigin"
     class="token"
-    [ngClass]="{'selected': selected}"
-    (click)="this.select()">
+    [ngClass]="{'selected': selected, 'locked': !this.token.isNormal }"
+    (click)="this.select()"
+    matTooltip="This word is locked. Its gap can only be changed by you."
+    [matTooltipDisabled]="this.token.isNormal">
     {{ this.token | iosview }}
   </span>
 
