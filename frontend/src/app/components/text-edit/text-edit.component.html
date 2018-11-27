@@ -53,8 +53,6 @@
       <ng-container *ngFor="let word of words">
         <tp-token
           [token]="word"
-          [backdrop]="true"
-          (select)="onTokenSelection($event)"
           (gapChange)="updateGaps($event)"
           (modify)="onTokenModification($event)"
           (delete)="onTokenDeletion($event)"

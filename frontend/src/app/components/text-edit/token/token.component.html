@@ -28,12 +28,12 @@
 
           <div>
             <span class="bold-on-hover"
-              (click)="this.textEdit = true; this.alternativesEdit = false;"
+              (click)="this.activateTextEdit();"
               matTooltip="click to edit text">
               {{ this.tempToken | prompt }}
             </span>
             <span class="bold-on-hover"
-              (click)="this.alternativesEdit = true; this.textEdit = false;"
+              (click)="this.activateAlternativesEdit()"
               matTooltip="click to edit alternatives">
               {{ this.tempToken | solution }}
               <span class="badge" *ngIf="this.tempToken.alternatives.length > 0">+{{this.tempToken.alternatives.length}}</span>
@@ -48,10 +48,9 @@
         </ng-container>
 
         <ng-container *ngIf="this.textEdit">
-          <mat-form-field *ngIf="this.textEdit"
-            class="edit-field">
-            <input matInput
-              autofocus
+          <mat-form-field class="edit-field">
+            <input #textEditInput
+              matInput
               placeholder="text"
               [(ngModel)]="this.tempToken.value"
               (keyup)="closeEditFieldsIfEnter($event)">
@@ -67,8 +66,7 @@
         </ng-container>
 
         <ng-container *ngIf="this.alternativesEdit">
-          <mat-form-field *ngIf="this.alternativesEdit"
-            class="edit-field">
+          <mat-form-field class="edit-field">
             <mat-chip-list #solutionChips>
               <mat-chip
                 selected="true"
@@ -83,12 +81,12 @@
                 <mat-icon matChipRemove>cancel</mat-icon>
               </mat-chip>
 
-              <input [matChipInputFor]="solutionChips"
+              <input #alternativesEditInput
+                [matChipInputFor]="solutionChips"
                 [matChipInputSeparatorKeyCodes]="alternativesAddKeys"
                 [matChipInputAddOnBlur]="true"
                 (matChipInputTokenEnd)="addAlternative($event)"
                 (keyup)="closeEditFieldsIfEnter($event)"
-                autofocus
                 placeholder="solutions">
             </mat-chip-list>
 

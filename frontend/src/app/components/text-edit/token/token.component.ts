@@ -20,10 +20,10 @@ export class TokenComponent implements OnInit {
    * The backdrop prevents users to access ui elements other than the edit ui,
    * when the edit ui is opened.
    *
-   * Defaults to 'false'.
+   * Defaults to 'true'.
    */
   @Input('backdrop')
-  public backdrop: boolean = false;
+  public backdrop: boolean = true;
 
   /**
    * Emits the token when the gap status was changed.
@@ -49,7 +49,6 @@ export class TokenComponent implements OnInit {
   @Output('select')
   public select$: EventEmitter<TokenComponent>;
 
-  //TODO: Change to tempToken
   /**
    * Temporary token to which changes are applied, before the user saves all changes.
    */
@@ -100,6 +99,16 @@ export class TokenComponent implements OnInit {
     )
   }
 
+  public activateTextEdit() {
+    this.textEdit = true;
+    this.alternativesEdit = false;
+  }
+
+  public activateAlternativesEdit() {
+    this.textEdit = false;
+    this.alternativesEdit = true;
+  }
+
   /**
    * Increments the gap index of the token.
    */
@@ -135,7 +144,7 @@ export class TokenComponent implements OnInit {
   /**
    * Adds an alternative to the token
    */
-  private addAlternative(event: MatChipInputEvent) {
+  public addAlternative(event: MatChipInputEvent) {
     const alternative: string = event.value.trim();
     const input: HTMLInputElement = event.input;
 
