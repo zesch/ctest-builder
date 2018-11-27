@@ -1,4 +1,4 @@
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, NgZone, ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { Word, Token } from '../../models/word';
 import { CtestService } from '../../services/ctest.service';
@@ -30,17 +30,19 @@ export class TextEditComponent implements OnInit {
    */
   public showPreview = false;
 
+  //TODO: Obsolete?
   /**
    * The word currently selected.
    */
   public currentWord: Word = null;
 
-  //TODO: Implement clean solution.
+  //TODO: Implement clean solution. Obsolete?
   /**
    * The previously selected word.
    */
   public previousWord: Word = null;
 
+  //TODO: May be removable.
   /**
    * The TokenComponent associated with the current word.
    */
@@ -56,7 +58,7 @@ export class TextEditComponent implements OnInit {
    */
   public warnings$: Observable<string[]>;
 
-  //TODO: What does this do?
+  //TODO: Remove
   @ViewChild('input_currentValue') input_currentValue;
 
   constructor(
@@ -84,6 +86,7 @@ export class TextEditComponent implements OnInit {
     )
   }
 
+  //TODO: Remove
   /**
    * Sets the given word as the current word. Also sets the previously selected word.
    */
@@ -101,18 +104,21 @@ export class TextEditComponent implements OnInit {
    * and their gap status is updated according to normal gapping rules.
    */
   updateGaps(word: Word) {
-    let start: number = this.words.indexOf(word) + 1;
+    let start: number = this.words.findIndex(token => token.id === word.id) + 1;
     let toUpdate: Word[] = this.words.slice(start);
+
     this.ctestService.fetchUpdatedGaps(toUpdate, !word.gapStatus).subscribe(
       success => {
         const regapped: Word[] = success;
         const unchanged: Word[] = this.words.slice(0,start);
-        this.stateService.set([...unchanged, ...regapped]);
+        const newState = unchanged.concat(regapped);
+        this.stateService.set(newState);
       },
       failure => console.error(failure)
     );
   }
 
+  //TODO: Remove.
   /**
    * Toggles whether alternative solutions should be shown in the preview.
    */
@@ -120,6 +126,7 @@ export class TextEditComponent implements OnInit {
     //TODO: Implement
   }
 
+  //TODO: Remove.
   /**
    * Adds an alternative to the given word.
    */
@@ -127,6 +134,7 @@ export class TextEditComponent implements OnInit {
     word.alternatives.push('');
   }
 
+  //TODO: Remove.
   /**
    * Updates the alternative word with each change
    */
@@ -134,10 +142,12 @@ export class TextEditComponent implements OnInit {
     word.alternatives[index] = (event.target as HTMLInputElement).value;
   }
 
+  //TODO: Remove.
   public onWordAlternativeCloseClick(word: Word, index: number) {
     word.alternatives.splice(index, 1);
   }
 
+  //TODO: Remove?
   /**
    * Handles the selection of a token in the edit container.
    * Closes all token components that are currently open and sets the current token component.
@@ -169,13 +179,15 @@ export class TextEditComponent implements OnInit {
     }
   }
 
+  //TODO: Make observable.
   /**
-   * Calculate total gaps enabled for each word
+   * Calculate number of gaps in the c-test.
    */
-  public calculateGaps() {
+  public calculateGaps(): number {
     return this.words.filter((word: Word) => Boolean(word.gapStatus)).length;
   }
 
+  //TODO: Remove.
   /**
    * Deletes the currently selected word.
    */
@@ -184,6 +196,9 @@ export class TextEditComponent implements OnInit {
     this.currentWord = null;
   }
 
+  /**
+   * Adds a new word to the current words in the c-test.
+   */
   public addNewWord() {
     const word: Token = new Token();
     word.value = 'new word';
@@ -196,9 +211,10 @@ export class TextEditComponent implements OnInit {
    * @param $event a ngxDragAndDrop Event.
    */
   public onDrop($event) {
-    const token: Word = $event.value;
-    const index: number = $event.dropIndex;
-    this.stateService.move(token, index);
+    this.stateService.move($event.value, $event.dropIndex);
+
+    const start: number = Math.max($event.dropIndex - 1, 0);
+    this.updateGaps(this.words[start]);
   }
 
   public routeToHome() {

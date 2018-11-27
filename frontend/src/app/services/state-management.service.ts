@@ -25,11 +25,14 @@ export enum Action {
  * @param state  an array of Word objects representing the current state
  * @param action  the WordChangeEvent to handle
  * @return  a new array of Words, representing the new state
+ *
+ * @see Reducer
  */
 const handleWordChange: Reducer = (state: Word[]=[], action: WordChangeEvent) => {
   const targets: Word[] = action.words;
-  const target: Word = targets ? targets[0] : null;
+  const target: Word = targets ? Token.clone(targets[0]) : null; // cloning due to redux immutability requirements
   const index: number = action.index;
+
   switch(action.type) {
     case Action.Add:
       return state.concat(target);
@@ -42,7 +45,9 @@ const handleWordChange: Reducer = (state: Word[]=[], action: WordChangeEvent) =>
     case Action.Modify:
       return state.map(word => word.id === target.id ? target : word);
     case Action.Move:
-      const newState: Word[] = state.filter(word => word.id != target.id); // remove target from old position
+      const newState = state.concat();
+      const oldIndex = newState.findIndex(word => word.id === target.id);
+      newState.splice(oldIndex, 1); // remove target from old position
       newState.splice(index, 0, target); // insert target at new position
       return newState;
     case Action.Set:
@@ -105,7 +110,7 @@ export class StateManagementService {
   }
 
   /**
-   * Sets the current state to the given words.
+   * Adds the given words to the current state.
    */
   public addAll(words: Word[]) {
     const action: WordChangeEvent = { type: Action.AddAll, words: words};
@@ -113,7 +118,7 @@ export class StateManagementService {
   }
 
   /**
-   * Adds the given words to the current state.
+   * Sets the current state to the given words.
    */
   public set(words: Word[]) {
     const action: WordChangeEvent = { type: Action.Set, words: words };
