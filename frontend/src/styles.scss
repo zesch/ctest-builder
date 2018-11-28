@@ -1,8 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 @import "~@swimlane/ngx-dnd/release/index.css";
-@import url('https://fonts.googleapis.com/css?family=Roboto');
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700|Roboto:400,400i,500,700');
 
 body, head {
-  font-family: Roboto,"Helvetica Neue",sans-serif;
+  font-family: Roboto,"Open Sans","Helvetica Neue",sans-serif;
 }

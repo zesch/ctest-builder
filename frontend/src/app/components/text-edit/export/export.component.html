@@ -1,5 +1,13 @@
-<button mat-raised-button
-  (click)="openDialogExport()"
-  color="primary">
-  Export
-</button>
+<div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+  <button mat-raised-button
+    (click)="openDialogExport()"
+    color="primary">
+    Export
+  </button>
+
+  <button mat-raised-button
+    (click)="exportAsJSON('export')"
+    matTooltip="save for later reimport">
+    Save
+  </button>
+</div>

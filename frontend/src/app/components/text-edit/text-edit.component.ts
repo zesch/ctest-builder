@@ -38,6 +38,11 @@ export class TextEditComponent implements OnInit {
    */
   public warnings$: Observable<string[]>;
 
+  /**
+   * Indicates whether the gapscheme should be updated automatically.
+   */
+  public autoUpdate;
+
   constructor(
     private router: Router,
     private ctestService: CtestService,
@@ -45,6 +50,8 @@ export class TextEditComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.autoUpdate = true;
+
     this.stateService.words$.subscribe(success => {
       this.words = success;
       this.gaps = this.words.filter(word => word.gapStatus).length;
@@ -82,9 +89,10 @@ export class TextEditComponent implements OnInit {
    */
   public onDrop($event: { value: Word, dropIndex: number }) {
     this.stateService.move($event.value, $event.dropIndex);
-
-    const start: number = Math.max($event.dropIndex - 1, 0);
-    this.updateGaps(this.words[start]);
+    if (this.autoUpdate) {
+      const start: number = Math.max($event.dropIndex - 1, 0);
+      this.updateGaps(this.words[start]);
+    }
   }
 
   /**
@@ -94,6 +102,15 @@ export class TextEditComponent implements OnInit {
     const index: number = this.words.indexOf(word);
     if (index !== -1) {
       this.words.splice(index, 1);
+    }
+  }
+
+  /**
+   * Updates the Gap Scheme, when a gap is changed.
+   */
+  public onGapChange(word: Word) {
+    if (this.autoUpdate) {
+      this.updateGaps(word);
     }
   }
 

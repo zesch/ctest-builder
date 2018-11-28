@@ -38,21 +38,34 @@
 
     <mat-slide-toggle
       [(ngModel)]="showPreview"
+      labelPosition="before"
       color="primary">
       Preview Mode
     </mat-slide-toggle>
 
     <div class="vertical-divider"></div>
 
-    <span>Words: {{ ("" + this.words.length).padStart(3," ") }}</span>
+    <span>Words: {{ this.words.length }}</span>
 
-    <div>
-      <span>Gaps: {{ ("" + this.gaps).padStart(3," ") }}</span>
-      <button mat-icon-button
-        (click)="this.updateAllGaps()"
-        matTooltip="recalculate all gap positions">
-        <mat-icon>sync</mat-icon>
-      </button>
+    <div class="vertical-divider"></div>
+
+    <div fxLayout="column">
+      <div>
+        <span>Gaps: {{ this.gaps }}</span>
+        <button mat-icon-button
+          (click)="this.updateAllGaps()"
+          matTooltip="recalculate all gap positions">
+          <mat-icon>sync</mat-icon>
+        </button>
+      </div>
+
+      <mat-slide-toggle
+      [(ngModel)]="this.autoUpdate"
+      labelPosition="before"
+      color="primary"
+      matTooltip="When active, the Gap Scheme is recalculated automatically when changing gaps or moving words.">
+      Auto Gap Update
+      </mat-slide-toggle>
     </div>
 
   </mat-card>
@@ -69,7 +82,7 @@
       <ng-container *ngFor="let word of words">
         <tp-token
           [token]="word"
-          (gapChange)="updateGaps($event)"
+          (gapChange)="onGapChange($event)"
           (modify)="onTokenModification($event)"
           (delete)="onTokenDeletion($event)"
           ngxDraggable
@@ -92,7 +105,7 @@
     </div>
   </mat-card>
 
-  <div>
+  <div fxLayout="row" fxLayoutGap="25px">
     <tp-export [words]="this.words"></tp-export>
 
     <button mat-raised-button

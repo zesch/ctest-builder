@@ -24,8 +24,9 @@
         <ng-container *ngIf="!(this.textEdit || this.alternativesEdit)">
           <button mat-icon-button
             (click)="decrementIndex()"
+            [disabled]="this.tempToken.offset <= 0"
             matTooltip="move gap to the left">
-            <mat-icon>keyboard_arrow_left</mat-icon>
+            <mat-icon>remove</mat-icon>
           </button>
 
           <div>
@@ -44,8 +45,9 @@
 
           <button mat-icon-button
             (click)="incrementIndex()"
+            [disabled]="this.tempToken.offset >= this.tempToken.value.length"
             matTooltip="move gap to the right">
-            <mat-icon>keyboard_arrow_right</mat-icon>
+            <mat-icon>add</mat-icon>
           </button>
         </ng-container>
 
@@ -108,6 +110,7 @@
           [checked]="this.tempToken.gapStatus"
           (change)="this.toggleGap()"
           labelPosition="before"
+          color="primary"
           matTooltip="toggle gap">
           Gap
         </mat-slide-toggle>

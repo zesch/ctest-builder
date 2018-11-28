@@ -25,6 +25,7 @@ import { TestviewPipe } from './pipes/testview.pipe';
 import { SolutionPipe } from './pipes/solution.pipe';
 import { ExportComponent } from './components/text-edit/export/export.component';
 import { StateManagementService } from './services/state-management.service';
+import { PlainSolutionsPipe } from './pipes/plain-solutions.pipe';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { StateManagementService } from './services/state-management.service';
     IosviewPipe,
     TestviewPipe,
     SolutionPipe,
-    ExportComponent
+    ExportComponent,
+    PlainSolutionsPipe
   ],
   imports: [
     NgxDnDModule,
