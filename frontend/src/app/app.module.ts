@@ -26,6 +26,7 @@ import { SolutionPipe } from './pipes/solution.pipe';
 import { ExportComponent } from './components/text-edit/export/export.component';
 import { StateManagementService } from './services/state-management.service';
 import { PlainSolutionsPipe } from './pipes/plain-solutions.pipe';
+import { ColoredGapsPipe } from './pipes/colored-gaps.pipe';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { PlainSolutionsPipe } from './pipes/plain-solutions.pipe';
     TestviewPipe,
     SolutionPipe,
     ExportComponent,
-    PlainSolutionsPipe
+    PlainSolutionsPipe,
+    ColoredGapsPipe
   ],
   imports: [
     NgxDnDModule,

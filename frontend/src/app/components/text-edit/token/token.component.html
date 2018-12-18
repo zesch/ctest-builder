@@ -4,9 +4,9 @@
     class="token"
     [ngClass]="{'selected': selected, 'locked': !this.token.isNormal }"
     (click)="this.select()"
-    matTooltip="This word is locked. Its gap can only be changed by you."
+    matTooltip="This word is locked. It will not be changed by automatic gap updates."
     [matTooltipDisabled]="this.token.isNormal">
-    {{ this.token | iosview }}
+    {{ this.token | prompt }}<span [ngClass]="{'red-text': this.token.isNormal && this.token.gapStatus}">{{ this.token | coloredGaps:true }}</span>
   </span>
 
   <ng-template cdk-connected-overlay
