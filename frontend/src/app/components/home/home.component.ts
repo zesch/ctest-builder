@@ -61,7 +61,7 @@ export class HomeComponent implements OnInit {
    * when user selects a txt file
    * @param  {event} Event holds value of event that holds HTMLInputElement
    */
-  load($event) {
+  public load($event) {
     const input = $event.target as HTMLInputElement;
     // Validate the input is in .txt format
     if (/(\.txt|\.TXT)$/.test(input.value)) {
@@ -80,7 +80,7 @@ export class HomeComponent implements OnInit {
   /**
    * Imports a c-test from file.
    */
-  import($event) {
+  public import($event) {
     const input = $event.target as HTMLInputElement;
     const reader = new FileReader();
     reader.onloadstart = () => {
@@ -99,7 +99,7 @@ export class HomeComponent implements OnInit {
   /**
    * Submits the form, requests the C-Test and navigates to the text-edit view.
    */
-  submit() {
+  public submit() {
     if (this.form.valid && this.serviceAvailable) {
       this.snackBar.open('Processing text, please be patient...', 'OK');
 

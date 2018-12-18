@@ -1,3 +1,14 @@
-mat-form-field {
+.full-width {
   width: 100%;
+}
+.vertical-divider {
+  border-right-color: rgba(0,0,0,.12);
+  border-right-style: solid;
+  border-right-width: 1px;
+  min-width: 2px;
+  min-height: 36px;
+  height: 100%;
+}
+mat-horizontal-stepper {
+  min-height: 240px;
 }
