@@ -1,6 +1,15 @@
 .full-width {
   width: 100%;
 }
+
+.full-height {
+  height: 100%;
+}
+
+.action-button {
+  padding-bottom: 4px;
+}
+
 .vertical-divider {
   border-right-color: rgba(0,0,0,.12);
   border-right-style: solid;
@@ -9,6 +18,6 @@
   min-height: 36px;
   height: 100%;
 }
-mat-horizontal-stepper {
+.main-element {
   min-height: 240px;
 }

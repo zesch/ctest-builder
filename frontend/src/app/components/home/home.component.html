@@ -1,59 +1,96 @@
-<p>Enter a text below or select a text file to upload.</p>
 <mat-card>
-  <button mat-raised-button
-    type="button"
-    (click)="fileIn.click()"
-    matTooltip="start uploading file">
-    <mat-icon>cloud_upload</mat-icon>
-    <span> Upload file (*.txt) </span>
-  </button>
+  <mat-tab-group>
+    <mat-tab label="Create new C-Test">
+      <div>
+        <p>
+          You can create a new C-Test by either entering a text in the text area below or uploading a text file.
+          The C-Test is generated, once you click the "Create C-Test" Button</p>
+        <p>
+          If you upload a text file, the file content will be copied to the editing area.
+          You can then modify the text before creating the C-Test.
+        </p>
+      </div>
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <div #uploadSection fxLayout="column"
+          class="main-element">
+          <div #uploadInputs
+            fxLayout="row" fxLayoutAlign="space-evenly center"
+            class="main-element">
+            <div fxFlex="60%">
+              <mat-form-field class="full-width">
+                <textarea formControlName="ctestText"
+                  matInput
+                  placeholder="Enter a text"
+                  matTextareaAutosize
+                  matAutosizeMinRows="9"
+                  matAutosizeMaxRows="12">
+                </textarea>
+                <mat-error *ngIf="this.form.controls.ctestText.errors">
+                  You need to enter a text.
+                </mat-error>
+              </mat-form-field>
+            </div>
 
-  <form [formGroup]="form"
-    (ngSubmit)="submit()">
-    <div>
-      <input #fileIn
-        type="file"
-        accept=".txt"
-        hidden="hidden"
-        (change)="load($event)">
-      <mat-error *ngIf="invalidType ">
-          Invalid file format. Only .txt files are accepted.
-      </mat-error>
-    </div>
+            <span fxFlex="10%"><strong>or</strong></span>
 
-    <mat-form-field>
-      <!-- Text To Translate Control-->
-      <textarea
-          formControlName="ctestText"
-          matInput
-          placeholder="Text to convert to C-Test"
-          matTextareaAutosize
-          matAutosizeMinRows="6"
-          matAutosizeMaxRows="10">
-      </textarea>
-      <mat-error *ngIf="this.form.controls.ctestText.errors">You need to enter a text.</mat-error>
-    </mat-form-field>
+            <div #fileUpload fxFlex="30%">
+              <button mat-raised-button
+                type="button"
+                (click)="fileIn.click()"
+                matTooltip="click to select a .txt file for upload"
+                class="centered">
+                <mat-icon>cloud_upload</mat-icon>
+                <span>Upload a text file</span>
+              </button>
 
-    <div fxLayoutAlign="start" fxLayoutGap="20px">
-      <button mat-button
-        flex="60"
-        type="submit"
-        class="mat-raised-button"
-        color="primary"
-        [disabled]="!this.serviceAvailable">
-        Create C-Test
-      </button>
-      <button mat-raised-button
-        flex="60"
-        type="button"
-        (click)="importIn.click()">
-        Import C-Test
-      </button>
-      <input #importIn
-        type="file"
-        accept=".json"
-        hidden="hidden"
-        (change)="import($event)">
-    </div>
-  </form>
+              <input #fileIn
+                type="file"
+                accept=".txt"
+                hidden="hidden"
+                (change)="load($event)">
+              <mat-error *ngIf="invalidType ">
+                Invalid file format. Only .txt files are accepted.
+              </mat-error>
+              <div></div>
+            </div>
+
+          </div>
+
+          <div class="action-button" fxLayoutAlign="start" fxLayoutGap="20px">
+            <button mat-button
+              type="submit"
+              class="mat-raised-button"
+              color="primary"
+              [disabled]="!this.serviceAvailable">
+              Create C-Test
+            </button>
+          </div>
+        </div>
+      </form>
+    </mat-tab>
+
+    <mat-tab label="Import existing C-Test">
+      <div>
+        <p>
+          You can import a C-Test by uploading a formerly saved C-Test JSON file.
+          Once the file is uploaded, you will be immediately redirected to the Edit UI.
+          Choose wisely...
+        </p>
+
+        <div class="action-button">
+          <button mat-raised-button
+            type="button"
+            color="primary"
+            (click)="importIn.click()">
+            Import C-Test
+          </button>
+          <input #importIn
+            type="file"
+            accept=".json"
+            hidden="hidden"
+            (change)="import($event)">
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
 </mat-card>
