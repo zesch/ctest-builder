@@ -151,6 +151,16 @@ export class StateManagementService {
   }
 
   /**
+   * Clears the store's history, past and future.
+   */
+  public clearHistory() {
+    const state = this.store.getState();
+    state.history = [];
+    state.past = [];
+    state.future = [];
+  }
+
+  /**
    * Deletes the given word from the current state model.
    */
   public delete(word: Word) {

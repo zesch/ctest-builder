@@ -1,6 +1,8 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { Word, Token } from '../../../models/word';
 import { MatChipInputEvent } from '@angular/material';
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'tp-token',
@@ -50,6 +52,12 @@ export class TokenComponent implements OnInit {
   public select$: EventEmitter<TokenComponent>;
 
   /**
+   * A subject for unsubscribing all subscriptions at once.
+   * When the subject emits true, all subscriptions connected to this subject are unsubscribed.
+   */
+  public unsubscribe$: Subject<boolean>;
+
+  /**
    * Temporary token to which changes are applied, before the user saves all changes.
    */
   private tempToken: Token;
@@ -84,6 +92,7 @@ export class TokenComponent implements OnInit {
     this.delete$ = new EventEmitter<Word>();
     this.select$ = new EventEmitter<TokenComponent>();
     this.modify$ = new EventEmitter<Word>();
+    this.unsubscribe$ = new Subject<boolean>();
     this.tempToken = new Token();
     this.selected = false;
     this.textEdit = false;
@@ -91,12 +100,20 @@ export class TokenComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.select$.subscribe(
+    this.select$.pipe(
+      takeUntil(this.unsubscribe$)
+    )
+    .subscribe(
       token => {
         this.tempToken = new Token();
         this.tempToken.set(this.token);
       }
     )
+  }
+
+  ngOnDestroy() {
+    this.unsubscribe$.next(true);
+    this.unsubscribe$.unsubscribe();
   }
 
   public activateTextEdit() {

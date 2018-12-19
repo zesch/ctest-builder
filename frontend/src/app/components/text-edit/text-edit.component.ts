@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Word, Token } from '../../models/word';
 import { CtestService } from '../../services/ctest.service';
 import { Observable } from 'rxjs/Observable';
 import { map } from 'rxjs/operators/map';
 import { StateManagementService } from '../../services/state-management.service';
+import { Subject } from 'rxjs/Subject';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'tp-text-edit',
@@ -39,6 +41,12 @@ export class TextEditComponent implements OnInit {
   public warnings$: Observable<string[]>;
 
   /**
+   * A subject for unsubscribing all subscriptions at once.
+   * When the subject emits true, all subscriptions connected to this subject are unsubscribed.
+   */
+  public unsubscribe$: Subject<boolean>;
+
+  /**
    * Indicates whether the gapscheme should be updated automatically.
    */
   public autoUpdate;
@@ -52,18 +60,21 @@ export class TextEditComponent implements OnInit {
   ngOnInit(): void {
     this.autoUpdate = true;
 
-    this.stateService.words$.subscribe(success => {
+    this.unsubscribe$ = new Subject<boolean>();
+
+    this.stateService.words$.pipe(
+      takeUntil(this.unsubscribe$)
+    )
+    .subscribe(success => {
       this.words = success;
       this.gaps = this.words.filter(word => word.gapStatus).length;
     });
 
-    // This is just a workaround until this gets refactored. Should use observables below.
     this.ctestService.getCTest().subscribe(
       success => this.stateService.addAll(success.words),
       failure => console.error(failure)
     )
 
-    // For future use. Observables to store the actual data.
     const response$: Observable<{ words: Word[], warnings: string[] }> = this.ctestService.getCTest();
     this.words$ = response$.pipe(
       map(response => response.words)
@@ -71,6 +82,13 @@ export class TextEditComponent implements OnInit {
     this.warnings$ = response$.pipe(
       map(response => response.warnings)
     )
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribe$.next(true);
+    this.unsubscribe$.unsubscribe();
+    this.stateService.clear();
+    this.stateService.clearHistory();
   }
 
   /**
