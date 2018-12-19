@@ -62,6 +62,12 @@ export class TokenComponent implements OnInit {
    */
   private tempToken: Token;
 
+
+  /**
+   * Token used for backups, when the user cancels their edit.
+   */
+  private backupToken: Word;
+
   /**
    * Indicates whether the component is selected.
    */
@@ -107,6 +113,8 @@ export class TokenComponent implements OnInit {
       token => {
         this.tempToken = new Token();
         this.tempToken.set(this.token);
+        this.backupToken = this.token;
+        this.token = this.tempToken;
       }
     )
   }
@@ -223,6 +231,7 @@ export class TokenComponent implements OnInit {
    * Discards changes made to the temporary token.
    */
   public discard() {
+    this.token = this.backupToken;
     this.tempToken.set(this.token);
     this.close();
   }
