@@ -220,7 +220,7 @@ export class TokenComponent implements OnInit {
    */
   public apply() {
     this.modify$.emit(this.tempToken);
-    if(this.token.gapStatus !== this.tempToken.gapStatus) {
+    if(this.token.gapStatus !== this.backupToken.gapStatus) {
       this.gapChange$.emit(this.tempToken);
     }
     this.token = new Token(this.tempToken);

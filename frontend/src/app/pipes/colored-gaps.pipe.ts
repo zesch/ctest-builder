@@ -2,7 +2,8 @@ import { Pipe, PipeTransform } from '@angular/core';
 import { Word } from '../models/word';
 
 @Pipe({
-  name: 'coloredGaps'
+  name: 'coloredGaps',
+  pure: false
 })
 export class ColoredGapsPipe implements PipeTransform {
 
