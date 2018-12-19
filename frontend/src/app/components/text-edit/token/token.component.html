@@ -2,11 +2,11 @@
   <span cdk-overlay-origin
     #trigger="cdkOverlayOrigin"
     class="token"
-    [ngClass]="{'selected': selected, 'locked': !this.token.isNormal }"
+    [ngClass]="{'selected': selected }"
     (click)="this.select()"
     matTooltip="This word is locked. It will not be changed by automatic gap updates."
     [matTooltipDisabled]="this.token.isNormal">
-    {{ this.token | prompt }}<span [ngClass]="{'red-text': this.token.isNormal && this.token.gapStatus}">{{ this.token | coloredGaps:true }}</span>
+    {{ this.token | prompt }}<span [ngClass]="{'red-text': this.token.isNormal && this.token.gapStatus}">{{ this.token | coloredGaps:true }}</span><span *ngIf="!this.token.isNormal" class="badge-icon locked"><mat-icon>lock</mat-icon></span>
   </span>
 
   <ng-template cdk-connected-overlay
