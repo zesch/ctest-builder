@@ -205,8 +205,10 @@ export class TokenComponent implements OnInit {
    * Toggles the gap status of the temporary token.
    */
   public toggleGap() {
-    console.log('toggle gap')
     this.tempToken.gapStatus = !this.tempToken.gapStatus;
+    if (this.tempToken.gapStatus) {
+      this.tempToken.isNormal = true;
+    }
   }
 
   /**
@@ -215,6 +217,9 @@ export class TokenComponent implements OnInit {
    */
   public toggleLock() {
     this.tempToken.isNormal = !this.tempToken.isNormal;
+    if (!this.tempToken.isNormal) {
+      this.tempToken.gapStatus = false;
+    }
   }
 
   /**
