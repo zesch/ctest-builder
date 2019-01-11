@@ -104,7 +104,7 @@ export class ExportComponent implements OnInit {
   /**
    * Exports the current c-test as PDF
    */
-  private exportAsPDF(title: string, transform: (Word) => string) {
+  public exportAsPDF(title: string, transform: (Word) => string) {
     const doc = new jsPDF();
     const text = this.words.map(transform).join(' ');
 
@@ -116,7 +116,7 @@ export class ExportComponent implements OnInit {
   /**
    * Exports the current c-test as TXT.
    */
-  private exportAsTXT(filename: string, transform: (Word) => string) {
+  public exportAsTXT(filename: string, transform: (Word) => string) {
     const text = document.createElement('div');
     text.innerHTML = this.words.map(transform).join(' ');
     const download = document.createElement('a');
@@ -129,7 +129,7 @@ export class ExportComponent implements OnInit {
   /**
    * Exports the current c-test as re-importable json.
    */
-  private exportAsJSON(filename: string) {
+  public exportAsJSON(filename: string) {
     const text = document.createElement('div');
     text.innerHTML = JSON.stringify({
       words: this.words,

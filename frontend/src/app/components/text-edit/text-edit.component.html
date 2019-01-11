@@ -1,3 +1,41 @@
+<!-- WIP
+<div *ngIf="false">
+    <button mat-icon-button
+      class="help-button"
+      matTooltip="click to open help menu">
+      <mat-icon>help_outline</mat-icon>
+    </button>
+
+    <div class="overlay-backdrop">
+      <mat-card class="help-screen">
+        <div #helpHeader
+          fxLayout
+          fxLayoutAlign="space-between center">
+          <h2>Help</h2>
+          <button mat-button>
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+
+        <div class="help-content">
+          <h3>Editor Window</h3>
+          <p>In the <i>Editor Window</i>, you can modify the C-Test as a whole and get an overview over its current state. Depending on a token's current state, its display changes.</p>
+          <p>If a token is currently <strong>selected</strong>, it is displayed in bold face.</p>
+          <p><strong>Gapped tokens</strong> can be identified by their color. The gapped part of a token is displayed in red.</p>
+          <img src="assets/gapped-token.jpg">
+          <p>Some tokens are <strong>locked</strong>. A locked token has a lock symbol displayed next to its text. Locked tokens are ignored by the Gapscheme. If an automatic gap update occurs, locked tokens will be skipped, as if they were not part of the text. You can use this functionaliy to enforce constraints on certain parts of the C-Test (e.g. leading and trailing ungapped sentences.)</p>
+          <img src="assets/locked-token.jpg">
+          <p>Tokens can be <strong>clicked</strong> and <strong>dragged</strong>. Clicking a token opens the <i>Token Edit UI</i>, where the properties of a token can be modified. By dragging a token, its position in the C-Test is altered. Modifying a token or changing its position may trigger <i>automatic gap updates</i>.</p>
+
+          <h3>Token Edit UI</h3>
+          <p>The <i>Token Edit UI</i> allows you to modify the properties of a token. You can open the Token Edit UI by clicking on a token in the <i>Editor Window</i>. It can be closed by using either the <i>Confirm Button</i> or <i>Discard Button</i>.</p>
+          <img src="assets/token-edit-ui.jpg">
+        </div>
+      </mat-card>
+    </div>
+</div>
+-->
+
 <div fxLayout="column"
   fxLayoutAlign="space-between space-between"
   fxLayoutGap="10px">
@@ -90,11 +128,12 @@
         </tp-token>
       </ng-container>
 
-      <button mat-mini-fab
+     <!-- Removed until implemented properly.
+       <button mat-mini-fab
         (click)="addNewWord()"
         color="primary">
         <mat-icon matTooltip="Add new word next">add</mat-icon>
-      </button>
+      </button> -->
     </div>
     <div *ngIf="showPreview">
       <p>

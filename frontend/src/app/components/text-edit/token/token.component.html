@@ -35,6 +35,7 @@
               matTooltip="click to edit text">
               {{ this.tempToken | prompt }}
             </span>
+            <span>|</span>
             <span class="bold-on-hover"
               (click)="this.activateAlternativesEdit()"
               [ngClass]="{'red-text': this.tempToken.gapStatus}"

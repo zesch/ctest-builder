@@ -54,7 +54,7 @@ export class TextEditComponent implements OnInit {
   constructor(
     private router: Router,
     private ctestService: CtestService,
-    private stateService: StateManagementService
+    public stateService: StateManagementService
   ) { }
 
   ngOnInit(): void {

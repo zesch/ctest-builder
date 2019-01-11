@@ -22,3 +22,30 @@
   min-width: 2px;
   min-height: 36px;
 }
+
+/* Help Screen */
+.help-button {
+  position: fixed;
+  right: 30px;
+  top: 125px;
+}
+.overlay-backdrop {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 9001;
+  background-color: rgba(0,0,0,.67);
+}
+.help-screen {
+  max-width: 80%;
+  margin-right: 10%;
+  margin-left: 10%;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  overflow: scroll;
+}
+.help-content {
+
+}
