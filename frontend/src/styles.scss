@@ -6,3 +6,11 @@
 body, head {
   font-family: Roboto,"Open Sans","Helvetica Neue",sans-serif;
 }
+
+@import '~@angular/material/theming';
+$custom-typography: mat-typography-config(
+    $font-family: 'Roboto, "Open Sans"'
+);
+
+@include mat-core($custom-typography);
+@include angular-material-typography($custom-typography);
