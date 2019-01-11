@@ -168,7 +168,17 @@ export class TextEditComponent implements OnInit {
   }
 
   public updateAllGaps() {
-    const firstNormal = this.words.find(word => word.isNormal);
-    this.updateGaps(firstNormal);
+    const firstNormal: number = this.words.findIndex(word => word.isNormal);
+    const toUpdate: Word[] = this.words.slice(firstNormal);
+
+    this.ctestService.fetchUpdatedGaps(toUpdate, false).subscribe(
+      success => {
+        const regapped: Word[] = success;
+        const unchanged: Word[] = this.words.slice(0, firstNormal);
+        const newState = unchanged.concat(regapped);
+        this.stateService.set(newState);
+      },
+      failure => console.error(failure)
+    );
   }
 }
