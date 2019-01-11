@@ -7,6 +7,8 @@ import { map } from 'rxjs/operators/map';
 import { StateManagementService } from '../../services/state-management.service';
 import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operators';
+import { MatDialog } from '@angular/material';
+import { HelpPageComponent } from './help-page/help-page.component';
 
 @Component({
   selector: 'tp-text-edit',
@@ -52,6 +54,7 @@ export class TextEditComponent implements OnInit {
   public autoUpdate;
 
   constructor(
+    private dialog: MatDialog,
     private router: Router,
     private ctestService: CtestService,
     public stateService: StateManagementService
@@ -137,6 +140,13 @@ export class TextEditComponent implements OnInit {
    */
   public onTokenModification(word: Word) {
     this.stateService.modify(word);
+  }
+
+  /**
+   * Opens the help page.
+   */
+  public openHelp() {
+    this.dialog.open(HelpPageComponent);
   }
 
   /**

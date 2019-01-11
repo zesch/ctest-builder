@@ -1,0 +1,56 @@
+
+<h2 mat-dialog-title
+  fxLayout
+  fxLayoutAlign="space-between center">
+    Help
+    <button mat-icon-button
+      mat-dialog-close>
+      <mat-icon>close</mat-icon>
+  </button>
+</h2>
+
+<mat-dialog-content>
+  <h3>Control Panel</h3>
+  <p>The <i>Control Panel</i> allows you to modify some global properties of the C-Test and Editor and also provides some basic information on the C-Test, such as its length and the number of gaps.</p>
+  <img src="assets/control-panel.png">
+
+  <p>The aptly named <i>Undo/Redo Buttons</i> allow you to <b>undo</b> or <b>redo</b> changes made to the C-Test. Reversible changes include:</p>
+  <ol>
+    <li>changing a token's position</li>
+    <li>changing a token's properties</li>
+    <li>changing the C-Test's gap scheme</li>
+  </ol>
+  <p>Note that <i>Automatic Gap Updates</i> are a separate action in the history.</p>
+
+  <p>The <i>Global Gap Update Button</i> recalculates all gap positions in the Gap Scheme. This may be useful, when some tokens were locked or unlocked or the Gap Scheme got corrupted for some reason.</p>
+
+  <h3>Editor Window</h3>
+
+  <p>In the <i>Editor Window</i>, you can modify the C-Test as a whole and get an overview over its current state. Depending on a token's current state, its display changes.</p>
+  <img src="assets/editor-window.png">
+
+  <p>If a token is currently <strong>selected</strong>, it is displayed in bold face.</p>
+  <p><strong>Gapped tokens</strong> can be identified by their color. The gapped part of a token is displayed in red.</p>
+
+  <p>Some tokens are <strong>locked</strong>. A locked token has a lock symbol displayed next to its text. Locked tokens are ignored by the <i>Automatic Gap Updates</i>. If an Automatic Gap Update occurs, locked tokens will be skipped, as if they were not part of the text. You can use this functionaliy to enforce constraints on certain parts of the C-Test (e.g. leading and trailing ungapped sentences.)</p>
+  <img src="assets/locked-token.jpg">
+
+  <p>Tokens can be <strong>clicked</strong>, <strong>double clicked</strong> and <strong>dragged</strong>. Clicking a token opens the <i>Token Edit UI</i>, where the properties of a token can be modified. Double clicking a token will toggle its gap status. By dragging a token, its position in the C-Test is altered. Modifying a token or changing its position may trigger Automatic Gap Updates.</p>
+
+  <i>Automatic Gap Updates</i> are triggered, whenever the gap status of a token is changed or when its position in the C-Test is altered. An automatic gap update will start at the modified token and update the gaps of all subsequent tokens to align with the token. Automatic Gap Updates can be enabled and disabled in the <i>Control Panel</i>.
+
+  <p>The current C-Test can be <b>exported</b> in different formats or <b>saved</b> for re-imports by clicking the appropriate buttons on the bottom of the Editor Window.</p>
+
+  <h3>Token Edit UI</h3>
+  <p>The <i>Token Edit UI</i> allows you to modify the properties of a token. You can open the Token Edit UI by clicking on a token in the <i>Editor Window</i>. It can be closed by using either the <i>Confirm Button</i>, <i>Discard Button</i> or something outside the Token Edit UI. Clicking the Discard Button reverts all changes made to the token since the Token Edit UI was opened. </p>
+  <img src="assets/token-edit-ui.jpg">
+
+  <p>A token's <b>Gap Index</b> can be <b>shifted</b>, using the <i>+</i> and <i>-</i> Buttons to the token's sides. Note that increasing the gap index is going to remove alternative solutions if they are no longer valid for the token. (Example: Ho[use, uses, using] +3 House[s]).</p>
+
+  <p>The token's <b>text</b> can be <b>edited</b>, by clicking on the ungapped part of the token. This will open a text field, where the token's text can be altered. This will not update the token's Gap Index and its alternative solutions will be deleted. The edit can be confirmed by pressing <i>enter</i> and discarded by pressing <i>escape</i> or clicking the <i>x</i> icon on the right.</p>
+
+  <p><b>Alternative solutions</b> can be added and deleted, by clicking on the gapped part of a token. This will open a text field, where new solutions can be added by typing the solution and confirming it by pressing <i>enter, comma</i> or <i>space</i>. Solutions can be deleted by clicking on the <i>x</i> next to the solution.</p>
+  <p>The pink badge next to the gapped part of a token indicates the number of alternative solutions, currently assigned to the token.</p>
+
+  <p>Tokens can be <b>gapped</b>, <b>locked</b> or <b>deleted</b> using the corresponding buttons. Note that a locked token cannot be gapped and a gapped token cannot be locked. Changing the lock or gap may cause a change of the other to enforce these constraints.</p>
+</mat-dialog-content>
