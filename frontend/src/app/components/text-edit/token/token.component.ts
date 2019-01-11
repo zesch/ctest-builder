@@ -93,6 +93,27 @@ export class TokenComponent implements OnInit {
      13, // enter
   ]
 
+  /**
+   * Indicates whether a double click on the token was triggered.
+   * The click event on the token should be prevented.
+   * This is necessary to enable double click behaviour for tokens without
+   * causing a click event as well.
+   *
+   * @see TokenComponent.onClick
+   * @see TokenComponent.onDoubleClick
+   */
+  private doubleClick: boolean = false;
+
+  /**
+   * The the delay for a double click to register.
+   */
+  private doubleClickDelay: number = 233;
+
+  /**
+   * The timer for the click event.
+   */
+  private clickTimer: number;
+
   constructor() {
     this.gapChange$ = new EventEmitter<Word>();
     this.delete$ = new EventEmitter<Word>();
@@ -184,6 +205,7 @@ export class TokenComponent implements OnInit {
    * Toggles the gap status of the temporary token.
    */
   public toggleGap() {
+    console.log('toggle gap')
     this.tempToken.gapStatus = !this.tempToken.gapStatus;
   }
 
@@ -259,5 +281,31 @@ export class TokenComponent implements OnInit {
    */
   public close() {
     this.selected = false;
+  }
+
+  /**
+   * Handles click events on a token.
+   */
+  public onTokenClick() {
+    let component = this;
+    this.clickTimer = window.setTimeout(function() {
+      if (!component.doubleClick) {
+        component.select();
+      } else {
+        component.doubleClick = false;
+      }
+    }, this.doubleClickDelay)
+  }
+
+  /**
+   * Handles doubleclick events on a token.
+   */
+  public onTokenDoubleClick() {
+    console.log('double click')
+    this.doubleClick = true;
+    window.clearTimeout(this.clickTimer);
+    this.select$.emit(this);
+    this.toggleGap();
+    this.apply();
   }
 }
