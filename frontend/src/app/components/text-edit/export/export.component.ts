@@ -6,6 +6,7 @@ import { IosviewPipe } from '../../../pipes/iosview.pipe';
 import { MatDialog } from '@angular/material';
 import { ModalDialogComponent } from '../../../components/modal-dialog/modal-dialog.component';
 import { Router } from '@angular/router';
+import { JackViewPipe } from '../../../pipes/jack-view.pipe';
 
 @Component({
   selector: 'tp-export',
@@ -47,9 +48,14 @@ export class ExportComponent implements OnInit {
   public openDialogExport(): void {
     const data = {
       title: 'Export As',
-      file: {
-        placeholder: 'Name',
-        title: ''
+      formats: {
+        title: 'Gap Format',
+        values: [
+          'JACK XML',
+          'edit -> ed{it}',
+          'test -> te__',
+        ],
+        selectedValue: 'JACK XML'
       },
       fileTypes: {
         title: 'File Type',
@@ -59,13 +65,9 @@ export class ExportComponent implements OnInit {
         ],
         selectedValue: 'pdf'
       },
-      formats: {
-        title: 'Gap Format',
-        values: [
-          'edit -> ed{it}',
-          'test -> te__'
-        ],
-        selectedValue: 'test -> te__'
+      file: {
+        placeholder: 'Name',
+        title: ''
       },
       action: () => {
         let formatFunc;
@@ -78,8 +80,10 @@ export class ExportComponent implements OnInit {
           case 'test -> te__':
             formatFunc = new TestviewPipe().transform;
             break;
-          default:
-            formatFunc = new TestviewPipe().transform;
+          default: {
+            formatFunc = new JackViewPipe().transform;
+            data.fileTypes.selectedValue = 'JACK XML';
+          }
         }
 
         switch (data.fileTypes.selectedValue) {
@@ -90,9 +94,8 @@ export class ExportComponent implements OnInit {
             exportFunc = this.exportAsTXT(data.file.title, formatFunc);
             break;
           default:
-            exportFunc = this.exportAsTXT(data.file.title, formatFunc);
+            exportFunc = this.exportAsJACK(data.file.title, formatFunc);
         }
-        this.exportAsJSON(data.file.title);
       },
       no: 'Cancel',
       yes: 'Export'
@@ -125,6 +128,25 @@ export class ExportComponent implements OnInit {
     download.click();
   }
 
+  /**
+   * Exports the current c-test as JACK XML.
+   */
+  public exportAsJACK(filename: string, transform: (Word) => string) {
+    const preamble = '<?xml version="1.0" encoding="ISO-8859-1"?>\n\n<exercise type="fillIn">\n\n<input> </input>\n\n';
+    const title = `<task> &lt;span style="font-size:120%">${filename.replace('.*', '')}&lt;/span>\n`
+    const taskText = this.words.map(transform).join(' ');
+    const taskPostfix = '\n\n\n&lt;span style= "color:#ff0000;">Denken Sie bitte daran, auf &lt;span style="font-weight:600;">\'Einreichen\'&lt;/span> zu klicken, bevor Sie zur n�chsten Aufgabe wechseln. Please don�t forget to click &lt;span style="font-weight:600;">\'submit\'&lt;/span> before you start the next task.&lt;/span> </task>\n\n<advice> </advice>\n\n<correctanswer>\n<option result="false"/>\n<message/>\n</correctanswer>\n\n<feedback>';
+    const solutions = this.words
+      .filter(token => token.gapStatus)
+      .map((token, i) => `<option result="equals(trim('[pos=${i+1}]'),'${token.value.substring(token.offset)}')" points="5"/>`)
+      .join('\n')
+    const end = '</feedback>\n\n<output> </output>\n\n<skipmessage>Schade, dass Sie diesen Text �bersprungen haben.</skipmessage>\n\n</exercise>';
+    const content = [preamble, title, taskText, taskPostfix, solutions, end].join('\n');
+    const download = document.createElement('a');
+    download.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content)),
+      download.setAttribute('download', 'stage1.xml');
+    download.click();
+  }
 
   /**
    * Exports the current c-test as re-importable json.

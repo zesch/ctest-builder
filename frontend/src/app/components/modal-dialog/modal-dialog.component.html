@@ -7,16 +7,6 @@
       [placeholder]="data.file.placeholder"
       [(ngModel)]="data.file.title">
   </mat-form-field>
-  <mat-form-field *ngIf="data.fileTypes">
-    <mat-select
-      name="fileType"
-      [placeholder]="data.fileTypes.title"
-      [(ngModel)]="data.fileTypes.selectedValue">
-      <mat-option *ngFor="let fileType of data.fileTypes.values" [value]="fileType">
-        {{fileType}}
-      </mat-option>
-    </mat-select>
-  </mat-form-field>
   <mat-form-field>
     <mat-select
       name="format"
@@ -24,6 +14,16 @@
       [(ngModel)]="data.formats.selectedValue">
       <mat-option *ngFor="let format of data.formats.values" [value]="format">
         {{format}}
+      </mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field *ngIf="!(data.formats.selectedValue === 'JACK XML') && data.fileTypes">
+    <mat-select
+      name="fileType"
+      [placeholder]="data.fileTypes.title"
+      [(ngModel)]="data.fileTypes.selectedValue">
+      <mat-option *ngFor="let fileType of data.fileTypes.values" [value]="fileType">
+        {{fileType}}
       </mat-option>
     </mat-select>
   </mat-form-field>

@@ -28,6 +28,7 @@ import { StateManagementService } from './services/state-management.service';
 import { PlainSolutionsPipe } from './pipes/plain-solutions.pipe';
 import { ColoredGapsPipe } from './pipes/colored-gaps.pipe';
 import { HelpPageComponent } from './components/text-edit/help-page/help-page.component';
+import { JackViewPipe } from './pipes/jack-view.pipe';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { HelpPageComponent } from './components/text-edit/help-page/help-page.co
     ExportComponent,
     PlainSolutionsPipe,
     ColoredGapsPipe,
-    HelpPageComponent
+    HelpPageComponent,
+    JackViewPipe
   ],
   imports: [
     NgxDnDModule,
