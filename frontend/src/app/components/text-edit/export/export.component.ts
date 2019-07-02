@@ -18,12 +18,22 @@ export class ExportComponent implements OnInit {
   @Input('words')
   public words: Word[];
 
+  @Input()
+  public title: string;
+
   constructor(
     private dialog: MatDialog,
     private router: Router
   ) { }
 
   ngOnInit() {
+  }
+
+  public toFileName(title: string) {
+    if (!title) {
+      return 'export';
+    }
+    return title.replace(/ /g, '_');
   }
 
   /**
@@ -67,7 +77,7 @@ export class ExportComponent implements OnInit {
       },
       file: {
         placeholder: 'Name',
-        title: ''
+        title: this.title || ''
       },
       action: () => {
         let formatFunc;
@@ -86,15 +96,17 @@ export class ExportComponent implements OnInit {
           }
         }
 
+        const fileName = data.file.title.replace(' ', '_');
+
         switch (data.fileTypes.selectedValue) {
           case 'pdf':
-            exportFunc = this.exportAsPDF(data.file.title, formatFunc);
+            exportFunc = this.exportAsPDF(fileName, formatFunc);
             break;
           case 'txt':
-            exportFunc = this.exportAsTXT(data.file.title, formatFunc);
+            exportFunc = this.exportAsTXT(fileName, formatFunc);
             break;
           default:
-            exportFunc = this.exportAsJACK(data.file.title, formatFunc);
+            exportFunc = this.exportAsJACK(fileName, formatFunc);
         }
       },
       no: 'Cancel',
@@ -108,10 +120,13 @@ export class ExportComponent implements OnInit {
    * Exports the current c-test as PDF
    */
   public exportAsPDF(title: string, transform: (Word) => string) {
+    if (title === undefined) {
+      title = 'export';
+    }
     const doc = new jsPDF();
     const text = this.words.map(transform).join(' ');
 
-    doc.fromHTML(text, 15, 15, { 'width': 180 });
+    doc.fromHTML([title, text].join('\n'), 15, 15, { 'width': 180 });
     doc.save(title);
     return;
   }
@@ -120,6 +135,9 @@ export class ExportComponent implements OnInit {
    * Exports the current c-test as TXT.
    */
   public exportAsTXT(filename: string, transform: (Word) => string) {
+    if (filename === undefined) {
+      filename = 'export';
+    }
     const text = document.createElement('div');
     text.innerHTML = this.words.map(transform).join(' ');
     const download = document.createElement('a');
@@ -152,6 +170,9 @@ export class ExportComponent implements OnInit {
    * Exports the current c-test as re-importable json.
    */
   public exportAsJSON(filename: string) {
+    if (filename === undefined) {
+      filename = 'export';
+    }
     const text = document.createElement('div');
     text.innerHTML = JSON.stringify({
       words: this.words,

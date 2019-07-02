@@ -81,6 +81,20 @@
 
 
   <mat-card class="text_editor">
+    <div *ngIf="(!titleEdit) && title; else titleField">
+      <h3 (click)="this.titleEdit = true">{{ title }}</h3>
+    </div>
+    <ng-template #titleField>
+      <mat-form-field class="full-width">
+        <input matInput
+          type="text" 
+          placeholder="Enter a title..."
+          [(ngModel)]="title" 
+          (keyup)="onTitleKeyup($event)"
+          (blur)="this.titleEdit = false">
+      </mat-form-field>
+    </ng-template>
+
     <div class="ngx-dnd-container"
       *ngIf="!showPreview"
       ngxDroppable
@@ -115,7 +129,10 @@
   </mat-card>
 
   <div fxLayout="row" fxLayoutGap="25px">
-    <tp-export [words]="this.words"></tp-export>
+    <tp-export 
+      [title]="this.title" 
+      [words]="this.words">
+    </tp-export>
 
     <button mat-raised-button
       (click)="this.routeToHome()">

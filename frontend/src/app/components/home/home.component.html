@@ -17,10 +17,16 @@
             fxLayout="row" fxLayoutAlign="space-evenly center"
             class="main-element">
             <div fxFlex="60%">
+              <mat-form-field>
+                <input matInput formControlName="ctestTitle" 
+                  [(ngModel)]="title"
+                  type="text"
+                  placeholder="Enter a title...">
+              </mat-form-field>
               <mat-form-field class="full-width">
                 <textarea formControlName="ctestText"
                   matInput
-                  placeholder="Enter a text"
+                  placeholder="Enter a text..."
                   matTextareaAutosize
                   matAutosizeMinRows="9"
                   matAutosizeMaxRows="12">

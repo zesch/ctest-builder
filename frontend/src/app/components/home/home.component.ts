@@ -29,7 +29,15 @@ export class HomeComponent implements OnInit {
     { value: 'it', viewValue: 'Italian' }
   ];
 
+  /**
+   * Indicates whether the c-test service is available.
+   */
   public serviceAvailable: boolean;
+
+  /**
+   * The title of the c-test.
+   */
+  public title: string;
 
   // Life Cycle Hooks
   constructor(
@@ -41,6 +49,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     this.form = this._fb.group({
+      ctestTitle: ['', Validators.required],
       ctestText: ['', Validators.required],
     });
 
@@ -67,6 +76,7 @@ export class HomeComponent implements OnInit {
     if (/(\.txt|\.TXT)$/.test(input.value)) {
       const reader = new FileReader();
       reader.onload = () => {
+        this.title = this.fileNameToTitle(input.files[0].name.split('.')[0]);
         this.form.controls.ctestText.setValue(reader.result);
       };
       reader.readAsText(input.files[0]);
@@ -90,10 +100,16 @@ export class HomeComponent implements OnInit {
       this.snackBar.open('Done!', 'OK', {duration: 1250});
       const text = reader.result as string;
       const ctest = JSON.parse(text);
+      this.title = this.fileNameToTitle(input.files[0].name.split('.')[0]);
+      this.ctestService.setTitle(this.title);
       this.ctestService.setCTest(ctest);
-      this.router.navigate(['/text-editor'])
+      this.router.navigate(['/text-editor']);
     }
     reader.readAsText(input.files[0]);
+  }
+
+  private fileNameToTitle(fileName: string) {
+    return fileName.replace(/_/g, ' ');
   }
 
   /**
@@ -103,8 +119,8 @@ export class HomeComponent implements OnInit {
     if (this.form.valid && this.serviceAvailable) {
       this.snackBar.open('Processing text, please be patient...', 'OK');
 
-      let text = this.form.controls.ctestText.value;
-
+      this.ctestService.setTitle(this.title);
+      const text = this.form.controls.ctestText.value;
       this.ctestService.identifyLanguage(text).pipe(
         switchMap(language => this.ctestService.fetchCTest(text, language))
       ).subscribe(

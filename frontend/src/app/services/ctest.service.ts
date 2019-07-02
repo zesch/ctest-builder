@@ -21,6 +21,7 @@ export class CtestService {
 
   private ctest$: Observable<any>;
   private language: string;
+  private title: string;
 
   constructor(private http: HttpClient) {
     this.host = environment.api.url;
@@ -135,5 +136,13 @@ export class CtestService {
   private buildURL(endpoint: string): string {
     console.log([this.host, this.rootPath, endpoint].join('/'));
     return [this.host, this.rootPath, endpoint].join('/');
+  }
+
+  public getTitle(): string {
+    return this.title;
+  }
+
+  public setTitle(title: string) {
+    this.title = title;
   }
 }

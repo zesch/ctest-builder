@@ -51,7 +51,17 @@ export class TextEditComponent implements OnInit {
   /**
    * Indicates whether the gapscheme should be updated automatically.
    */
-  public autoUpdate;
+  public autoUpdate: boolean;
+
+  /**
+   * The title of the c-test.
+   */
+  public title: string;
+
+  /**
+   * Indicates whether title edit mode is active.
+   */
+  public titleEdit: boolean;
 
   constructor(
     private dialog: MatDialog,
@@ -76,7 +86,15 @@ export class TextEditComponent implements OnInit {
     this.ctestService.getCTest().subscribe(
       success => this.stateService.addAll(success.words),
       failure => console.error(failure)
-    )
+    );
+
+    if (this.ctestService.getTitle() !== 'export') {
+      this.title = this.ctestService.getTitle().replace(/_/g, ' ');
+      this.titleEdit = false;
+    } else {
+      this.title = '';
+      this.titleEdit = true;
+    }
 
     const response$: Observable<{ words: Word[], warnings: string[] }> = this.ctestService.getCTest();
     this.words$ = response$.pipe(
@@ -190,5 +208,12 @@ export class TextEditComponent implements OnInit {
       },
       failure => console.error(failure)
     );
+  }
+
+  public onTitleKeyup(event: KeyboardEvent) {
+    switch(event.key) {
+      case "Enter":
+      case "Escape": this.titleEdit = false;
+    }
   }
 }

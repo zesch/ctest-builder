@@ -6,7 +6,7 @@
   </button>
 
   <button mat-raised-button
-    (click)="exportAsJSON('export')"
+    (click)="exportAsJSON(toFileName(title))"
     matTooltip="save for later reimport">
     Save
   </button>
