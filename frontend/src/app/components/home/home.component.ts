@@ -97,14 +97,25 @@ export class HomeComponent implements OnInit {
       this.snackBar.open('Importing C-Test...', 'OK');
     }
     reader.onload = () => {
-      this.snackBar.open('Done!', 'OK', {duration: 1250});
-      const text = reader.result as string;
-      const ctest = JSON.parse(text);
-      this.title = this.fileNameToTitle(input.files[0].name.split('.')[0]);
+      const fileName = input.files[0].name;
+      this.title = this.fileNameToTitle(fileName.split('.')[0]);
       this.ctestService.setTitle(this.title);
-      this.ctestService.setCTest(ctest);
-      this.router.navigate(['/text-editor']);
-    }
+      const text = reader.result as string;
+      console.log(text);
+      if (fileName.endsWith('.ctest.json')) {
+        const ctest = JSON.parse(text);
+        this.ctestService.setCTest(ctest);
+        this.snackBar.open('Done!', 'OK', {duration: 1250});
+        this.router.navigate(['/text-editor']);
+      } else { // endsWith(.xml)
+        this.ctestService.fetchCTestFromJACK(text).subscribe(
+          success => {
+            this.snackBar.open('Done!', 'OK', {duration: 1250});
+            this.router.navigate(['/text-editor']);
+          },
+          failure => this.snackBar.open('ERROR: Could not reimport C-Test.', 'OK'));
+      }
+    };
     reader.readAsText(input.files[0]);
   }
 

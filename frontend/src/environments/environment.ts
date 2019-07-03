@@ -42,6 +42,15 @@ export const environment = {
                 'Content-Type' : 'application/json'
               }
             }
+          },
+          fromJACK: {
+            path: 'fromJACK',
+            queryParameters: false,
+            options : {
+              headers: {
+                'Content-Type' : 'text/plain',
+              }
+            }
           }
         },
       },

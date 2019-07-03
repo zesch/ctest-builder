@@ -23,6 +23,7 @@
                   type="text"
                   placeholder="Enter a title...">
               </mat-form-field>
+              <br>
               <mat-form-field class="full-width">
                 <textarea formControlName="ctestText"
                   matInput
@@ -77,11 +78,11 @@
 
     <mat-tab label="Import existing C-Test">
       <div>
-        <p>
-          You can import a C-Test by uploading a formerly saved C-Test JSON file.
-          Once the file is uploaded, you will be immediately redirected to the Edit UI.
-          Choose wisely...
-        </p>
+        <p>You can import a C-Test by uploading a formerly saved C-Test JSON file or a JACK Stage XML file.
+          Once the file is uploaded, you will be immediately redirected to the Edit UI.</p>
+        <p>Note that for JACK XML Imports, <strong>no linguistic processing will be applied</strong>. 
+          Consequently, opening and closing sentences as well as named entities will not be locked.</p>
+        <p>Use with care...</p>
 
         <div class="action-button">
           <button mat-raised-button
@@ -92,7 +93,7 @@
           </button>
           <input #importIn
             type="file"
-            accept=".json"
+            accept=".json, .xml"
             hidden="hidden"
             (change)="import($event)">
         </div>

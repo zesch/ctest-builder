@@ -1,8 +1,13 @@
 package de.unidue.ltl.ctestbuilder.service.gapscheme;
 
+import java.io.File;
 import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -20,9 +25,12 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.tools.ant.taskdefs.TempFile;
+
 import de.unidue.ltl.ctest.core.CTestObject;
 import de.unidue.ltl.ctest.core.CTestToken;
 import de.unidue.ltl.ctest.gapscheme.CTestGenerator;
+import de.unidue.ltl.ctest.io.CTestJACKReader;
 
 /**
  * Class defining the GapScheme REST API, which provides <a href="https://de.wikipedia.org/wiki/C-Test">c-tests</a>. 
@@ -33,7 +41,8 @@ import de.unidue.ltl.ctest.gapscheme.CTestGenerator;
  * <li>{@code /verify} Offers information about the status and version of the service.
  * <li>{@code /gapify} Offers the c-test generation of the service. 
  * <li>{@code /gapify-partial} Offers a simplified c-test generation.
- * <li>{@code /update-gaps} Offers a re-gapping of a list of CTestTokens.  
+ * <li>{@code /update-gaps} Offers a re-gapping of a list of CTestTokens. 
+ * <li>{@code /fromJACK} Offers c-test generation from JACK Stage XMLs.
  * </ul><p>
  * The {@code /gapify} endpoint can be accessed with a {@code POST} Request.
  * The request must contain the text to be converted to a c-test and the the language of the text.
@@ -148,6 +157,55 @@ public class GapScheme {
 
 		return response;
 	}
+
+	/**
+	 * Creates a C-Test from the given JACK Stage XML String.
+	 * Note that the resulting C-Test will <b>not</b> be processed.
+	 * Consequently, opening and closing sentences and named entities will not be marked as non-candidates.
+	 * 
+	 * @param  request a string representing a JACK Stage XML to be converted into a c-Test.
+	 * @return A {@code Response}, containing the c-Test and warnings, regarding the generation process as JSON String.
+	 */
+	@POST
+	@Path("/fromJACK")
+	@Consumes(MediaType.TEXT_PLAIN)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response fromJACK(String request) {
+		System.out.println("/fromJack endpoint called");
+		if (request == null) {
+			return Response
+					.status(Response.Status.BAD_REQUEST)
+					.entity("{\"message\" : \"ERROR: Request body must not be empty. See API Specification for details. \"}")
+					.build();
+		}
+		
+		Response response;
+		
+		try {
+			// convert to c-test
+			File file = File.createTempFile(UUID.randomUUID().toString(), ".xml", null);
+			Files.write(Paths.get(file.getPath()), request.getBytes());
+			CTestObject ctest = new CTestJACKReader().read(file);
+			file.delete();
+			
+			// send response
+			String body = toJson(ctest, new ArrayList<>()).toString();
+			response = Response
+					.status(Response.Status.OK)
+					.entity(body)
+					.build();
+		} catch (Exception e) {
+			e.printStackTrace();
+			response = Response
+				.status(Response.Status.INTERNAL_SERVER_ERROR)
+				.entity("{\"message\" : \"ERROR: Could not create c-test.\"}")
+				.build();
+		}
+		
+		return response;
+	}
+	
+
 	
 	/**
 	 * Updates the gap status of the given JSON Array of FrontendCTestTokens.

@@ -18,6 +18,11 @@ import { HelpPageComponent } from './help-page/help-page.component';
 
 export class TextEditComponent implements OnInit {
   /**
+   * The default number of gaps that a test should hold.
+   */
+  public static readonly DefaultTestSize = 20;  
+
+  /**
    *  Words in the current c-test.
    */
   public words: Word[] = []; //TODO: replace with observables.
@@ -26,6 +31,11 @@ export class TextEditComponent implements OnInit {
    * The number of gaps in the current c-test.
    */
   public gaps: number = 0;
+
+  /**
+   * The desired number of gaps in the c-test.
+   */
+  public gapCountTarget: number = TextEditComponent.DefaultTestSize;
 
   /**
    * Indicates whether text should be shown before export.

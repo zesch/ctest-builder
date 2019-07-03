@@ -14,6 +14,7 @@ export class CtestService {
   private partialEndpoint: any;
   private updateGapEndpoint: any;
   private verifyEndpoint: any;
+  private fromJACKEndpoint: any;
 
   private langIdRootPath: string;
   private langIdEndpoint: any;
@@ -30,6 +31,7 @@ export class CtestService {
     this.partialEndpoint = environment.api.services.gapscheme.endpoints.partial;
     this.updateGapEndpoint = environment.api.services.gapscheme.endpoints.updateGaps;
     this.verifyEndpoint = environment.api.services.gapscheme.endpoints.verify;
+    this.fromJACKEndpoint = environment.api.services.gapscheme.endpoints.fromJACK;
 
     this.langIdRootPath = environment.api.services.langid.root;
     this.langIdEndpoint = environment.api.services.langid.endpoints.service;
@@ -58,10 +60,18 @@ export class CtestService {
    */
   public fetchCTest(text: string, language: string): Observable<any> {
     const url: string = this.buildURL(this.serviceEndpoint.path) + `?language=${language}`;
-    const options: object = { headers: this.serviceEndpoint.headers };
+    const options: any = { headers: this.serviceEndpoint.headers };
 
     this.language = language;
     this.ctest$ = this.http.post(url, text, options);
+    return this.ctest$;
+  }
+
+  /**
+   * Queries the API to convert the given XML String to a c-test.
+   */
+  public fetchCTestFromJACK(xmlString: string): Observable<any> {
+    this.ctest$ = this.http.post(this.buildURL(this.fromJACKEndpoint.path), xmlString, this.fromJACKEndpoint.options);
     return this.ctest$;
   }
 
