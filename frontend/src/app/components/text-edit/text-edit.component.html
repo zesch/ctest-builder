@@ -75,7 +75,11 @@
 
   <mat-card class="text_editor">
     <div *ngIf="(!titleEdit) && title; else titleField">
-      <h3 class="title-heading" (click)="this.titleEdit = true">{{ title }}</h3>
+      <h3 class="title-heading"
+        matTooltip="Click to edit the title."
+        (click)="this.titleEdit = true">
+        {{ title }}
+      </h3>
     </div>
     <ng-template #titleField>
       <mat-form-field class="full-width">

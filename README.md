@@ -135,14 +135,14 @@ ng build --prod
 Copy the built services to the Docker directory on the server, using the following commands or a suitable alternative. `<server.docker>` refers to the full path of the docker directory on the server. `<user.name>` refers to your username.
 
 ```
-scp -P 42922 <c.test.builder>/backend/de.unidue.ltl.ctestbuilder.service.gapscheme/target/*.war <user.name>@134.91.18.133:<server.docker>/backend/gapscheme/
-scp -P 42922 <c.test.builder>/backend/de.unidue.ltl.ctestbuilder.service.LangId/target/*.war <user.name>@134.91.18.133:<server.docker>/backend/langid/
-scp -P 42922 <c.test.builder>/frontend/dist/* <user.name>@134.91.18.133:<server.docker>/frontend/dist/
+scp -P 42922 <c.test.builder>/backend/de.unidue.ltl.ctestbuilder.service.gapscheme/target/*.war <user.name>@192.168.231.133:<server.docker>/backend/gapscheme/
+scp -P 42922 <c.test.builder>/backend/de.unidue.ltl.ctestbuilder.service.LangId/target/*.war <user.name>@192.168.231.133:<server.docker>/backend/langid/
+scp -P 42922 <c.test.builder>/frontend/dist/* <user.name>@192.168.231.133:<server.docker>/frontend/dist/
 ```
 
 ### Starting all Docker services
 
-Execute the following commands on the server. The CTest Builder App will be available under http://134.91.18.133:8000.
+Execute the following commands on the server. The CTest Builder App will be available in University Networks under http://192.168.231.133:8000.
 
 ```
 cd <server.docker>
@@ -153,4 +153,3 @@ docker-compose up -d
 **Note:** The build process produces unused images. To remove them, run `docker rmi $(docker images -f 'dangling=true' -q)`. This will remove all untagged images.
 
 **Note:** In case something went wrong at some earlier deployment, you may need to remove orphaned containers from earlier builds. Identify the orphaned containers, using `docker ps -a` and remove them manually or simply add the `--remove-orphans` to the `docker-compose up` command.
-

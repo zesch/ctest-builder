@@ -2,7 +2,7 @@
 export const environment = {
   production: false,
   api: {
-    url: 'http://134.91.18.133:9001',
+    url: 'http://192.168.231.133:9001',
     services: {
       gapscheme: {
         root: 'gapscheme/rest',
