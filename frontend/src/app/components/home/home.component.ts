@@ -95,14 +95,14 @@ export class HomeComponent implements OnInit {
     const reader = new FileReader();
     reader.onloadstart = () => {
       this.snackBar.open('Importing C-Test...', 'OK');
-    }
+    };
     reader.onload = () => {
       const fileName = input.files[0].name;
       this.title = this.fileNameToTitle(fileName.split('.')[0]);
       this.ctestService.setTitle(this.title);
       const text = reader.result as string;
       console.log(text);
-      if (fileName.endsWith('.ctest.json')) {
+      if (fileName.endsWith('.json')) {
         const ctest = JSON.parse(text);
         this.ctestService.setCTest(ctest);
         this.snackBar.open('Done!', 'OK', {duration: 1250});

@@ -37,3 +37,18 @@
 .warn {
   color: crimson;
 }
+
+.title-heading {
+  display: inline-block;
+  color: rgba(0, 0, 0, .87);
+  transition: background-color 0.3s;
+  transition-timing-function: ease-in-out;
+  padding: 0px 3px 0px 3px;
+  margin: 0px -2px 0px -2px;
+  border-radius: 1px;
+
+  &:hover {
+    cursor: pointer;
+    background-color: rgba(0, 0, 0, .14)
+  }
+}

@@ -61,7 +61,7 @@
         <mat-icon>sync</mat-icon>
       </button>
     </div>
-    
+
     <mat-slide-toggle
       [(ngModel)]="this.autoUpdate"
       labelPosition="before"
@@ -69,20 +69,20 @@
       matTooltip="When active, the Gap Scheme is recalculated automatically when changing gaps or moving words.">
       Auto Update
     </mat-slide-toggle>
-    
+
   </mat-card>
 
 
   <mat-card class="text_editor">
     <div *ngIf="(!titleEdit) && title; else titleField">
-      <h3 (click)="this.titleEdit = true">{{ title }}</h3>
+      <h3 class="title-heading" (click)="this.titleEdit = true">{{ title }}</h3>
     </div>
     <ng-template #titleField>
       <mat-form-field class="full-width">
         <input matInput
-          type="text" 
+          type="text"
           placeholder="Enter a title..."
-          [(ngModel)]="title" 
+          [(ngModel)]="title"
           (keyup)="onTitleKeyup($event)"
           (blur)="this.titleEdit = false">
       </mat-form-field>
@@ -122,8 +122,8 @@
   </mat-card>
 
   <div fxLayout="row" fxLayoutGap="25px">
-    <tp-export 
-      [title]="this.title" 
+    <tp-export
+      [title]="this.title"
       [words]="this.words">
     </tp-export>
 
