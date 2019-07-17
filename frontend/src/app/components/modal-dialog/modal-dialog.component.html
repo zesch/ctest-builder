@@ -17,6 +17,9 @@
       </mat-option>
     </mat-select>
   </mat-form-field>
+  <mat-form-field *ngIf="data.formats.selectedValue === 'JACK XML' && data.jackStage">
+    <input matInput type="number" [(ngModel)]="data.jackStage.value" [placeholder]="data.jackStage.title">
+  </mat-form-field>
   <mat-form-field *ngIf="!(data.formats.selectedValue === 'JACK XML') && data.fileTypes">
     <mat-select
       name="fileType"

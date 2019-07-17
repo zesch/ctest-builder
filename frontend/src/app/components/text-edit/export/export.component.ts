@@ -79,6 +79,10 @@ export class ExportComponent implements OnInit {
         placeholder: 'Name',
         title: this.title || ''
       },
+      jackStage: {
+        title: 'JACK Stage',
+        value: 1
+      },
       action: () => {
         let formatFunc;
         let exportFunc;
@@ -97,6 +101,7 @@ export class ExportComponent implements OnInit {
         }
 
         const fileName = data.file.title.replace(' ', '_');
+        const stageNo = data.jackStage.value;
 
         switch (data.fileTypes.selectedValue) {
           case 'pdf':
@@ -106,7 +111,7 @@ export class ExportComponent implements OnInit {
             exportFunc = this.exportAsTXT(fileName, formatFunc);
             break;
           default:
-            exportFunc = this.exportAsJACK(fileName, formatFunc);
+            exportFunc = this.exportAsJACK(fileName, stageNo, formatFunc);
         }
       },
       no: 'Cancel',
@@ -149,7 +154,7 @@ export class ExportComponent implements OnInit {
   /**
    * Exports the current c-test as JACK XML.
    */
-  public exportAsJACK(filename: string, transform: (Word) => string) {
+  public exportAsJACK(filename: string, stage: number | string, transform: (Word) => string) {
     const preamble = '<?xml version="1.0" encoding="ISO-8859-1"?>\n\n<exercise type="fillIn">\n\n<input> </input>\n\n';
     const title = `<task> &lt;span style="font-size:120%">${filename.replace('.*', '')}&lt;/span>\n`
     const taskText = this.words.map(transform).join(' ');
@@ -162,7 +167,7 @@ export class ExportComponent implements OnInit {
     const content = [preamble, title, taskText, taskPostfix, solutions, end].join('\n');
     const download = document.createElement('a');
     download.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content)),
-      download.setAttribute('download', 'stage1.xml');
+      download.setAttribute('download', `stage${stage}.xml`);
     download.click();
   }
 
