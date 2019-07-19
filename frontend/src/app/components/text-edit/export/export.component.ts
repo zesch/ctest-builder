@@ -100,7 +100,7 @@ export class ExportComponent implements OnInit {
           }
         }
 
-        const fileName = data.file.title.replace(' ', '_');
+        const fileName = data.file.title.replace(/ /g, '_');
         const stageNo = data.jackStage.value;
 
         switch (data.fileTypes.selectedValue) {
@@ -111,7 +111,7 @@ export class ExportComponent implements OnInit {
             exportFunc = this.exportAsTXT(fileName, formatFunc);
             break;
           default:
-            exportFunc = this.exportAsJACK(fileName, stageNo, formatFunc);
+            exportFunc = this.exportAsJACK(data.file.title, stageNo, formatFunc);
         }
       },
       no: 'Cancel',
