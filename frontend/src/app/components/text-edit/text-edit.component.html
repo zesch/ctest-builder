@@ -117,11 +117,9 @@
       </button> -->
     </div>
     <div *ngIf="showPreview">
-      <p>
-        <ng-container *ngFor="let word of words">
-          {{ word | testview }}
-        </ng-container>
-      </p>
+      <ng-container *ngFor="let word of words">
+        {{ word | testview }}
+      </ng-container>
     </div>
   </mat-card>
 
