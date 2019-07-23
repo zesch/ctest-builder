@@ -87,7 +87,7 @@ export class ExportComponent implements OnInit {
         let formatFunc;
         let exportFunc;
 
-        switch(data.formats.selectedValue) {
+        switch (data.formats.selectedValue) {
           case 'edit -> ed{it}':
             formatFunc = new IosviewPipe().transform;
             break;
@@ -155,19 +155,23 @@ export class ExportComponent implements OnInit {
    * Exports the current c-test as JACK XML.
    */
   public exportAsJACK(filename: string, stage: number | string, transform: (Word) => string) {
+    // generate xml content
     const preamble = '<?xml version="1.0" encoding="ISO-8859-1"?>\n\n<exercise type="fillIn">\n\n<input> </input>\n\n';
     const title = `<task> &lt;span style="font-size:120%">${filename.replace('.*', '')}&lt;/span>\n`
     const taskText = this.words.map(transform).join(' ');
-    const taskPostfix = '\n\n\n&lt;span style= "color:#ff0000;">Denken Sie bitte daran, auf &lt;span style="font-weight:600;">\'Einreichen\'&lt;/span> zu klicken, bevor Sie zur n�chsten Aufgabe wechseln. Please don�t forget to click &lt;span style="font-weight:600;">\'submit\'&lt;/span> before you start the next task.&lt;/span> </task>\n\n<advice> </advice>\n\n<correctanswer>\n<option result="false"/>\n<message/>\n</correctanswer>\n\n<feedback>';
+    const taskPostfix = '\n\n\n&lt;span style= "color:#ff0000;">Denken Sie bitte daran, auf &lt;span style="font-weight:600;">\'Einreichen\'&lt;/span> zu klicken, bevor Sie zur nächsten Aufgabe wechseln. Please don\'t forget to click &lt;span style="font-weight:600;">\'submit\'&lt;/span> before you start the next task.&lt;/span> </task>\n\n<advice> </advice>\n\n<correctanswer>\n<option result="false"/>\n<message/>\n</correctanswer>\n\n<feedback>';
     const solutions = this.words
       .filter(token => token.gapStatus)
-      .map((token, i) => `<option result="equals(trim('[pos=${i+1}]'),'${token.value.substring(token.offset)}')" points="5"/>`)
+      .map((token, i) => `<option result="equals(trim('[pos=${i + 1}]'),'${token.value.substring(token.offset)}')" points="5"/>`)
       .join('\n')
-    const end = '</feedback>\n\n<output> </output>\n\n<skipmessage>Schade, dass Sie diesen Text �bersprungen haben.</skipmessage>\n\n</exercise>';
+    const end = '</feedback>\n\n<output> </output>\n\n<skipmessage>Schade, dass Sie diesen Text übersprungen haben.</skipmessage>\n\n</exercise>';
     const content = [preamble, title, taskText, taskPostfix, solutions, end].join('\n');
+
+    // provide as downloadable file
+    const blob = new Blob([new Buffer(content, 'latin1')], { type: 'text/xml;charset=iso-8859-1' });
     const download = document.createElement('a');
-    download.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content)),
-      download.setAttribute('download', `stage${stage}.xml`);
+    download.setAttribute('href', window.URL.createObjectURL(blob));
+    download.setAttribute('download', `stage${stage}.xml`);
     download.click();
   }
 
