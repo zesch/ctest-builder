@@ -124,30 +124,31 @@ export class ExportComponent implements OnInit {
   /**
    * Exports the current c-test as PDF
    */
-  public exportAsPDF(title: string, transform: (Word) => string) {
-    if (title === undefined) {
-      title = 'export';
+  public exportAsPDF(fileName: string, transform: (Word) => string) {
+    if (fileName === undefined) {
+      fileName = 'export';
     }
     const doc = new jsPDF();
-    const text = this.words.map(transform).join(' ');
-
-    doc.fromHTML([title, text].join('\n'), 15, 15, { 'width': 180 });
-    doc.save(title);
+    doc.setFontSize(18);
+    const title = `<h2>${fileName.replace(/[_]/g, ' ')}</h2>`;
+    const text = `<p style="text-align: justify">${this.words.map(transform).join(' ')}</p>`;
+    doc.fromHTML([title, text].join('<br>'), 15, 15, { width: 180, lineHeight: 1.5 });
+    doc.save(fileName);
     return;
   }
 
   /**
    * Exports the current c-test as TXT.
    */
-  public exportAsTXT(filename: string, transform: (Word) => string) {
-    if (filename === undefined) {
-      filename = 'export';
+  public exportAsTXT(fileName: string, transform: (Word) => string) {
+    if (fileName === undefined) {
+      fileName = 'export';
     }
-    const text = document.createElement('div');
-    text.innerHTML = this.words.map(transform).join(' ');
+    const text = fileName.replace(/[_]/g, ' ') + '\r\n' + this.words.map(transform).join(' ');
+    const blob: Blob = new Blob([new Buffer(text)], { type: 'text/plain; charset=utf-8'});
     const download = document.createElement('a');
-    download.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text.innerText)),
-      download.setAttribute('download', (filename + '.txt'));
+    download.setAttribute('href', URL.createObjectURL(blob)),
+    download.setAttribute('download', (fileName + '.txt'));
     download.click();
   }
 
