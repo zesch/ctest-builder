@@ -20,7 +20,13 @@ export class TextEditComponent implements OnInit {
   /**
    * The default number of gaps that a test should hold.
    */
-  public static readonly DefaultTestSize = 20;  
+  public static readonly DefaultTestSize = 20;
+
+  /**
+   * The default interval of gaps.
+   */
+  public static readonly DefaultGapInterval = 2;
+
 
   /**
    *  Words in the current c-test.
@@ -36,6 +42,13 @@ export class TextEditComponent implements OnInit {
    * The desired number of gaps in the c-test.
    */
   public gapCountTarget: number = TextEditComponent.DefaultTestSize;
+
+
+  /**
+   * The desired interval of gaps in the c-test.
+   */
+  public gapInterval: number = TextEditComponent.DefaultGapInterval;
+
 
   /**
    * Indicates whether text should be shown before export.
@@ -192,17 +205,38 @@ export class TextEditComponent implements OnInit {
    */
   public updateGaps(word: Word) {
     const start: number = this.words.findIndex(token => token.id === word.id) + 1;
-    const toUpdate: Word[] = this.words.slice(start);
+    const offset = word.gapStatus ? 1 : 0;
+    const previous = this.words.slice(0, start);
+    const after = this.words.slice(start);
+    const previousGapCount = previous.filter(token => token.gapStatus).length;
+    const missingGaps = this.gapCountTarget - previousGapCount;
 
-    this.ctestService.fetchUpdatedGaps(toUpdate, !word.gapStatus).subscribe(
-      success => {
-        const regapped: Word[] = success;
-        const unchanged: Word[] = this.words.slice(0,start);
-        const newState = unchanged.concat(regapped);
-        this.stateService.set(newState);
-      },
-      failure => console.error(failure)
-    );
+    // add missing gaps
+    if (missingGaps >= 0) {
+      after
+        .forEach(token => token.gapStatus = false);
+      after
+        .filter(token => token.isNormal)
+        .filter((token, i) => this.isGap(i + offset))
+        .slice(0, missingGaps)
+        .forEach(token => token.gapStatus = true);
+    // remove unnecessary gaps
+    } else {
+      previous
+        .filter(token => token.gapStatus)
+        .reverse()
+        .slice(1, Math.abs(missingGaps) + 1)
+        .forEach(token => token.gapStatus = false);
+    }
+
+    this.stateService.set(this.words);
+  }
+
+  /**
+   * Indicates whether the given index should be gapped.
+   */
+  private  isGap(index: number): boolean {
+    return index % this.gapInterval === 0;
   }
 
   public updateAllGaps() {

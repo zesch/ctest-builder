@@ -64,6 +64,8 @@ public class GapScheme {
 	 */
 	public GapScheme() {
 		builder = new CTestGenerator();
+		builder.setEnforcesLeadingSentence(false);
+		builder.setEnforcesTrailingSentence(false);
 	}
 	
 	/**
