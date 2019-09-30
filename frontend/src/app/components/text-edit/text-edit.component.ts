@@ -9,6 +9,7 @@ import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { HelpPageComponent } from './help-page/help-page.component';
+import { DifficultyService } from '../../services/difficulty.service';
 
 @Component({
   selector: 'tp-text-edit',
@@ -77,6 +78,16 @@ export class TextEditComponent implements OnInit {
   public autoUpdate: boolean;
 
   /**
+   * Indicates whether the test difficulty should be updated automatically.
+   */
+  public autoUpdateDifficulty: boolean;
+
+  /**
+   * The difficulty of the current c-test.
+   */
+  public difficulty;
+
+  /**
    * The title of the c-test.
    */
   public title: string;
@@ -95,6 +106,8 @@ export class TextEditComponent implements OnInit {
 
   ngOnInit(): void {
     this.autoUpdate = true;
+    this.autoUpdateDifficulty = true;
+    this.difficulty = 0;
 
     this.unsubscribe$ = new Subject<boolean>();
 
@@ -104,6 +117,9 @@ export class TextEditComponent implements OnInit {
     .subscribe(success => {
       this.words = success;
       this.gaps = this.words.filter(word => word.gapStatus).length;
+      if (this.autoUpdateDifficulty) {
+        this.updateDifficulty();
+      }
     });
 
     this.ctestService.getCTest().subscribe(
@@ -259,5 +275,12 @@ export class TextEditComponent implements OnInit {
       case "Enter":
       case "Escape": this.titleEdit = false;
     }
+  }
+
+  public updateDifficulty() {
+    this.ctestService.fetchDifficulty(this.words).subscribe(
+      success => this.difficulty = success,
+      error => console.error(`Could not fetch difficulty`)
+    );
   }
 }

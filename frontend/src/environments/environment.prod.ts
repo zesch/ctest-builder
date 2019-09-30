@@ -61,6 +61,20 @@ export const environment = {
             }
           }
         }
+      },
+      difficulty: {
+        root: 'difficulty/rest',
+        endpoints: {
+          verify: { path: 'verify', queryParameters: false },
+          service: {
+            path: 'estimate',
+            queryParameters: false,
+            options : {
+              headers: { 'Content-Type' : 'application/json' },
+              responseType: 'text'
+            }
+          }
+        }
       }
     }
   }

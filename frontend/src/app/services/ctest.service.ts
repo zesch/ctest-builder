@@ -4,6 +4,7 @@ import { Observable } from 'rxjs/observable';
 import { of } from 'rxjs/observable/of';
 import { environment } from '../../environments/environment';
 import { Word } from '../models/word';
+import { map } from 'rxjs/operators';
 
 @Injectable()
 export class CtestService {
@@ -19,6 +20,8 @@ export class CtestService {
   private langIdRootPath: string;
   private langIdEndpoint: any;
   private langIdVerifyEndpoint: any;
+
+  private difficultyService = environment.api.services.difficulty;
 
   private ctest$: Observable<any>;
   private language: string;
@@ -110,6 +113,23 @@ export class CtestService {
   }
 
   /**
+   * Queries the API for a difficulty estimate of the given tokens.
+   */
+  public fetchDifficulty(tokens: Word[]): Observable<number> {
+     // TODO: remove, when backend is in place.
+     if (true) {
+      return of(Math.random());
+    }
+
+    const url = this.buildURL(this.difficultyService.endpoints.service.path);
+
+    const options = this.difficultyService.endpoints.service.options as any;
+    return this.http.post(url, tokens, options).pipe(
+      map(res => Number.parseFloat(String(res)))
+    );
+  }
+
+  /**
    * Sets the current c-test.
    */
   public setCTest(ctest: { words: Word[], warnings: string[] }) {
@@ -144,7 +164,6 @@ export class CtestService {
   }
 
   private buildURL(endpoint: string): string {
-    console.log([this.host, this.rootPath, endpoint].join('/'));
     return [this.host, this.rootPath, endpoint].join('/');
   }
 

@@ -54,22 +54,41 @@
     <div class="vertical-divider"></div>
 
     <div>
+      <span matTooltip="The difficulty of the test.">Difficulty: {{ difficulty | percent }}</span>
+      <button mat-icon-button
+        (click)="this.updateDifficulty()"
+        matTooltip="recalculate test difficulty">
+        <mat-icon>sync</mat-icon>
+      </button>
+
+      <mat-slide-toggle
+        [(ngModel)]="this.autoUpdateDifficulty"
+        labelPosition="before"
+        color="primary"
+        matTooltip="When active, the Test Difficulty is recalculated automatically when changing gaps or moving words.">
+        Auto Update
+      </mat-slide-toggle>
+    </div>
+
+
+    <div class="vertical-divider"></div>
+
+    <div>
       <span [matTooltipDisabled]="gaps === gapCountTarget" matTooltip="The C-Test violates the gapscheme."><span [class.warn]="gaps !== gapCountTarget">{{ this.gaps }}</span> / {{ this.gapCountTarget }} Gaps</span>
       <button mat-icon-button
         (click)="this.updateAllGaps()"
         matTooltip="recalculate all gap positions">
         <mat-icon>sync</mat-icon>
       </button>
+
+      <mat-slide-toggle
+        [(ngModel)]="this.autoUpdate"
+        labelPosition="before"
+        color="primary"
+        matTooltip="When active, the Gap Scheme is recalculated automatically when changing gaps or moving words.">
+        Auto Update
+      </mat-slide-toggle>
     </div>
-
-    <mat-slide-toggle
-      [(ngModel)]="this.autoUpdate"
-      labelPosition="before"
-      color="primary"
-      matTooltip="When active, the Gap Scheme is recalculated automatically when changing gaps or moving words.">
-      Auto Update
-    </mat-slide-toggle>
-
   </mat-card>
 
 
