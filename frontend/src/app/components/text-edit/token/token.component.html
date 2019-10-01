@@ -2,7 +2,11 @@
   <div cdk-overlay-origin
     #trigger="cdkOverlayOrigin"
     class="token"
-    [ngClass]="{'selected': selected, 'locked': !token.isNormal }"
+    [ngClass]="{'selected': selected, 'locked': !token.isNormal, 'gapped': token.gapStatus && showDifficulty }"
+    [ngStyle]="{'background-color': hover ? this.backGroundColor : 'white'}"
+    [style.borderColor]="color"
+    (mouseenter)="hover = true"
+    (mouseleave)="hover = false"
     (click)="this.onTokenClick()"
     (touchStart)="this.onTokenClick()"
     (dblclick)="this.onTokenDoubleClick()"

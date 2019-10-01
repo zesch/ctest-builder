@@ -53,6 +53,7 @@
 
     <div class="vertical-divider"></div>
 
+    <!-- Difficulty -->
     <div>
       <span matTooltip="The difficulty of the test.">Difficulty: {{ difficulty | percent }}</span>
       <button mat-icon-button
@@ -62,17 +63,18 @@
       </button>
 
       <mat-slide-toggle
-        [(ngModel)]="this.autoUpdateDifficulty"
+        [(ngModel)]="this.showDifficulty"
         labelPosition="before"
         color="primary"
-        matTooltip="When active, the Test Difficulty is recalculated automatically when changing gaps or moving words.">
-        Auto Update
+        matTooltip="When active, the Test Difficulty is shown by a colored bar underneath the gapped words.">
+        Show Difficulty
       </mat-slide-toggle>
     </div>
 
 
     <div class="vertical-divider"></div>
 
+    <!-- Gap Counts -->
     <div>
       <span [matTooltipDisabled]="gaps === gapCountTarget" matTooltip="The C-Test violates the gapscheme."><span [class.warn]="gaps !== gapCountTarget">{{ this.gaps }}</span> / {{ this.gapCountTarget }} Gaps</span>
       <button mat-icon-button
@@ -120,6 +122,7 @@
       <ng-container *ngFor="let word of words">
         <tp-token
           [token]="word"
+          [showDifficulty]="showDifficulty"
           (gapChange)="onGapChange($event)"
           (modify)="onTokenModification($event)"
           (delete)="onTokenDeletion($event)"

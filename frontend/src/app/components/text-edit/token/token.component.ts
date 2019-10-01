@@ -3,6 +3,7 @@ import { Word, Token } from '../../../models/word';
 import { MatChipInputEvent } from '@angular/material';
 import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'tp-token',
@@ -26,6 +27,9 @@ export class TokenComponent implements OnInit {
    */
   @Input('backdrop')
   public backdrop: boolean = true;
+
+  @Input()
+  public showDifficulty: boolean = true;
 
   /**
    * Emits the token when the gap status was changed.
@@ -56,6 +60,20 @@ export class TokenComponent implements OnInit {
    * When the subject emits true, all subscriptions connected to this subject are unsubscribed.
    */
   public unsubscribe$: Subject<boolean>;
+
+  private colormap = environment.colors.difficulty;
+
+  private hover = false;
+
+  /**
+   * Color of the difficulty underline for this token.
+   */
+  private color: string;
+
+  /**
+   * Color of the difficulty underline for this token.
+   */
+  private backGroundColor: string;
 
   /**
    * Temporary token to which changes are applied, before the user saves all changes.
@@ -89,8 +107,8 @@ export class TokenComponent implements OnInit {
   private alternativesAddKeys: number[] = [
     188, // comma
     190, // dot
-     32, // space
-     13, // enter
+    32, // space
+    13, // enter
   ]
 
   /**
@@ -137,7 +155,14 @@ export class TokenComponent implements OnInit {
         this.backupToken = this.token;
         this.token = this.tempToken;
       }
+    );
+
+    this.modify$.pipe(
+      takeUntil(this.unsubscribe$)
     )
+    .subscribe(modified => this.updateColors(modified));
+
+    this.updateColors(this.token);
   }
 
   ngOnDestroy() {
@@ -155,6 +180,14 @@ export class TokenComponent implements OnInit {
     this.alternativesEdit = true;
   }
 
+  private updateColors(token: Word) {
+    // TODO: implement logic, once tokens are refactored.
+    const difficulty = (Math.random() * 100).toFixed(0);
+
+    this.color = this.colormap.normal[difficulty];
+    this.backGroundColor = this.colormap.transparent[difficulty];
+  }
+
   /**
    * Increments the gap index of the token.
    */
@@ -164,10 +197,10 @@ export class TokenComponent implements OnInit {
 
       this.tempToken.alternatives = this.tempToken.alternatives
         .map((alternative: string) => {
-          return alternative.substring(1,alternative.length); // remove first char
+          return alternative.substring(1, alternative.length); // remove first char
         })
         .filter((alternative: string) => {
-          let firstSolutionChar: string = this.tempToken.value.charAt(this.tempToken.offset);
+          const firstSolutionChar: string = this.tempToken.value.charAt(this.tempToken.offset);
           return alternative.charAt(0) === firstSolutionChar; // remove alternative if it does not start with same char as solution
         });
     }
@@ -177,7 +210,7 @@ export class TokenComponent implements OnInit {
    * Decrements the gap index of the token.
    */
   private decrementIndex() {
-    if(this.tempToken.offset > 0) {
+    if (this.tempToken.offset > 0) {
       this.tempToken.offset--;
 
       // Add last character to all alternatives
@@ -194,11 +227,13 @@ export class TokenComponent implements OnInit {
     const alternative: string = event.value.trim();
     const input: HTMLInputElement = event.input;
 
-    if(alternative)
+    if (alternative) {
       this.tempToken.alternatives.push(alternative);
+    }
 
-    if(input)
+    if (input) {
       input.value = '';
+    }
   }
 
   /**
@@ -227,7 +262,7 @@ export class TokenComponent implements OnInit {
    */
   public removeAlternative(alternative: string) {
     const index: number = this.tempToken.alternatives.indexOf(alternative);
-    if(index !== -1) {
+    if (index !== -1) {
       this.tempToken.alternatives.splice(index, 1);
     }
   }
@@ -236,7 +271,7 @@ export class TokenComponent implements OnInit {
    * Handles user input in textedit mode.
    */
   public closeEditFieldsIfEnter(event: KeyboardEvent) {
-    if (event.keyCode == 13) {
+    if (event.keyCode === 13) {
       this.textEdit = false;
       this.alternativesEdit = false;
     }
@@ -247,11 +282,11 @@ export class TokenComponent implements OnInit {
    */
   public apply() {
     this.modify$.emit(this.tempToken);
-    if(this.token.gapStatus !== this.backupToken.gapStatus) {
+    if (this.token.gapStatus !== this.backupToken.gapStatus) {
       this.gapChange$.emit(this.tempToken);
     }
     this.token = new Token(this.tempToken);
-    this.close()
+    this.close();
   }
 
   /**
@@ -293,20 +328,20 @@ export class TokenComponent implements OnInit {
    */
   public onTokenClick() {
     let component = this;
-    this.clickTimer = window.setTimeout(function() {
+    this.clickTimer = window.setTimeout(function () {
       if (!component.doubleClick) {
         component.select();
       } else {
         component.doubleClick = false;
       }
-    }, this.doubleClickDelay)
+    }, this.doubleClickDelay);
   }
 
   /**
    * Handles doubleclick events on a token.
    */
   public onTokenDoubleClick() {
-    console.log('double click')
+    console.log('double click');
     this.doubleClick = true;
     window.clearTimeout(this.clickTimer);
     this.select$.emit(this);

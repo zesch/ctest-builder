@@ -117,7 +117,8 @@ export class CtestService {
    */
   public fetchDifficulty(tokens: Word[]): Observable<number> {
      // TODO: remove, when backend is in place.
-     if (true) {
+    const isMock = true;
+     if (isMock) {
       return of(Math.random());
     }
 

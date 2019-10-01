@@ -9,7 +9,6 @@ import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operators';
 import { MatDialog } from '@angular/material';
 import { HelpPageComponent } from './help-page/help-page.component';
-import { DifficultyService } from '../../services/difficulty.service';
 
 @Component({
   selector: 'tp-text-edit',
@@ -83,9 +82,14 @@ export class TextEditComponent implements OnInit {
   public autoUpdateDifficulty: boolean;
 
   /**
+   * Indicates, whether the difficulty should be shown on each token.
+   */
+  public showDifficulty: boolean;
+
+  /**
    * The difficulty of the current c-test.
    */
-  public difficulty;
+  public difficulty: number;
 
   /**
    * The title of the c-test.
@@ -107,6 +111,7 @@ export class TextEditComponent implements OnInit {
   ngOnInit(): void {
     this.autoUpdate = true;
     this.autoUpdateDifficulty = true;
+    this.showDifficulty = true;
     this.difficulty = 0;
 
     this.unsubscribe$ = new Subject<boolean>();

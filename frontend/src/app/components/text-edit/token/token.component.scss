@@ -20,12 +20,20 @@ mat-card {
   padding: 0px 3px 0px 3px;
   margin: 0px -2px 0px -2px;
   border-radius: 1px;
+
+  &:hover {
+    cursor: pointer;
+    /* background-color: rgba(0, 0, 0, .14); */
+  }
+
+  &.gapped {
+    border-bottom-width: 1px;
+    border-bottom-style: solid;
+  }
+
 }
 
-.token:hover {
-  cursor: pointer;
-  background-color: rgba(0, 0, 0, .14)
-}
+
 
 .locked {
   font-weight: 300;

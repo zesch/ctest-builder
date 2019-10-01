@@ -1,4 +1,5 @@
 import { HttpHeaders } from "../../node_modules/@angular/common/http";
+const colormap = require('colormap');
 
 // The file contents for the current environment will overwrite these during build.
 // The build system defaults to the dev environment which uses `environment.ts`, but if you do
@@ -6,6 +7,12 @@ import { HttpHeaders } from "../../node_modules/@angular/common/http";
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
+  colors: {
+    difficulty: {
+      normal: colormap({ colormap: 'RdBu', nshades: 100, format: 'rgbaString', alpha: 1 }) as string[],
+      transparent: colormap({ colormap: 'RdBu', nshades: 100, format: 'rgbaString', alpha: 0.14 }) as string[]
+    }
+  },
   production: false,
   api: {
     url: 'http://localhost:8080',
