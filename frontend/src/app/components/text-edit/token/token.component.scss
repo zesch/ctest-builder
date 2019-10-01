@@ -1,3 +1,5 @@
+@import "../../../../styles.scss";
+
 mat-card {
   padding: 0px;
 }
@@ -7,9 +9,10 @@ mat-card {
   cursor: pointer;
 }
 
-.red-text {
+.gap-text {
   /*color: #3f51b5;*/
-  color: #e91e63;
+  /* color: #e91e63; */
+  color: $app-accent;
 }
 
 .token {

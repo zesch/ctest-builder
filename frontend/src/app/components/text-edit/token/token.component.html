@@ -12,7 +12,7 @@
     (dblclick)="this.onTokenDoubleClick()"
     matTooltip="This word is locked. It will not be changed by automatic gap updates."
     [matTooltipDisabled]="this.token.isNormal">
-    <span>{{ this.token | prompt }}</span><span [ngClass]="{'red-text': this.token.gapStatus}">{{ this.token | coloredGaps:true }}</span>
+    <span>{{ this.token | prompt }}</span><span [ngClass]="{'gap-text': this.token.gapStatus}">{{ this.token | coloredGaps:true }}</span>
   </div>
 
   <ng-template cdk-connected-overlay

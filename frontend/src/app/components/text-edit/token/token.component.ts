@@ -4,6 +4,7 @@ import { MatChipInputEvent } from '@angular/material';
 import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
+import * as Color  from 'color';
 
 @Component({
   selector: 'tp-token',
@@ -61,7 +62,7 @@ export class TokenComponent implements OnInit {
    */
   public unsubscribe$: Subject<boolean>;
 
-  private colormap = environment.colors.difficulty;
+  private colormap = environment.colors.difficulty.interpolated;
 
   private hover = false;
 
@@ -182,10 +183,9 @@ export class TokenComponent implements OnInit {
 
   private updateColors(token: Word) {
     // TODO: implement logic, once tokens are refactored.
-    const difficulty = (Math.random() * 100).toFixed(0);
-
-    this.color = this.colormap.normal[difficulty];
-    this.backGroundColor = this.colormap.transparent[difficulty];
+    const difficulty = Math.random();
+    this.color = this.colormap.normal(difficulty);
+    this.backGroundColor = this.colormap.transparent(difficulty);
   }
 
   /**

@@ -12,5 +12,9 @@ $custom-typography: mat-typography-config(
     $font-family: 'Roboto, "Open Sans"'
 );
 
+$app-primary: mat-color(mat-palette($mat-indigo));
+$app-accent: mat-color(mat-palette($mat-pink));
+$app-warn: mat-color(mat-palette($mat-red));
+
 @include mat-core($custom-typography);
 @include angular-material-typography($custom-typography);

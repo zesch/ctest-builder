@@ -1,16 +1,34 @@
 import { HttpHeaders } from "../../node_modules/@angular/common/http";
+import * as Color from 'color';
 const colormap = require('colormap');
+const colorInterpolate = require('color-interpolate');
+
 
 // The file contents for the current environment will overwrite these during build.
 // The build system defaults to the dev environment which uses `environment.ts`, but if you do
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
+const colors = {
+  easy: 'rgb(0, 163, 51)',
+  medium: 'rgb(169, 169, 169)',
+  hard: 'rgb(255, 0, 0)',
+};
+
+const palette: (x: number) => string = colorInterpolate([colors.easy, colors.medium, colors.hard]);
+const transparent = (color: string, alpha = 0.14) => Color(color).alpha(alpha).string();
+
 export const environment = {
   colors: {
+    transparent,
     difficulty: {
-      normal: colormap({ colormap: 'RdBu', nshades: 100, format: 'rgbaString', alpha: 1 }) as string[],
-      transparent: colormap({ colormap: 'RdBu', nshades: 100, format: 'rgbaString', alpha: 0.14 }) as string[]
+      colors: {
+        normal: colors,
+      },
+      interpolated: {
+        normal: palette,
+        transparent: (x: number) => transparent(palette(x)),
+      }
     }
   },
   production: false,
