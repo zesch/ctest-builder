@@ -62,7 +62,7 @@ export class TokenComponent implements OnInit {
    */
   public unsubscribe$: Subject<boolean>;
 
-  private colormap = environment.colors.difficulty.interpolated;
+  private colormap = environment.colors.difficulty.map;
 
   private hover = false;
 
@@ -184,8 +184,8 @@ export class TokenComponent implements OnInit {
   private updateColors(token: Word) {
     // TODO: implement logic, once tokens are refactored.
     const difficulty = Math.random();
-    this.color = this.colormap.normal(difficulty);
-    this.backGroundColor = this.colormap.transparent(difficulty);
+    this.color = this.colormap(difficulty);
+    this.backGroundColor = this.colormap(difficulty, false);
   }
 
   /**

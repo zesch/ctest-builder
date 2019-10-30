@@ -10,13 +10,31 @@ const colorInterpolate = require('color-interpolate');
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 const colors = {
-  easy: 'rgb(0, 163, 51)',
-  medium: 'rgb(169, 169, 169)',
-  hard: 'rgb(255, 0, 0)',
+  easy: 'rgb(0, 172, 51)',
+  mediumEasy: 'rgb(154, 184, 163)',
+  medium: 'rgb(172, 172, 172)',
+  mediumHard: 'rgb(209, 140, 157)',
+  hard: 'rgb(255, 0, 51)',
 };
 
-const palette: (x: number) => string = colorInterpolate([colors.easy, colors.medium, colors.hard]);
+const palette: string[] = [
+  colors.easy,
+  colors.mediumEasy,
+  colors.medium,
+  colors.mediumHard,
+  colors.hard
+];
+
+/**
+ * Turns given color string into an RGBa color string with given alpha.
+ */
 const transparent = (color: string, alpha = 0.14) => Color(color).alpha(alpha).string();
+
+const mapToColor: (x: number, opaque?: boolean) => string = (x: number, opaque = true) => {
+  const index = Math.min(Math.floor(x * palette.length), palette.length - 1);
+  const color = palette[index];
+  return opaque ? color : transparent(color);
+};
 
 export const environment = {
   colors: {
@@ -25,9 +43,10 @@ export const environment = {
       colors: {
         normal: colors,
       },
-      interpolated: {
+      map: mapToColor,
+      palette: {
         normal: palette,
-        transparent: (x: number) => transparent(palette(x)),
+        transparent: palette.map(color => transparent(color))
       }
     }
   },
