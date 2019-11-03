@@ -1,12 +1,15 @@
 package de.unidue.ltl.ctestbuilder.service.gapscheme;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 import javax.json.Json;
@@ -29,6 +32,9 @@ import org.apache.tools.ant.taskdefs.TempFile;
 
 import de.unidue.ltl.ctest.core.CTestObject;
 import de.unidue.ltl.ctest.core.CTestToken;
+import de.unidue.ltl.ctest.difficulty.experiments.Model;
+import de.unidue.ltl.ctest.difficulty.train.DefaultTrainer;
+import de.unidue.ltl.ctest.difficulty.train.ModelTrainer;
 import de.unidue.ltl.ctest.gapscheme.CTestGenerator;
 import de.unidue.ltl.ctest.io.CTestJACKReader;
 import de.unidue.ltl.ctest.util.Transformation;
@@ -55,8 +61,12 @@ import de.unidue.ltl.ctest.util.Transformation;
 public class GapScheme {
 
 	private static final String corsOrigins = "*";
+	private static final String DEFAULT_MODEL_PATH = "/models/";
+	private static final String[] SUPPORTED_LANGUAGES = new String[] { "en" };
 	
 	private CTestGenerator builder;
+	private Map<String, Model> models;
+	private Model defaultModel;
 
 	/**
 	 * Creates a {@code GapScheme} object.
@@ -66,6 +76,20 @@ public class GapScheme {
 		builder = new CTestGenerator();
 		builder.setEnforcesLeadingSentence(false);
 		builder.setEnforcesTrailingSentence(false);
+		models = new HashMap<>();
+		
+		ModelTrainer trainer = new DefaultTrainer();
+		
+		for (String lang : SUPPORTED_LANGUAGES) {
+			String modelPath = GapScheme.class.getResource(DEFAULT_MODEL_PATH + lang).toString();
+			try {
+				models.put(lang, trainer.loadModel(modelPath));
+			} catch (IOException e) {
+				e.printStackTrace();
+				System.err.println(String.format("Could not read model at path '%s' for language '%s'", modelPath, lang));
+			}
+		}
+		defaultModel = models.get("en");
 	}
 	
 	/**
@@ -105,7 +129,9 @@ public class GapScheme {
 		Response response;
 
 		try {
-			JsonObject cTest = Transformation.toJSON(builder.generateCTest(docText, language), builder.getWarnings());
+			CTestObject ctest = builder.generateCTest(docText, language);
+			predictAndApply(ctest);
+			JsonObject cTest = Transformation.toJSON(ctest, builder.getWarnings());
 			response = Response
 					.status(Response.Status.OK)
 					.entity(cTest.toString())
@@ -260,4 +286,16 @@ public class GapScheme {
 		return response;
 	}
 
+	private void predictAndApply(CTestObject ctest) {
+		Model model = models.getOrDefault(ctest.getLanguage(), defaultModel);
+		List<Double> predictions = model.predict(ctest);
+		System.out.println(predictions);
+		List<CTestToken> tokens = ctest.getGappedTokens();
+		
+		for (int i = 0; i < tokens.size(); i++) {
+			CTestToken token = tokens.get(i);
+			Double prediction = predictions.get(i);
+			token.setErrorRate(prediction);
+		}
+	}
 }

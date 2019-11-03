@@ -17,6 +17,7 @@
 *.launch
 .settings/
 *.sublime-workspace
+*/**/resources/
 
 # custom shell scripts
 deploy*.sh

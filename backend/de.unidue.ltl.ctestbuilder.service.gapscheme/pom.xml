@@ -85,6 +85,11 @@
 			<artifactId>de.unidue.ltl.ctest.gapscheme</artifactId>
 			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
+		<dependency>
+			<groupId>de.unidue.ltl.ctest</groupId>
+			<artifactId>de.unidue.ltl.ctest.difficulty</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 
 	<build>
