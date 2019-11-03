@@ -161,9 +161,9 @@ export class TokenComponent implements OnInit {
     this.modify$.pipe(
       takeUntil(this.unsubscribe$)
     )
-    .subscribe(modified => this.updateColors(modified));
+    .subscribe(modified => this.updateDifficultyColor(modified));
 
-    this.updateColors(this.token);
+    this.updateDifficultyColor(this.token);
   }
 
   ngOnDestroy() {
@@ -181,11 +181,9 @@ export class TokenComponent implements OnInit {
     this.alternativesEdit = true;
   }
 
-  private updateColors(token: Word) {
-    // TODO: implement logic, once tokens are refactored.
-    const difficulty = Math.random();
-    this.color = this.colormap(difficulty);
-    this.backGroundColor = this.colormap(difficulty, false);
+  private updateDifficultyColor(token: Word) {
+    this.color = this.colormap(token.difficulty);
+    this.backGroundColor = this.colormap(token.difficulty, false);
   }
 
   /**

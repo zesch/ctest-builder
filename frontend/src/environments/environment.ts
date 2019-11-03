@@ -15,6 +15,7 @@ const colors = {
   medium: 'rgb(172, 172, 172)',
   mediumHard: 'rgb(209, 140, 157)',
   hard: 'rgb(255, 0, 51)',
+  invalid: 'rgba(63,81,181,0.66)'
 };
 
 const palette: string[] = [
@@ -31,6 +32,9 @@ const palette: string[] = [
 const transparent = (color: string, alpha = 0.14) => Color(color).alpha(alpha).string();
 
 const mapToColor: (x: number, opaque?: boolean) => string = (x: number, opaque = true) => {
+  if (x < 0 || x > 1) {
+    return colors.invalid;
+  }
   const index = Math.min(Math.floor(x * palette.length), palette.length - 1);
   const color = palette[index];
   return opaque ? color : transparent(color);
@@ -113,15 +117,14 @@ export const environment = {
         }
       },
       difficulty: {
-        root: 'difficulty/rest/',
+        root: 'de.unidue.ltl.ctestbuilder.service.GapScheme/rest',
         endpoints: {
           verify: { path: 'verify', queryParameters: false },
           service: {
-            path: 'estimate',
-            queryParameters: false,
+            path: 'rate-difficulty',
+            queryParameters: { language: 'language' },
             options : {
-              headers: { 'Content-Type' : 'application/json' },
-              responseType: 'text'
+              headers: { 'Content-Type' : 'application/json' }
             }
           }
         }

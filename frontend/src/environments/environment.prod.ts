@@ -63,15 +63,14 @@ export const environment = {
         }
       },
       difficulty: {
-        root: 'difficulty/rest',
+        root: 'de.unidue.ltl.ctestbuilder.service.GapScheme/rest',
         endpoints: {
           verify: { path: 'verify', queryParameters: false },
           service: {
-            path: 'estimate',
-            queryParameters: false,
+            path: 'rate-difficulty',
+            queryParameters: { language: 'language' },
             options : {
-              headers: { 'Content-Type' : 'application/json' },
-              responseType: 'text'
+              headers: { 'Content-Type' : 'application/json' }
             }
           }
         }

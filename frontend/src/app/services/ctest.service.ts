@@ -115,19 +115,18 @@ export class CtestService {
   /**
    * Queries the API for a difficulty estimate of the given tokens.
    */
-  public fetchDifficulty(tokens: Word[]): Observable<number> {
+  public fetchDifficulty(tokens: Word[]): Observable<any> {
      // TODO: remove, when backend is in place.
-    const isMock = true;
+    const isMock = false;
      if (isMock) {
-      return of(Math.random());
+      return of(tokens);
     }
 
-    const url = this.buildURL(this.difficultyService.endpoints.service.path);
+    const language = this.getLanguage();
+    const url = this.buildURL(this.difficultyService.endpoints.service.path) + '?language=' + language;
 
     const options = this.difficultyService.endpoints.service.options as any;
-    return this.http.post(url, tokens, options).pipe(
-      map(res => Number.parseFloat(String(res)))
-    );
+    return this.http.post(url, tokens, options);
   }
 
   /**

@@ -7,7 +7,7 @@ import { map } from 'rxjs/operators/map';
 import { StateManagementService } from '../../services/state-management.service';
 import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operators';
-import { MatDialog } from '@angular/material';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { HelpPageComponent } from './help-page/help-page.component';
 
 @Component({
@@ -105,7 +105,8 @@ export class TextEditComponent implements OnInit {
     private dialog: MatDialog,
     private router: Router,
     private ctestService: CtestService,
-    public stateService: StateManagementService
+    public stateService: StateManagementService,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit(): void {
@@ -123,7 +124,7 @@ export class TextEditComponent implements OnInit {
       this.words = success;
       this.gaps = this.words.filter(word => word.gapStatus).length;
       if (this.autoUpdateDifficulty) {
-        this.updateDifficulty();
+        this.difficulty = this.calculateDifficulty(success);
       }
     });
 
@@ -251,6 +252,16 @@ export class TextEditComponent implements OnInit {
     }
 
     this.stateService.set(this.words);
+    this.snackBar.open('Recalculating difficulty...');
+    this.ctestService.fetchDifficulty(this.words)
+      .subscribe((success: Word[]) => {
+        this.words = success;
+        this.stateService.set(this.words);
+        this.snackBar.open('Success!', 'OK', { duration: 1500 });
+      },
+      error => {
+        this.snackBar.open('ERROR: Could not calculate difficulty!', ':(', { duration: 1500 });
+      });
   }
 
   /**
@@ -283,9 +294,22 @@ export class TextEditComponent implements OnInit {
   }
 
   public updateDifficulty() {
-    this.ctestService.fetchDifficulty(this.words).subscribe(
-      success => this.difficulty = success,
-      error => console.error(`Could not fetch difficulty`)
+    this.snackBar.open('Recalculating difficulties...', 'OK');
+    this.ctestService.fetchDifficulty(this.words)
+    .subscribe(
+      success => {
+        this.difficulty = this.calculateDifficulty(success);
+        this.snackBar.open('Success!', 'OK', { duration: 1500 });
+      },
+      error => this.snackBar.open('ERROR: Could not retrieve difficulties!', 'OK', { duration: 3500 })
     );
+  }
+
+  public calculateDifficulty(words: Word[]): number {
+    const difficulties = words
+      .map(word => word.difficulty)
+      .filter(val => val >= 0);
+
+    return difficulties.reduce((a, b) => a + b, 0) / difficulties.length;
   }
 }

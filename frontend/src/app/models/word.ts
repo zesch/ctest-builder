@@ -7,15 +7,17 @@ export interface Word {
     offset: number;
     value: string;
     isNormal: boolean;
+    difficulty: number;
 }
 
 const DEFAULT_WORD: Word = {
-  id: "",
+  id: '',
   alternatives: [],
   gapStatus: false,
   offset: 0,
-  value: "",
-  isNormal: true
+  value: '',
+  isNormal: true,
+  difficulty: null
 }
 
 export class Token implements Word {
@@ -25,6 +27,7 @@ export class Token implements Word {
   public offset: number;
   public value: string;
   public isNormal: boolean;
+  public difficulty: number;
 
   /**
    * Creates a new Token. If a Word is given, its values are copied to the new Token.
@@ -32,8 +35,9 @@ export class Token implements Word {
    */
   constructor(word: Word = DEFAULT_WORD) {
     this.set(word);
-    if(this.id === DEFAULT_WORD.id)
+    if (this.id === DEFAULT_WORD.id) {
       this.id = uuid();
+    }
   }
 
   /**
@@ -57,6 +61,7 @@ export class Token implements Word {
     this.offset = word.offset;
     this.value = word.value;
     this.isNormal = word.isNormal;
+    this.difficulty = word.difficulty;
   }
 
   /**

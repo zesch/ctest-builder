@@ -113,7 +113,16 @@
         </ng-container>
       </div>
 
-      <div #secondRow fxLayoutAlign="center center">
+      <div class="padded-row" fxLayoutAlign="space-between center">
+        <span class="label">Difficulty: <span *ngIf="token.difficulty >= 0; else noDifficulty" class="value">{{ token.difficulty | percent }}</span></span>
+        <ng-template #noDifficulty>
+          <span class="value" matTooltip="No difficulty estimate is available yet.">
+            N/A
+          </span>
+        </ng-template>
+      </div>
+
+      <div class="padded-row" #secondRow fxLayoutAlign="space-between center">
         <mat-slide-toggle
           [checked]="this.tempToken.gapStatus"
           (change)="this.toggleGap()"

@@ -170,7 +170,9 @@ public class GapScheme {
 		Response response;
 
 		try {
-			JsonObject cTest = Transformation.toJSON(builder.generatePartialCTest(docText, language, gapFirst), new ArrayList<String>());
+			CTestObject ctest = builder.generatePartialCTest(docText, language, gapFirst);
+			predictAndApply(ctest);
+			JsonObject cTest = Transformation.toJSON(ctest, new ArrayList<String>());
 			response = Response
 					.status(Response.Status.OK)
 					.entity(cTest.toString())
@@ -214,6 +216,7 @@ public class GapScheme {
 			File file = File.createTempFile(UUID.randomUUID().toString(), ".xml", null);
 			Files.write(Paths.get(file.getPath()), request.getBytes());
 			CTestObject ctest = new CTestJACKReader().read(file);
+			predictAndApply(ctest);
 			file.delete();
 			
 			// send response
@@ -270,6 +273,7 @@ public class GapScheme {
 			List<CTestToken> tokens = Transformation.fromJSONArray(request).getTokens();
 					
 			tokens = builder.updateGaps(tokens, gapFirst);
+			predictAndApply(CTestObject.fromTokens(tokens));
 			
 			response = Response
 					.status(Response.Status.OK)
@@ -286,6 +290,59 @@ public class GapScheme {
 		return response;
 	}
 
+	/**
+	 * Predicts the difficulty for the given Tokens and returns an updated JSON Array of FrontendCTestTokens.
+	 * <p>
+	 * The request body must contain a JSON Array of FrontendCTestTokens.
+	 * The difficulty of the tokens is updated.
+	 * If a given token is flagged as not normal, it remains unchanged.
+	 * If the "gapfirst" parameter is set to "true", gapping starts with the first token.
+	 * 
+	 * @param request The request body. Should represent a JSON Array of FrontendCTestTokens.
+	 * @param language The language of the tokens.
+	 * @return A Response containing a JSON Array of FrontendCTestTokens with updated gaps.
+	 */
+	@POST
+	@Path("/rate-difficulty")
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response rateDifficulty(String request, @QueryParam("language") String language) {
+		System.out.println("/rate-difficulty called");
+		if (language == null)
+			return Response
+					.status(Response.Status.BAD_REQUEST)
+					.entity("{\"message\" : \"ERROR: Query parameter 'language' must not be null.\"}")
+					.build();
+		
+		if (request == null)
+			return Response
+					.status(Response.Status.BAD_REQUEST)
+					.entity("{\"message\" : \"ERROR: Request body must not be empty. See API Specification for details. \"}")
+					.build();
+		
+		Response response;
+		
+		try {
+			CTestObject ctest = Transformation.fromJSONArray(request);
+			ctest.setLanguage(language);
+			predictAndApply(ctest);
+			
+			response = Response
+					.status(Response.Status.OK)
+					.entity(Transformation.toJSON(ctest.getTokens()).toString())
+					.build();
+		} catch (Exception e) {
+			response = Response
+					.status(Response.Status.INTERNAL_SERVER_ERROR)
+					.entity("{\"message\" : \"ERROR: Could not rate difficulty.\"}")
+					.build();
+			e.printStackTrace();
+		}
+
+		return response;
+	}
+
+	
 	private void predictAndApply(CTestObject ctest) {
 		Model model = models.getOrDefault(ctest.getLanguage(), defaultModel);
 		List<Double> predictions = model.predict(ctest);
@@ -294,8 +351,9 @@ public class GapScheme {
 		
 		for (int i = 0; i < tokens.size(); i++) {
 			CTestToken token = tokens.get(i);
-			Double prediction = predictions.get(i);
-			token.setErrorRate(prediction);
+			// TODO: Investigate why values are greater than 1.
+			Double prediction = Math.log10(predictions.get(i));
+			token.setPrediction(prediction);
 		}
 	}
 }
