@@ -8,6 +8,15 @@ import { ModalDialogComponent } from '../../../components/modal-dialog/modal-dia
 import { Router } from '@angular/router';
 import { JackViewPipe } from '../../../pipes/jack-view.pipe';
 
+/**
+ * Removes unnecessary spaces around punctuation.
+ * Example: " ." => "."
+ */
+function cleanSpaces(text: string): string {
+
+  return '';
+}
+
 @Component({
   selector: 'tp-export',
   templateUrl: './export.component.html',
@@ -130,8 +139,9 @@ export class ExportComponent implements OnInit {
     }
     const doc = new jsPDF();
     doc.setFontSize(18);
+    let cleanText = this.words.map(transform).join(' ');
     const title = `<h2>${fileName.replace(/[_]/g, ' ')}</h2>`;
-    const text = `<p style="text-align: justify">${this.words.map(transform).join(' ')}</p>`;
+    const text = `<p style="text-align: justify">${cleanText}</p>`;
     doc.fromHTML([title, text].join('<br>'), 15, 15, { width: 180, lineHeight: 1.5 });
     doc.save(fileName);
     return;

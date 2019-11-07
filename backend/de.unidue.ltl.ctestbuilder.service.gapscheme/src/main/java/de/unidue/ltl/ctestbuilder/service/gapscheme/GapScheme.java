@@ -1,5 +1,7 @@
 package de.unidue.ltl.ctestbuilder.service.gapscheme;
 
+import static org.apache.uima.fit.factory.AnalysisEngineFactory.createEngineDescription;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
@@ -29,10 +31,20 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.tools.ant.taskdefs.TempFile;
+import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.fit.factory.AnalysisEngineFactory;
+import org.apache.uima.resource.ResourceInitializationException;
 
+import de.tudarmstadt.ukp.dkpro.core.matetools.MateLemmatizer;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpChunker;
+import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
+import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordNamedEntityRecognizer;
 import de.unidue.ltl.ctest.core.CTestObject;
 import de.unidue.ltl.ctest.core.CTestToken;
+import de.unidue.ltl.ctest.core.TestType;
+import de.unidue.ltl.ctest.difficulty.experiments.DKProTCModel;
 import de.unidue.ltl.ctest.difficulty.experiments.Model;
+import de.unidue.ltl.ctest.difficulty.features.candidate.CandidateAnnotator;
 import de.unidue.ltl.ctest.difficulty.train.DefaultTrainer;
 import de.unidue.ltl.ctest.difficulty.train.ModelTrainer;
 import de.unidue.ltl.ctest.gapscheme.CTestGenerator;
@@ -67,16 +79,32 @@ public class GapScheme {
 	private CTestGenerator builder;
 	private Map<String, Model> models;
 	private Model defaultModel;
+	private AnalysisEngine preprocessing;
 
 	/**
 	 * Creates a {@code GapScheme} object.
 	 * Should not be necessary to be explicitly created.
+	 * @throws ResourceInitializationException 
 	 */
-	public GapScheme() {
+	public GapScheme() throws ResourceInitializationException {
 		builder = new CTestGenerator();
 		builder.setEnforcesLeadingSentence(false);
 		builder.setEnforcesTrailingSentence(false);
 		models = new HashMap<>();
+		
+		String languageCode = "en";
+		preprocessing = AnalysisEngineFactory.createEngine(
+				createEngineDescription(
+						createEngineDescription(MateLemmatizer.class, MateLemmatizer.PARAM_LANGUAGE, languageCode),
+						createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE, languageCode),
+						createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE, languageCode),
+						createEngineDescription(OpenNlpChunker.class, OpenNlpChunker.PARAM_LANGUAGE, languageCode),
+						createEngineDescription(StanfordNamedEntityRecognizer.class, StanfordNamedEntityRecognizer.PARAM_LANGUAGE, languageCode),
+						createEngineDescription(CandidateAnnotator.class, 
+							CandidateAnnotator.PARAM_LANGUAGE, languageCode,
+							CandidateAnnotator.PARAM_TESTTYPE, TestType.ctest.toString(), 
+							CandidateAnnotator.PARAM_LEXICON_FILE, "C:\\Users\\mariu\\dev\\Projects\\_LangTech\\ctest\\ctest-builder\\backend\\de.unidue.ltl.ctestbuilder.service.gapscheme\\src\\main\\resources\\wordlists\\en.txt")
+				));		
 		
 		ModelTrainer trainer = new DefaultTrainer();
 		
@@ -344,15 +372,16 @@ public class GapScheme {
 
 	
 	private void predictAndApply(CTestObject ctest) {
-		Model model = models.getOrDefault(ctest.getLanguage(), defaultModel);
+		DKProTCModel model = (DKProTCModel) models.getOrDefault(ctest.getLanguage(), defaultModel);
+		model.setPreprocessing(preprocessing);
 		List<Double> predictions = model.predict(ctest);
 		System.out.println(predictions);
 		List<CTestToken> tokens = ctest.getGappedTokens();
 		
 		for (int i = 0; i < tokens.size(); i++) {
 			CTestToken token = tokens.get(i);
-			// TODO: Investigate why values are greater than 1.
-			Double prediction = Math.log10(predictions.get(i));
+			// TODO: Investigate why values are smaller than 0.
+			Double prediction = predictions.get(i);
 			token.setPrediction(prediction);
 		}
 	}

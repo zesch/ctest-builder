@@ -129,6 +129,14 @@ export class CtestService {
     return this.http.post(url, tokens, options);
   }
 
+  public calculateDifficulty(words: Word[]): number {
+    const difficulties = words
+      .map(word => word.difficulty)
+      .filter(val => val >= 0);
+
+    return difficulties.reduce((a, b) => a + b, 0) / difficulties.length;
+  }
+
   /**
    * Sets the current c-test.
    */

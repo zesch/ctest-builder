@@ -16,7 +16,7 @@ import { HelpPageComponent } from './help-page/help-page.component';
   styleUrls: ['./text-edit.component.scss']
 })
 
-export class TextEditComponent implements OnInit {
+export class TextEditComponent implements OnInit, OnDestroy {
   /**
    * The default number of gaps that a test should hold.
    */
@@ -115,19 +115,16 @@ export class TextEditComponent implements OnInit {
     this.showDifficulty = true;
     this.difficulty = 0;
 
+    // subject for unsubscribing on component desctruction
     this.unsubscribe$ = new Subject<boolean>();
 
+    // update words, whenever stateservice has new state.
     this.stateService.words$.pipe(
       takeUntil(this.unsubscribe$)
     )
-    .subscribe(success => {
-      this.words = success;
-      this.gaps = this.words.filter(word => word.gapStatus).length;
-      if (this.autoUpdateDifficulty) {
-        this.difficulty = this.calculateDifficulty(success);
-      }
-    });
+    .subscribe(success => this.words = success);
 
+    // generate initial c-test
     this.ctestService.getCTest().subscribe(
       success => this.stateService.addAll(success.words),
       failure => console.error(failure)
@@ -144,10 +141,10 @@ export class TextEditComponent implements OnInit {
     const response$: Observable<{ words: Word[], warnings: string[] }> = this.ctestService.getCTest();
     this.words$ = response$.pipe(
       map(response => response.words)
-    )
+    );
     this.warnings$ = response$.pipe(
       map(response => response.warnings)
-    )
+    );
   }
 
   ngOnDestroy(): void {
@@ -176,6 +173,7 @@ export class TextEditComponent implements OnInit {
     if (this.autoUpdate) {
       const start: number = Math.max($event.dropIndex - 1, 0);
       this.updateGaps(this.words[start]);
+      this.updateDifficulty(this.words);
     }
   }
 
@@ -183,9 +181,10 @@ export class TextEditComponent implements OnInit {
    * Deletes the given word from the list of words.
    */
   public onTokenDeletion(word: Word) {
-    const index: number = this.words.indexOf(word);
+    const index: number = this.words.findIndex(other => word.id === other.id);
     if (index !== -1) {
       this.words.splice(index, 1);
+      this.updateDifficulty(this.words);
     }
   }
 
@@ -195,6 +194,7 @@ export class TextEditComponent implements OnInit {
   public onGapChange(word: Word) {
     if (this.autoUpdate) {
       this.updateGaps(word);
+      this.updateDifficulty(this.words);
     }
   }
 
@@ -202,7 +202,8 @@ export class TextEditComponent implements OnInit {
    * Updates the list of words with the given word.
    */
   public onTokenModification(word: Word) {
-    this.stateService.modify(word);
+    const words = this.words.map(other => other.id === word.id ? word : other);
+    this.updateDifficulty(words);
   }
 
   /**
@@ -221,9 +222,7 @@ export class TextEditComponent implements OnInit {
 
   /**
    * Update the gaps in the c-test, starting from the given token.
-   *
-   * All tokens following the given token are sent to the webservice
-   * and their gap status is updated according to normal gapping rules.
+   * Update is perfomed **in-place**.
    */
   public updateGaps(word: Word) {
     const start: number = this.words.findIndex(token => token.id === word.id) + 1;
@@ -250,27 +249,11 @@ export class TextEditComponent implements OnInit {
         .slice(1, Math.abs(missingGaps) + 1)
         .forEach(token => token.gapStatus = false);
     }
-
-    this.stateService.set(this.words);
-    this.snackBar.open('Recalculating difficulty...');
-    this.ctestService.fetchDifficulty(this.words)
-      .subscribe((success: Word[]) => {
-        this.words = success;
-        this.stateService.set(this.words);
-        this.snackBar.open('Success!', 'OK', { duration: 1500 });
-      },
-      error => {
-        this.snackBar.open('ERROR: Could not calculate difficulty!', ':(', { duration: 1500 });
-      });
   }
 
   /**
-   * Indicates whether the given index should be gapped.
+   * Updates all gaps in the c-test, starting from the first non-locked gap.
    */
-  private  isGap(index: number): boolean {
-    return index % this.gapInterval === 0;
-  }
-
   public updateAllGaps() {
     const firstNormal: number = this.words.findIndex(word => word.isNormal);
     const toUpdate: Word[] = this.words.slice(firstNormal);
@@ -286,30 +269,35 @@ export class TextEditComponent implements OnInit {
     );
   }
 
+
+  /**
+   * Indicates whether the given index should be gapped.
+   */
+  private  isGap(index: number): boolean {
+    return index % this.gapInterval === 0;
+  }
+
   public onTitleKeyup(event: KeyboardEvent) {
-    switch(event.key) {
-      case "Enter":
-      case "Escape": this.titleEdit = false;
+    switch (event.key) {
+      case 'Enter':
+      case 'Escape': this.titleEdit = false;
     }
   }
 
-  public updateDifficulty() {
+  public updateDifficulty(words: Word[]) {
+    if (!this.autoUpdateDifficulty) {
+      return;
+    }
+
     this.snackBar.open('Recalculating difficulties...', 'OK');
-    this.ctestService.fetchDifficulty(this.words)
+    this.ctestService.fetchDifficulty(words)
     .subscribe(
       success => {
-        this.difficulty = this.calculateDifficulty(success);
+        this.difficulty = this.ctestService.calculateDifficulty(success);
+        this.stateService.set(success);
         this.snackBar.open('Success!', 'OK', { duration: 1500 });
       },
       error => this.snackBar.open('ERROR: Could not retrieve difficulties!', 'OK', { duration: 3500 })
     );
-  }
-
-  public calculateDifficulty(words: Word[]): number {
-    const difficulties = words
-      .map(word => word.difficulty)
-      .filter(val => val >= 0);
-
-    return difficulties.reduce((a, b) => a + b, 0) / difficulties.length;
   }
 }

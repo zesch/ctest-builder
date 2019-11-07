@@ -57,7 +57,7 @@
     <div>
       <span matTooltip="The difficulty of the test.">Difficulty: {{ difficulty | percent }}</span>
       <button mat-icon-button
-        (click)="this.updateDifficulty()"
+        (click)="this.updateDifficulty(words)"
         matTooltip="recalculate test difficulty">
         <mat-icon>sync</mat-icon>
       </button>

@@ -40,6 +40,17 @@ export class Token implements Word {
     }
   }
 
+  /** Checks whether two given words have identical values. */
+  public static identical(word: Word, other: Word): boolean {
+    return word.id === other.id &&
+      word.alternatives.toString() === other.alternatives.toString() &&
+      word.difficulty === other.difficulty &&
+      word.gapStatus === other.gapStatus &&
+      word.offset === other.offset &&
+      word.value === other.value &&
+      word.isNormal === other.isNormal;
+  }
+
   /**
    * Creates a new Token from the given word.
    * Values of the new instance and the given instance are identical.
