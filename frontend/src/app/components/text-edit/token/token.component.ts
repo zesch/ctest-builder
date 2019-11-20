@@ -62,25 +62,24 @@ export class TokenComponent implements OnInit {
    */
   public unsubscribe$: Subject<boolean>;
 
+  public hover = false;
+
+  /**
+   * Color of the difficulty underline for this token.
+   */
+  public color: string;
+
+  /**
+   * Color of the difficulty underline for this token.
+   */
+  public backGroundColor: string;
+
   private colormap = environment.colors.difficulty.map;
-
-  private hover = false;
-
-  /**
-   * Color of the difficulty underline for this token.
-   */
-  private color: string;
-
-  /**
-   * Color of the difficulty underline for this token.
-   */
-  private backGroundColor: string;
 
   /**
    * Temporary token to which changes are applied, before the user saves all changes.
    */
   private tempToken: Token;
-
 
   /**
    * Token used for backups, when the user cancels their edit.
