@@ -99,12 +99,7 @@ public class GapScheme {
 						createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE, languageCode),
 						createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE, languageCode),
 						createEngineDescription(OpenNlpChunker.class, OpenNlpChunker.PARAM_LANGUAGE, languageCode),
-						createEngineDescription(StanfordNamedEntityRecognizer.class, StanfordNamedEntityRecognizer.PARAM_LANGUAGE, languageCode),
-						createEngineDescription(CandidateAnnotator.class, 
-							CandidateAnnotator.PARAM_LANGUAGE, languageCode,
-							CandidateAnnotator.PARAM_TESTTYPE, TestType.ctest.toString(), 
-							CandidateAnnotator.PARAM_LEXICON_FILE, "C:\\Users\\mariu\\dev\\Projects\\_LangTech\\ctest\\ctest-builder\\backend\\de.unidue.ltl.ctestbuilder.service.gapscheme\\src\\main\\resources\\wordlists\\en.txt")
-				));		
+						createEngineDescription(StanfordNamedEntityRecognizer.class, StanfordNamedEntityRecognizer.PARAM_LANGUAGE, languageCode)));		
 		
 		ModelTrainer trainer = new DefaultTrainer();
 		

@@ -1,8 +1,4 @@
-import { HttpHeaders } from "../../node_modules/@angular/common/http";
 import * as Color from 'color';
-const colormap = require('colormap');
-const colorInterpolate = require('color-interpolate');
-
 
 // The file contents for the current environment will overwrite these during build.
 // The build system defaults to the dev environment which uses `environment.ts`, but if you do
@@ -10,11 +6,11 @@ const colorInterpolate = require('color-interpolate');
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 const colors = {
-  easy: 'rgb(0, 172, 51)',
-  mediumEasy: 'rgb(154, 184, 163)',
-  medium: 'rgb(172, 172, 172)',
-  mediumHard: 'rgb(209, 140, 157)',
-  hard: 'rgb(255, 0, 51)',
+  easy: '#fff0f5',
+  mediumEasy: '#f0b9cf',
+  medium: '#f23f87',
+  mediumHard: '#ab0547',
+  hard: '#590024',
   invalid: 'rgba(63,81,181,0.66)'
 };
 

@@ -8,6 +8,7 @@ export interface Word {
     value: string;
     isNormal: boolean;
     difficulty: number;
+    isLastTokenInSentence: boolean;
 }
 
 const DEFAULT_WORD: Word = {
@@ -17,8 +18,9 @@ const DEFAULT_WORD: Word = {
   offset: 0,
   value: '',
   isNormal: true,
-  difficulty: null
-}
+  difficulty: null,
+  isLastTokenInSentence: false
+};
 
 export class Token implements Word {
   public id: string;
@@ -28,6 +30,7 @@ export class Token implements Word {
   public value: string;
   public isNormal: boolean;
   public difficulty: number;
+  public isLastTokenInSentence: boolean;
 
   /**
    * Creates a new Token. If a Word is given, its values are copied to the new Token.
@@ -42,8 +45,7 @@ export class Token implements Word {
 
   /** Checks whether two given words have identical values. */
   public static identical(word: Word, other: Word): boolean {
-    return word.id === other.id &&
-      word.alternatives.toString() === other.alternatives.toString() &&
+    return word.alternatives.toString() === other.alternatives.toString() &&
       word.difficulty === other.difficulty &&
       word.gapStatus === other.gapStatus &&
       word.offset === other.offset &&
@@ -73,6 +75,7 @@ export class Token implements Word {
     this.value = word.value;
     this.isNormal = word.isNormal;
     this.difficulty = word.difficulty;
+    this.isLastTokenInSentence = word.isLastTokenInSentence;
   }
 
   /**

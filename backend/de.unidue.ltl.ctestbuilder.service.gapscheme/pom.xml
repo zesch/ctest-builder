@@ -41,6 +41,7 @@
 	</dependencyManagement>
 
 	<dependencies>
+		<!-- Dependencies for the servlet -->
 		<dependency>
 			<groupId>com.sun.xml.bind</groupId>
 			<artifactId>jaxb-impl</artifactId>
@@ -70,11 +71,14 @@
 			<artifactId>javax.json</artifactId>
 			<version>1.1</version>
 		</dependency>
+		
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- C-Test Dependencies (includes DKPro) -->
 		<dependency>
 			<groupId>de.unidue.ltl.ctest</groupId>
 			<artifactId>de.unidue.ltl.ctest.io</artifactId>

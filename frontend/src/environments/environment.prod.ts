@@ -1,5 +1,50 @@
+import * as Color from 'color';
+
+const colors = {
+  easy: '#fff0f5',
+  mediumEasy: '#f0b9cf',
+  medium: '#f23f87',
+  mediumHard: '#ab0547',
+  hard: '#590024',
+  invalid: 'rgba(63,81,181,0.66)'
+};
+
+const palette: string[] = [
+  colors.easy,
+  colors.mediumEasy,
+  colors.medium,
+  colors.mediumHard,
+  colors.hard
+];
+
+/**
+ * Turns given color string into an RGBa color string with given alpha.
+ */
+const transparent = (color: string, alpha = 0.14) => Color(color).alpha(alpha).string();
+
+const mapToColor: (x: number, opaque?: boolean) => string = (x: number, opaque = true) => {
+  if (x < 0 || x > 1) {
+    return colors.invalid;
+  }
+  const index = Math.min(Math.floor(x * palette.length), palette.length - 1);
+  const color = palette[index];
+  return opaque ? color : transparent(color);
+};
 
 export const environment = {
+  colors: {
+    transparent,
+    difficulty: {
+      colors: {
+        normal: colors,
+      },
+      map: mapToColor,
+      palette: {
+        normal: palette,
+        transparent: palette.map(color => transparent(color))
+      }
+    }
+  },
   production: false,
   api: {
     url: 'http://134.91.18.133:9001',

@@ -12,9 +12,54 @@ import { JackViewPipe } from '../../../pipes/jack-view.pipe';
  * Removes unnecessary spaces around punctuation.
  * Example: " ." => "."
  */
-function cleanSpaces(text: string): string {
+export function cleanSpaces(text: string): string {
+  const noPrefix = /(\s)[\u2019\u201D,.;?!\]})>°*$%€£₽_\-'=/\\]/g; // symbols that should have no space in front.
+  const noPostfix = /([\u2018\u201C\[{(<#@_\-'=/\\])\s/g;
+  const indices = [
+    ...allMatches(noPrefix, text).map(m => m.index),
+    ...allMatches(noPostfix, text).map(m => m.index + 1)
+  ];
+  return removeCharsAt(text, indices);
+}
 
-  return '';
+function allMatches(re: RegExp, text: string) {
+  const matches = [];
+  let match: RegExpExecArray;
+  do {
+    match = re.exec(text);
+    if (match) {
+      matches.push(match);
+    }
+  }
+  while (match);
+  return matches;
+}
+
+/**
+ * Returns the given string with characters at the given indices removed.
+ * Out of bounds indices are silently ignored.
+ */
+function removeCharsAt(text: string, indices: number[]) {
+  if (indices.length === 0) {
+    console.warn(`No indices provided for replacement of text "${text}".`);
+    return text;
+  }
+
+  const toDelete = Array.from(new Set(indices))
+    .filter(v => v >= 0)
+    .sort((a, b) => a - b)
+    .reverse();
+
+  let next = toDelete.pop();
+  return Array.from(text)
+    .filter((_, i) => {
+      if (i === next) {
+        next = toDelete.pop();
+        return false;
+      }
+      return true;
+    })
+    .join('');
 }
 
 @Component({
@@ -35,8 +80,7 @@ export class ExportComponent implements OnInit {
     private router: Router
   ) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   public toFileName(title: string) {
     if (!title) {
@@ -139,7 +183,7 @@ export class ExportComponent implements OnInit {
     }
     const doc = new jsPDF();
     doc.setFontSize(18);
-    let cleanText = this.words.map(transform).join(' ');
+    const cleanText = cleanSpaces(this.words.map(transform).join(' '));
     const title = `<h2>${fileName.replace(/[_]/g, ' ')}</h2>`;
     const text = `<p style="text-align: justify">${cleanText}</p>`;
     doc.fromHTML([title, text].join('<br>'), 15, 15, { width: 180, lineHeight: 1.5 });
@@ -154,7 +198,7 @@ export class ExportComponent implements OnInit {
     if (fileName === undefined) {
       fileName = 'export';
     }
-    const text = fileName.replace(/[_]/g, ' ') + '\r\n' + this.words.map(transform).join(' ');
+    const text = fileName.replace(/[_]/g, ' ') + '\r\n' + cleanSpaces(this.words.map(transform).join(' '));
     const blob: Blob = new Blob([new Buffer(text)], { type: 'text/plain; charset=utf-8'});
     const download = document.createElement('a');
     download.setAttribute('href', URL.createObjectURL(blob)),
@@ -174,6 +218,9 @@ export class ExportComponent implements OnInit {
       .join(' ')
       .replace(/[\u2018-\u2019]/g, '\'') // not supported in ISO-8859-1
       .replace(/[\u201C-\u201D]/g, '"'); // not supported in ISO-8859-1
+
+    console.log(taskText);
+    console.log(cleanSpaces(taskText));
     const taskPostfix = '\n\n\n&lt;span style= "color:#ff0000;">Denken Sie bitte daran, auf &lt;span style="font-weight:600;">\'Einreichen\'&lt;/span> zu klicken, bevor Sie zur nächsten Aufgabe wechseln. Please don\'t forget to click &lt;span style="font-weight:600;">\'submit\'&lt;/span> before you start the next task.&lt;/span> </task>\n\n<advice> </advice>\n\n<correctanswer>\n<option result="false"/>\n<message/>\n</correctanswer>\n\n<feedback>';
     const solutions = this.words
       .filter(token => token.gapStatus)

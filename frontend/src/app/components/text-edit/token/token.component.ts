@@ -279,6 +279,7 @@ export class TokenComponent implements OnInit {
    * Applies changes to the actual token.
    */
   public apply() {
+    this.tempToken.difficulty = -1;
     this.modify$.emit(this.tempToken);
     if (this.token.gapStatus !== this.backupToken.gapStatus) {
       this.gapChange$.emit(this.tempToken);
@@ -294,6 +295,17 @@ export class TokenComponent implements OnInit {
     this.token = this.backupToken;
     this.tempToken.set(this.token);
     this.close();
+  }
+
+  /**
+   * Applies changes if any were made.
+   */
+  public applyIfChanged() {
+    if (Token.identical(this.tempToken, this.backupToken)) {
+      this.close();
+    } else {
+      this.apply();
+    }
   }
 
   /**

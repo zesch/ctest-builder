@@ -9,6 +9,8 @@ import { Subject } from 'rxjs/Subject';
 import { takeUntil } from 'rxjs/operators';
 import { MatDialog, MatSnackBar } from '@angular/material';
 import { HelpPageComponent } from './help-page/help-page.component';
+import { environment } from '../../../environments/environment';
+
 
 @Component({
   selector: 'tp-text-edit',
@@ -92,6 +94,11 @@ export class TextEditComponent implements OnInit, OnDestroy {
   public difficulty: number;
 
   /**
+   * The color for the difficulty display.
+   */
+  public difficultyColor: string = environment.colors.difficulty.colors.normal.invalid;
+
+  /**
    * The title of the c-test.
    */
   public title: string;
@@ -100,6 +107,8 @@ export class TextEditComponent implements OnInit, OnDestroy {
    * Indicates whether title edit mode is active.
    */
   public titleEdit: boolean;
+
+  private colorMapper = environment.colors.difficulty.map;
 
   constructor(
     private dialog: MatDialog,
@@ -113,7 +122,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
     this.autoUpdate = true;
     this.autoUpdateDifficulty = true;
     this.showDifficulty = true;
-    this.difficulty = 0;
+    this.setDifficulty(-1);
 
     // subject for unsubscribing on component desctruction
     this.unsubscribe$ = new Subject<boolean>();
@@ -203,7 +212,8 @@ export class TextEditComponent implements OnInit, OnDestroy {
    */
   public onTokenModification(word: Word) {
     const words = this.words.map(other => other.id === word.id ? word : other);
-    this.updateDifficulty(words);
+    this.stateService.set(words);
+    this.setDifficulty(-1);
   }
 
   /**
@@ -293,11 +303,16 @@ export class TextEditComponent implements OnInit, OnDestroy {
     this.ctestService.fetchDifficulty(words)
     .subscribe(
       success => {
-        this.difficulty = this.ctestService.calculateDifficulty(success);
+        this.setDifficulty(this.ctestService.calculateDifficulty(success));
         this.stateService.set(success);
         this.snackBar.open('Success!', 'OK', { duration: 1500 });
       },
       error => this.snackBar.open('ERROR: Could not retrieve difficulties!', 'OK', { duration: 3500 })
     );
+  }
+
+  public setDifficulty(difficulty: number) {
+    this.difficulty = difficulty;
+    this.difficultyColor = this.colorMapper(difficulty);
   }
 }

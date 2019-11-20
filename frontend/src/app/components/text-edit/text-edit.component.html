@@ -55,7 +55,19 @@
 
     <!-- Difficulty -->
     <div>
-      <span matTooltip="The difficulty of the test.">Difficulty: {{ difficulty | percent }}</span>
+      <span>Difficulty:
+        <span *ngIf="difficulty > 0 && difficulty < 1; else noDifficulty"
+          [style.color]="difficultyColor"
+          matTooltip="The difficulty of the test.">
+          {{ difficulty | percent }}
+        </span>
+        <ng-template #noDifficulty>
+          <span class="no-difficulty"
+            matTooltip="No difficulty information available. Recalculate difficulty.">
+            N/A
+          </span>
+        </ng-template>
+      </span>
       <button mat-icon-button
         (click)="this.updateDifficulty(words)"
         matTooltip="recalculate test difficulty">
