@@ -32,6 +32,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.tools.ant.taskdefs.TempFile;
 import org.apache.uima.analysis_engine.AnalysisEngine;
+import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.resource.ResourceInitializationException;
 
@@ -73,8 +74,8 @@ import de.unidue.ltl.ctest.util.Transformation;
 public class GapScheme {
 
 	private static final String corsOrigins = "*";
-	private static final String DEFAULT_MODEL_PATH = "/models/";
-	private static final String[] SUPPORTED_LANGUAGES = new String[] { "en" };
+	private static final String DEFAULT_MODEL_PATH = "/models/minimal/";
+	private static final String[] SUPPORTED_LANGUAGES = new String[] { "en", "fr", "de", "es" };
 	
 	private CTestGenerator builder;
 	private Map<String, Model> models;
@@ -106,10 +107,18 @@ public class GapScheme {
 		for (String lang : SUPPORTED_LANGUAGES) {
 			String modelPath = GapScheme.class.getResource(DEFAULT_MODEL_PATH + lang).toString();
 			try {
-				models.put(lang, trainer.loadModel(modelPath));
+				DKProTCModel model = (DKProTCModel) trainer.loadModel(modelPath);
+				AnalysisEngineDescription desc;
+				desc = AnalysisEngineFactory.createEngineDescription(MinimalModelExperiment.getPreprocessingForLanguage(lang).toArray(AnalysisEngineDescription[]::new));		
+				AnalysisEngine preprocessing = AnalysisEngineFactory.createEngine(desc);
+				model.setPreprocessing(preprocessing);
+				models.put(lang, model);
 			} catch (IOException e) {
 				e.printStackTrace();
 				System.err.println(String.format("Could not read model at path '%s' for language '%s'", modelPath, lang));
+			} catch (Exception e) {
+				e.printStackTrace();
+				System.err.println("Could not load preprocessing for model.");
 			}
 		}
 		defaultModel = models.get("en");
@@ -366,9 +375,8 @@ public class GapScheme {
 	}
 
 	
-	private void predictAndApply(CTestObject ctest) {
-		DKProTCModel model = (DKProTCModel) models.getOrDefault(ctest.getLanguage(), defaultModel);
-		model.setPreprocessing(preprocessing);
+	private void predictAndApply(CTestObject ctest) throws Exception {
+		Model model = models.getOrDefault(ctest.getLanguage(), defaultModel);
 		List<Double> predictions = model.predict(ctest);
 		System.out.println(predictions);
 		List<CTestToken> tokens = ctest.getGappedTokens();

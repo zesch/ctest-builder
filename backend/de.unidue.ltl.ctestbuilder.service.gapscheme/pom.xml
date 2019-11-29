@@ -11,7 +11,7 @@
 	<name>de.unidue.ltl.ctestbuilder.service.GapScheme</name>
 
 	<properties>
-		<dkpro.core.version>1.9.2</dkpro.core.version>
+		<dkpro.core.version>1.10.0</dkpro.core.version>
 
 		<maven.compiler.source>1.8</maven.compiler.source>
 		<maven.compiler.target>1.8</maven.compiler.target>
@@ -37,9 +37,23 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.core.opennlp-asl</artifactId>
+				<version>${dkpro.core.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+			<dependency>
+				<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+				<artifactId>de.tudarmstadt.ukp.dkpro.core.corenlp-gpl</artifactId>
+				<version>1.10.0</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
-
+	
 	<dependencies>
 		<!-- Dependencies for the servlet -->
 		<dependency>
@@ -81,6 +95,16 @@
 		<!-- C-Test Dependencies (includes DKPro) -->
 		<dependency>
 			<groupId>de.unidue.ltl.ctest</groupId>
+			<artifactId>de.unidue.ltl.ctest</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>de.unidue.ltl.ctest</groupId>
+			<artifactId>de.unidue.ltl.ctest.core</artifactId>
+			<version>0.0.3-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>de.unidue.ltl.ctest</groupId>
 			<artifactId>de.unidue.ltl.ctest.io</artifactId>
 			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
@@ -94,8 +118,47 @@
 			<artifactId>de.unidue.ltl.ctest.difficulty</artifactId>
 			<version>0.0.3-SNAPSHOT</version>
 		</dependency>
+		
+		<!-- POS Tagging -->
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.corenlp-gpl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.stanfordnlp-model-tagger-fr-default</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>de.tudarmstadt.ukp.dkpro.core</groupId>
+			<artifactId>de.tudarmstadt.ukp.dkpro.core.stanfordnlp-gpl</artifactId>
+		</dependency>			
 	</dependencies>
-
+	
+	<repositories>
+		<repository>
+			<id>ukp-oss-releases</id>
+			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-releases/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+		<repository>
+			<id>ukp-oss-snapshots</id>
+			<url>http://zoidberg.ukp.informatik.tu-darmstadt.de/artifactory/public-snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	
 	<build>
 		<finalName>de.unidue.ltl.ctestbuilder.service.GapScheme</finalName>
 	</build>
