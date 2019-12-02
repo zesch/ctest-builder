@@ -116,11 +116,6 @@ export class CtestService {
    * Queries the API for a difficulty estimate of the given tokens.
    */
   public fetchDifficulty(tokens: Word[]): Observable<any> {
-     // TODO: remove, when backend is in place.
-    const isMock = false;
-     if (isMock) {
-      return of(tokens);
-    }
 
     const language = this.getLanguage();
     const url = this.buildURL(this.difficultyService.endpoints.service.path) + '?language=' + language;

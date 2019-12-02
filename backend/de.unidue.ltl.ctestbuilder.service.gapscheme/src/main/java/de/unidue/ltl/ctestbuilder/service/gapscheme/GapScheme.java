@@ -80,7 +80,6 @@ public class GapScheme {
 	private CTestGenerator builder;
 	private Map<String, Model> models;
 	private Model defaultModel;
-	private AnalysisEngine preprocessing;
 
 	/**
 	 * Creates a {@code GapScheme} object.
@@ -88,22 +87,14 @@ public class GapScheme {
 	 * @throws ResourceInitializationException 
 	 */
 	public GapScheme() throws ResourceInitializationException {
+		// configure gapscheme
 		builder = new CTestGenerator();
 		builder.setEnforcesLeadingSentence(false);
 		builder.setEnforcesTrailingSentence(false);
+		
+		// load models
 		models = new HashMap<>();
-		
-		String languageCode = "en";
-		preprocessing = AnalysisEngineFactory.createEngine(
-				createEngineDescription(
-						createEngineDescription(MateLemmatizer.class, MateLemmatizer.PARAM_LANGUAGE, languageCode),
-						createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE, languageCode),
-						createEngineDescription(OpenNlpPosTagger.class, OpenNlpPosTagger.PARAM_LANGUAGE, languageCode),
-						createEngineDescription(OpenNlpChunker.class, OpenNlpChunker.PARAM_LANGUAGE, languageCode),
-						createEngineDescription(StanfordNamedEntityRecognizer.class, StanfordNamedEntityRecognizer.PARAM_LANGUAGE, languageCode)));		
-		
 		ModelTrainer trainer = new DefaultTrainer();
-		
 		for (String lang : SUPPORTED_LANGUAGES) {
 			String modelPath = GapScheme.class.getResource(DEFAULT_MODEL_PATH + lang).toString();
 			try {

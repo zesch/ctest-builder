@@ -5,21 +5,32 @@ import * as Color from 'color';
 // `ng build --env=prod` then `environment.prod.ts` will be used instead.
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
-const colors = {
+const pinks = {
   easy: '#fff0f5',
   mediumEasy: '#f0b9cf',
   medium: '#f23f87',
   mediumHard: '#ab0547',
   hard: '#590024',
-  invalid: 'rgba(63,81,181,0.66)'
+  invalid: 'rgba(63,81,181,0.87)'
 };
 
+const traffic = {
+  easy: '#02cc34',
+  mediumEasy: '#9dd102',
+  medium: '#f2ce02',
+  mediumHard: '#ff9a03',
+  hard: '#de0202',
+  invalid: 'rgba(63,81,181,0.87)'
+};
+
+const scheme = traffic;
+
 const palette: string[] = [
-  colors.easy,
-  colors.mediumEasy,
-  colors.medium,
-  colors.mediumHard,
-  colors.hard
+  scheme.easy,
+  scheme.mediumEasy,
+  scheme.medium,
+  scheme.mediumHard,
+  scheme.hard
 ];
 
 /**
@@ -29,7 +40,7 @@ const transparent = (color: string, alpha = 0.14) => Color(color).alpha(alpha).s
 
 const mapToColor: (x: number, opaque?: boolean) => string = (x: number, opaque = true) => {
   if (x < 0 || x > 1) {
-    return colors.invalid;
+    return pinks.invalid;
   }
   const index = Math.min(Math.floor(x * palette.length), palette.length - 1);
   const color = palette[index];
@@ -41,7 +52,7 @@ export const environment = {
     transparent,
     difficulty: {
       colors: {
-        normal: colors,
+        normal: pinks,
       },
       map: mapToColor,
       palette: {

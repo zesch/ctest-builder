@@ -38,7 +38,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
   /**
    * The number of gaps in the current c-test.
    */
-  public gaps: number = 0;
+  public gaps = 0;
 
   /**
    * The desired number of gaps in the c-test.
@@ -120,7 +120,7 @@ export class TextEditComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.autoUpdate = true;
-    this.autoUpdateDifficulty = true;
+    this.autoUpdateDifficulty = false;
     this.showDifficulty = true;
     this.setDifficulty(-1);
 
@@ -131,7 +131,11 @@ export class TextEditComponent implements OnInit, OnDestroy {
     this.stateService.words$.pipe(
       takeUntil(this.unsubscribe$)
     )
-    .subscribe(success => this.words = success);
+    .subscribe(success => {
+      this.words = success;
+      this.gaps = success.filter(token => token.gapStatus).length;
+      this.difficulty = this.ctestService.calculateDifficulty(success);
+    });
 
     // generate initial c-test
     this.ctestService.getCTest().subscribe(
@@ -181,8 +185,12 @@ export class TextEditComponent implements OnInit, OnDestroy {
     this.stateService.move($event.value, $event.dropIndex);
     if (this.autoUpdate) {
       const start: number = Math.max($event.dropIndex - 1, 0);
-      this.updateGaps(this.words[start]);
-      this.updateDifficulty(this.words);
+      if (this.autoUpdate) {
+        this.updateGaps(this.words[start]);
+        if (this.autoUpdateDifficulty) {
+          this.updateDifficulty(this.words);
+        }
+      }
     }
   }
 
@@ -193,6 +201,9 @@ export class TextEditComponent implements OnInit, OnDestroy {
     const index: number = this.words.findIndex(other => word.id === other.id);
     if (index !== -1) {
       this.words.splice(index, 1);
+    }
+
+    if (this.autoUpdateDifficulty) {
       this.updateDifficulty(this.words);
     }
   }
@@ -203,7 +214,9 @@ export class TextEditComponent implements OnInit, OnDestroy {
   public onGapChange(word: Word) {
     if (this.autoUpdate) {
       this.updateGaps(word);
-      this.updateDifficulty(this.words);
+      if (this.autoUpdateDifficulty) {
+        this.updateDifficulty(this.words);
+      }
     }
   }
 
@@ -295,10 +308,6 @@ export class TextEditComponent implements OnInit, OnDestroy {
   }
 
   public updateDifficulty(words: Word[]) {
-    if (!this.autoUpdateDifficulty) {
-      return;
-    }
-
     this.snackBar.open('Recalculating difficulties...', 'OK');
     this.ctestService.fetchDifficulty(words)
     .subscribe(
