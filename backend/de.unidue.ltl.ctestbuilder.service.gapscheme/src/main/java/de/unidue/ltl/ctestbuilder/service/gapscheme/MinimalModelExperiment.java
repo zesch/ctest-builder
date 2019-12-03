@@ -45,11 +45,7 @@ public class MinimalModelExperiment extends Experiment {
 			preprocessing.add(createEngineDescription(OpenNlpNamedEntityRecognizer.class, 
 					OpenNlpNamedEntityRecognizer.PARAM_LANGUAGE, languageCode, 
 					OpenNlpNamedEntityRecognizer.PARAM_VARIANT, "nemgp"));
-		} else if(languageCode.equals("fr")) {
-			preprocessing.add(createEngineDescription(StanfordNamedEntityRecognizer.class, 
-					StanfordNamedEntityRecognizer.PARAM_LANGUAGE, languageCode,
-					StanfordNamedEntityRecognizer.PARAM_VARIANT, "freme-wikiner"));
-		} else {
+		} else if (!languageCode.equals("fr")) {
 			preprocessing.add(createEngineDescription(StanfordNamedEntityRecognizer.class, StanfordNamedEntityRecognizer.PARAM_LANGUAGE, languageCode));
 		}
 		

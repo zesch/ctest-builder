@@ -52,7 +52,7 @@ export const environment = {
     transparent,
     difficulty: {
       colors: {
-        normal: pinks,
+        normal: scheme,
       },
       map: mapToColor,
       palette: {

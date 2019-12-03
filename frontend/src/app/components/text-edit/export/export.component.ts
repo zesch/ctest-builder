@@ -219,15 +219,13 @@ export class ExportComponent implements OnInit {
       .replace(/[\u2018-\u2019]/g, '\'') // not supported in ISO-8859-1
       .replace(/[\u201C-\u201D]/g, '"'); // not supported in ISO-8859-1
 
-    console.log(taskText);
-    console.log(cleanSpaces(taskText));
     const taskPostfix = '\n\n\n&lt;span style= "color:#ff0000;">Denken Sie bitte daran, auf &lt;span style="font-weight:600;">\'Einreichen\'&lt;/span> zu klicken, bevor Sie zur nächsten Aufgabe wechseln. Please don\'t forget to click &lt;span style="font-weight:600;">\'submit\'&lt;/span> before you start the next task.&lt;/span> </task>\n\n<advice> </advice>\n\n<correctanswer>\n<option result="false"/>\n<message/>\n</correctanswer>\n\n<feedback>';
     const solutions = this.words
       .filter(token => token.gapStatus)
       .map((token, i) => `<option result="equals(trim('[pos=${i + 1}]'),'${token.value.substring(token.offset)}')" points="5"/>`)
       .join('\n')
     const end = '</feedback>\n\n<output> </output>\n\n<skipmessage>Schade, dass Sie diesen Text übersprungen haben.</skipmessage>\n\n</exercise>';
-    const content = [preamble, title, taskText, taskPostfix, solutions, end].join('\n');
+    const content = [preamble, title, cleanSpaces(taskText), taskPostfix, solutions, end].join('\n');
 
     // provide as downloadable file
     const blob = new Blob([new Buffer(content, 'latin1')], { type: 'text/xml;charset=iso-8859-1' });
