@@ -99,8 +99,9 @@ public class GapScheme {
 			String modelPath = GapScheme.class.getResource(DEFAULT_MODEL_PATH + lang).toString();
 			try {
 				DKProTCModel model = (DKProTCModel) trainer.loadModel(modelPath);
-				List<AnalysisEngineDescription> prep = MinimalModelExperiment.getPreprocessingForLanguage(lang);
-				AnalysisEngineDescription desc = AnalysisEngineFactory.createEngineDescription(prep.toArray(new AnalysisEngineDescription[prep.size()]));		
+				AnalysisEngineDescription desc;
+				List<AnalysisEngineDescription> pre = MinimalModelExperiment.getPreprocessingForLanguage(lang);
+				desc = AnalysisEngineFactory.createEngineDescription(pre.toArray(new AnalysisEngineDescription[pre.size()]));		
 				AnalysisEngine preprocessing = AnalysisEngineFactory.createEngine(desc);
 				model.setPreprocessing(preprocessing);
 				models.put(lang, model);

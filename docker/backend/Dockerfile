@@ -20,6 +20,7 @@ COPY --from=prepare /usr/local/tomcat/langid webapps/langid
 
 # configure Tomcat
 COPY server.xml conf/server.xml
+ENV CATALINA_OPTS="-Xms4g -Xmx16g"
 
 # run on startup
 CMD catalina.sh run
