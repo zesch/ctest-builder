@@ -37,25 +37,15 @@ After that, clone the repository and install all required npm dependencies.
 
 ```
 git clone https://github.com/zesch/ctest-builder.git
-cd c-test-builder
+cd ctest-builder/frontend/
 npm install
 ```
 
-To build the GapScheme Service, you first need to install the _difficultyPrediction_ Project and the _c-test-tools_ Project in your local Maven repository.
-
-```
-git clone https://www.github.com/zesch/c-test-scoring
-cd c-test-scoring/difficultyPrediction/
-mvn install
-```
+To build the GapScheme Service, you first need to install [_c-test-tools_ Project](https://www.github.com/ltl-ude/c-test-tools) in your local Maven repository.
 
 ```
 git clone https://www.github.com/ltl-ude/c-test-tools
-cd ./c-test-tools/
-mvn install
-cd ./de.unidue.ltl.ctest.core/
-mvn install
-cd ../de.unidue.ltl.ctest.gapscheme/
+cd c-test-tools/de.unidue.ltl.ctest/
 mvn install
 ```
 
@@ -71,9 +61,9 @@ cd <c.test.builder>/frontend
 ng serve
 ```
 
-### C-Test Webservice
+### C-Test Webservices
 
-The GapScheme Service can be deployed in one of two ways - manually or using eclipse. 
+The GapScheme Service and Language Identification Service can be deployed in one of two ways - manually or using eclipse. 
 In both cases, the webservice will be available under http://localhost:8080/de.unidue.ltl.ctestbuilder.service.GapScheme/rest/.
 
 #### Manual Deployment
@@ -83,9 +73,17 @@ Execute the following commands.
 `<tomcat>` refers to the full path to the local Tomcat installation.
 
 ```
+# build and deploy GapScheme Service
 cd <c.test.builder>/backend/de.unidue.ltl.ctestbuilder.service.gapscheme/
 mvn clean package
 cp target/*.war <tomcat>/webapps/
+
+# build and deploy Language Identification Service
+cd <c.test.builder>/backend/de.unidue.ltl.ctestbuilder.service.LangId/
+mvn clean package
+cp target/*.war <tomcat>/webapps/
+
+# start server
 cd <tomcat>/bin
 ./startup.sh 
 ```
