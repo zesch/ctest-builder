@@ -51,6 +51,10 @@ mvn install
 
 You should now be able to build and deploy the project.
 
+_**NOTE**:_ In order to run, the GapScheme Service requires some resources, which are not distributed in the repository. 
+Contact someone from the [LTL Team](https://www.ltl.uni-due.de/team) to get the resources.  
+They need to be placed under `<c.test.builder>/backend/de.unidue.ltl.ctestbuilder.service.gapscheme/src/main/resources/` before building the service.
+
 ## Local Deployment
 
 ### C-Test App
