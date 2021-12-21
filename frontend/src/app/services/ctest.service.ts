@@ -1,7 +1,7 @@
 import { Injectable, OnInit, RendererFactory2 } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs/observable';
-import { of } from 'rxjs/observable/of';
+import { of } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Word } from '../models/word';
 import { map } from 'rxjs/operators';
