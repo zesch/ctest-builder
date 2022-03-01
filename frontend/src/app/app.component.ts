@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { StateManagementService } from './services/state-management.service';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'ctest-builder';
+  public title = 'C-Test builder';
+
+  constructor() {}
 }
