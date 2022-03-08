@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { BehaviorSubject } from 'rxjs';
 import { Word, Token } from '../models/word';
 import { createStore, Store, Reducer, combineReducers } from 'redux';
 import distinctState from 'redux-undo';

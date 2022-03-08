@@ -6,6 +6,10 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MatCardModule } from '@angular/material/card';
 
+import { StateManagementService } from './services/state-management.service';
+import { CtestService } from './services/ctest.service';
+import { HttpClientModule } from '../../node_modules/@angular/common/http';
+
 @NgModule({
   declarations: [
     AppComponent
@@ -14,9 +18,12 @@ import { MatCardModule } from '@angular/material/card';
     BrowserModule,
     FlexLayoutModule,
     AppRoutingModule,
-    MatCardModule
+    MatCardModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [
+    CtestService,
+    StateManagementService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

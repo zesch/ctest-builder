@@ -9,5 +9,5 @@ import { StateManagementService } from './services/state-management.service';
 export class AppComponent {
   public title = 'C-Test builder';
 
-  constructor() {}
+  constructor(private stateService: StateManagementService) {}
 }
