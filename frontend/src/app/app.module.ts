@@ -5,20 +5,19 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { MatCardModule } from '@angular/material/card';
-import { MatIconModule } from '@angular/material/icon';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatTabsModule } from '@angular/material/tabs';
+import { MaterialModule } from './material.module';
 import { StateManagementService } from './services/state-management.service';
 import { CtestService } from './services/ctest.service';
 import { HomeComponent } from './components/home/home.component';
 import { HttpClientModule } from '../../node_modules/@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ModalDialogComponent } from './components/modal-dialog/modal-dialog.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
+    ModalDialogComponent
   ],
   imports: [
     FormsModule,
@@ -26,15 +25,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     BrowserModule,
     FlexLayoutModule,
     AppRoutingModule,
-    MatCardModule,
-    MatIconModule,
-    MatFormFieldModule,
-    MatTabsModule,
+    MaterialModule,
     HttpClientModule
   ],
   providers: [
     CtestService,
     StateManagementService],
+  entryComponents: [ModalDialogComponent],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
