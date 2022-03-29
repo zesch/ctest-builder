@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
 import { Word, Token } from '../../../models/word';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { Subject } from 'rxjs/Subject';
+import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { environment } from '../../../../environments/environment';
 
@@ -78,7 +78,7 @@ export class TokenComponent implements OnInit {
   /**
    * Temporary token to which changes are applied, before the user saves all changes.
    */
-  private tempToken: Token;
+  public tempToken: Token;
 
   /**
    * Token used for backups, when the user cancels their edit.
@@ -93,17 +93,17 @@ export class TokenComponent implements OnInit {
   /**
    * Indicates whether text is being edited.
    */
-  private textEdit: boolean;
+  public textEdit: boolean;
 
   /**
    * Indicates whether alternative solutions are being edited.
    */
-  private alternativesEdit: boolean;
+  public alternativesEdit: boolean;
 
   /**
    * The keycodes which trigger an alternative to be added to the list of alternatives.
    */
-  private alternativesAddKeys: number[] = [
+  public alternativesAddKeys: number[] = [
     188, // comma
     190, // dot
     32, // space
@@ -187,7 +187,7 @@ export class TokenComponent implements OnInit {
   /**
    * Increments the gap index of the token.
    */
-  private incrementIndex() {
+  public incrementIndex() {
     if (this.tempToken.offset < this.tempToken.value.length) {
       this.tempToken.offset++;
 
@@ -205,7 +205,7 @@ export class TokenComponent implements OnInit {
   /**
    * Decrements the gap index of the token.
    */
-  private decrementIndex() {
+  public decrementIndex() {
     if (this.tempToken.offset > 0) {
       this.tempToken.offset--;
 
