@@ -1,0 +1,171 @@
+<ng-container>
+    <div cdk-overlay-origin
+      #trigger="cdkOverlayOrigin"
+      class="token"
+      [ngClass]="{'selected': selected, 'locked': !token.isNormal, 'gapped': token.gapStatus && showDifficulty }"
+      [ngStyle]="{'background-color': hover ? this.backGroundColor : 'white'}"
+      [style.borderColor]="color"
+      (mouseenter)="hover = true"
+      (mouseleave)="hover = false"
+      (click)="this.onTokenClick()"
+      (touchStart)="this.onTokenClick()"
+      (dblclick)="this.onTokenDoubleClick()"
+      matTooltip="This word is locked. It will not be changed by automatic gap updates."
+      [matTooltipDisabled]="this.token.isNormal">
+      <span>{{ this.token | prompt }}</span><span [ngClass]="{'gap-text': this.token.gapStatus}">{{ this.token | coloredGaps:true }}</span>
+    </div>
+  
+    <ng-template cdk-connected-overlay
+      [origin]="trigger"
+      [open]="this.selected"
+      [cdkConnectedOverlayHasBackdrop]="backdrop"
+      cdkConnectedOverlayBackdropClass="transparent"
+      (backdropClick)="this.applyIfChanged()"
+      (detach)="this.discard()">
+      <mat-card fxLayout="column">
+        <div #firstRow
+          fxLayout="row"
+          fxLayoutAlign="space-between center">
+  
+          <ng-container *ngIf="!(this.textEdit || this.alternativesEdit)">
+            <button mat-icon-button
+              (click)="decrementIndex()"
+              [disabled]="this.tempToken.offset <= 0"
+              matTooltip="move gap to the left">
+              <mat-icon>remove</mat-icon>
+            </button>
+  
+            <div>
+              <span class="bold-on-hover"
+                (click)="this.activateTextEdit();"
+                matTooltip="click to edit text">
+                {{ this.tempToken | prompt }}
+              </span>
+              <span>|</span>
+              <span class="bold-on-hover"
+                (click)="this.activateAlternativesEdit()"
+                [ngClass]="{'red-text': this.tempToken.gapStatus}"
+                matTooltip="click to edit alternatives">
+                {{ this.tempToken | coloredGaps:false }}
+                <span class="badge">+{{this.tempToken.alternatives.length}}</span>
+              </span>
+            </div>
+  
+            <button mat-icon-button
+              (click)="incrementIndex()"
+              [disabled]="this.tempToken.offset >= this.tempToken.value.length"
+              matTooltip="move gap to the right">
+              <mat-icon>add</mat-icon>
+            </button>
+          </ng-container>
+  
+          <ng-container *ngIf="this.textEdit">
+            <mat-form-field class="edit-field">
+              <input #textEditInput
+                matInput
+                placeholder="text"
+                [(ngModel)]="this.tempToken.value"
+                (keyup)="closeEditFieldsIfEnter($event)">
+              <button
+                mat-icon-button
+                matSuffix
+                color="primary"
+                (click)="this.textEdit = false;"
+                matTooltip="close">
+                <mat-icon>clear</mat-icon>
+              </button>
+            </mat-form-field>
+          </ng-container>
+  
+          <ng-container *ngIf="this.alternativesEdit">
+            <mat-form-field class="edit-field">
+              <mat-chip-list #solutionChips>
+                <mat-chip
+                  selected="true"
+                  color="primary">
+                  {{ this.tempToken.value.substring(this.tempToken.offset, this.tempToken.value.length) }}
+                </mat-chip>
+  
+                <mat-chip *ngFor="let solution of this.tempToken.alternatives"
+                  [removable]="true"
+                  (removed)="removeAlternative(solution)">
+                  {{solution}}
+                  <mat-icon matChipRemove>cancel</mat-icon>
+                </mat-chip>
+  
+                <input #alternativesEditInput
+                  [matChipInputFor]="solutionChips"
+                  [matChipInputSeparatorKeyCodes]="alternativesAddKeys"
+                  [matChipInputAddOnBlur]="true"
+                  (matChipInputTokenEnd)="addAlternative($event)"
+                  (keyup)="closeEditFieldsIfEnter($event)"
+                  placeholder="solutions">
+              </mat-chip-list>
+  
+              <button mat-icon-button
+                matSuffix
+                color="primary"
+                (click)="this.alternativesEdit = false;"
+                matTooltip="close">
+                <mat-icon>clear</mat-icon>
+              </button>
+            </mat-form-field>
+          </ng-container>
+        </div>
+  
+        <div class="padded-row" fxLayoutAlign="space-between center">
+          <span class="label">Difficulty: <span *ngIf="token.difficulty >= 0; else noDifficulty" class="value">{{ token.difficulty | percent }}</span></span>
+          <ng-template #noDifficulty>
+            <span class="value" matTooltip="No difficulty estimate is available yet.">
+              N/A
+            </span>
+          </ng-template>
+        </div>
+  
+        <div class="padded-row" #secondRow fxLayoutAlign="space-between center">
+          <mat-slide-toggle
+            [checked]="this.tempToken.gapStatus"
+            (change)="this.toggleGap()"
+            labelPosition="before"
+            color="primary"
+            matTooltip="toggle gap">
+            Gap
+          </mat-slide-toggle>
+  
+          <button mat-icon-button
+            disableRipple="false"
+            (click)="this.toggleLock()"
+            matTooltip="toggle lock">
+            <mat-icon *ngIf="!this.tempToken.isNormal">lock</mat-icon>
+            <mat-icon *ngIf="this.tempToken.isNormal">lock_open</mat-icon>
+          </button>
+  
+          <button mat-icon-button
+            (click)="delete()"
+            matTooltip="delete token">
+            <mat-icon>delete_outlined</mat-icon>
+          </button>
+        </div>
+  
+        <mat-divider [inset]="true"></mat-divider>
+  
+        <div #thirdRow fxLayoutAlign="center center">
+          <button mat-button
+            fxFlex="1 1 50%"
+            (click)="apply()"
+            matTooltip="apply changes"
+            color="primary">
+            <mat-icon>done</mat-icon>
+          </button>
+  
+          <button mat-button
+            fxFlex="1 1 50%"
+            (click)="discard()"
+            matTooltip="discard changes"
+            color="warn">
+            <mat-icon>clear</mat-icon>
+          </button>
+        </div>
+      </mat-card>
+    </ng-template>
+  </ng-container>
