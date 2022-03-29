@@ -26,6 +26,7 @@ import { ReplacePipe } from './pipes/replace.pipe';
 import { SolutionPipe } from './pipes/solution.pipe';
 import { SolutionsPipe } from './pipes/solutions.pipe';
 import { TestviewPipe } from './pipes/testview.pipe';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 @NgModule({
   declarations: [
@@ -47,6 +48,7 @@ import { TestviewPipe } from './pipes/testview.pipe';
     TestviewPipe
   ],
   imports: [
+    DragDropModule,
     FormsModule,
     ReactiveFormsModule,
     BrowserModule,

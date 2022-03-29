@@ -108,7 +108,6 @@ export class TextEditComponent implements OnInit, OnDestroy {
    */
   public titleEdit: boolean;
 
-  private response: Observable<{ words: Word[], warnings: string[] }>;
 
   private colorMapper = environment.colors.difficulty.map;
 

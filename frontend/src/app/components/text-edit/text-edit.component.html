@@ -1,1 +1,169 @@
-<p>text-edit works!</p>
+<button mat-icon-button
+  class="help-button"
+  (click)="this.openHelp()"
+  matTooltip="click to open help menu">
+  <mat-icon>help_outline</mat-icon>
+</button>
+
+<div fxLayout="column"
+  fxLayoutAlign="space-between space-between"
+  fxLayoutGap="10px">
+
+  <!-- removed until fixed in backend.
+  <div *ngIf="(this.warnings$ | async)">
+    <h5>Info:</h5>
+    <p>
+      <span *ngFor="let warning of (warnings$ | async)" style="color: rgb(255, 66, 66);">{{warning}}<br></span>
+    </p>
+  </div>
+  -->
+
+  <mat-card #controlPanel
+    class="control-panel"
+    fxLayoutAlign="space-between center"
+    fxLayoutGap="25px">
+
+    <div fxLayoutAlign="center center">
+      <button mat-button
+        fxFlex="1 1 50%"
+        (click)="this.stateService.undo()"
+        [disabled]="!this.stateService.hasUndo"
+        matTooltip="undo last change">
+        <mat-icon>undo</mat-icon>
+      </button>
+
+      <button mat-button
+        fxFlex="1 1 50%"
+        (click)="this.stateService.redo()"
+        [disabled]="!this.stateService.hasRedo"
+        matTooltip="redo last change">
+        <mat-icon>redo</mat-icon>
+      </button>
+    </div>
+
+    <div class="vertical-divider"></div>
+
+    <mat-slide-toggle
+      [(ngModel)]="showPreview"
+      labelPosition="before"
+      color="primary">
+      Preview Mode
+    </mat-slide-toggle>
+
+    <div class="vertical-divider"></div>
+
+    <!-- Difficulty -->
+    <div>
+      <span>Difficulty:
+        <span *ngIf="difficulty > 0 && difficulty < 1; else noDifficulty"
+          [style.color]="difficultyColor"
+          matTooltip="The difficulty of the test.">
+          {{ difficulty | percent }}
+        </span>
+        <ng-template #noDifficulty>
+          <span class="no-difficulty"
+            matTooltip="No difficulty information available. Recalculate difficulty.">
+            N/A
+          </span>
+        </ng-template>
+      </span>
+      <button mat-icon-button
+        (click)="this.updateDifficulty(words)"
+        matTooltip="recalculate test difficulty">
+        <mat-icon>sync</mat-icon>
+      </button>
+
+      <mat-slide-toggle
+        [(ngModel)]="this.showDifficulty"
+        labelPosition="before"
+        color="primary"
+        matTooltip="When active, the Test Difficulty is shown by a colored bar underneath the gapped words.">
+        Show Difficulty
+      </mat-slide-toggle>
+    </div>
+
+
+    <div class="vertical-divider"></div>
+
+    <!-- Gap Counts -->
+    <div>
+      <span [matTooltipDisabled]="gaps === gapCountTarget" matTooltip="The C-Test violates the gapscheme."><span [class.warn]="gaps !== gapCountTarget">{{ this.gaps }}</span> / {{ this.gapCountTarget }} Gaps</span>
+      <button mat-icon-button
+        (click)="this.updateAllGaps()"
+        matTooltip="recalculate all gap positions">
+        <mat-icon>sync</mat-icon>
+      </button>
+
+      <mat-slide-toggle
+        [(ngModel)]="this.autoUpdate"
+        labelPosition="before"
+        color="primary"
+        matTooltip="When active, the Gap Scheme is recalculated automatically when changing gaps or moving words.">
+        Auto Update
+      </mat-slide-toggle>
+    </div>
+  </mat-card>
+
+
+  <mat-card class="text_editor">
+    <div *ngIf="(!titleEdit) && title; else titleField">
+      <h3 class="title-heading"
+        matTooltip="Click to edit the title."
+        (click)="this.titleEdit = true">
+        {{ title }}
+      </h3>
+    </div>
+    <ng-template #titleField>
+      <mat-form-field class="full-width">
+        <input matInput
+          type="text"
+          placeholder="Enter a title..."
+          [(ngModel)]="title"
+          (keyup)="onTitleKeyup($event)"
+          (blur)="this.titleEdit = false">
+      </mat-form-field>
+    </ng-template>
+
+    <div class="ngx-dnd-container"
+      *ngIf="!showPreview"
+      ngxDroppable
+      (drop)="this.onDrop($event)">
+
+      <!-- Draggable Words  -->
+      <ng-container *ngFor="let word of words">
+        <app-token
+          [token]="word"
+          [showDifficulty]="showDifficulty"
+          (gapChange)="onGapChange($event)"
+          (modify)="onTokenModification($event)"
+          (delete)="onTokenDeletion($event)"
+          ngxDraggable>
+        </app-token>
+      </ng-container>
+
+     <!-- Removed until implemented properly.
+       <button mat-mini-fab
+        (click)="addNewWord()"
+        color="primary">
+        <mat-icon matTooltip="Add new word next">add</mat-icon>
+      </button> -->
+    </div>
+    <div *ngIf="showPreview">
+      <ng-container *ngFor="let word of words">
+        {{ word | testview }}
+      </ng-container>
+    </div>
+  </mat-card>
+
+  <div fxLayout="row" fxLayoutGap="25px">
+    <app-export
+      [title]="this.title"
+      [words]="this.words">
+    </app-export>
+
+    <button mat-raised-button
+      (click)="this.routeToHome()">
+      New C-Test
+    </button>
+  </div>
+</div>

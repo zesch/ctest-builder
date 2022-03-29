@@ -63,7 +63,7 @@ function removeCharsAt(text: string, indices: number[]) {
 }
 
 @Component({
-  selector: 'tp-export',
+  selector: 'app-export',
   templateUrl: './export.component.html',
   styleUrls: ['./export.component.scss']
 })
