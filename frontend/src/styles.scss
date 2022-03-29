@@ -1,2 +1,20 @@
 
+/* You can add global styles to this file, and also import other style files */
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700|Roboto:300,400,400i,500,700');
+
+body, head {
+  font-family: Roboto,"Open Sans","Helvetica Neue",sans-serif;
+}
+
+@import '~@angular/material/theming';
+$custom-typography: mat-typography-config(
+    $font-family: 'Roboto, "Open Sans"'
+);
+
+$app-primary: mat-color(mat-palette($mat-indigo));
+$app-accent: mat-color(mat-palette($mat-pink));
+$app-warn: mat-color(mat-palette($mat-red));
+
+@include mat-core($custom-typography);
+@include angular-material-typography($custom-typography);
