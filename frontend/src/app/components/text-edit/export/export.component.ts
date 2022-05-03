@@ -7,6 +7,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ModalDialogComponent } from '../../../components/modal-dialog/modal-dialog.component';
 import { Router } from '@angular/router';
 import { JackViewPipe } from '../../../pipes/jack-view.pipe';
+import { Console } from 'console';
 
 /**
  * Removes unnecessary spaces around punctuation.
@@ -183,12 +184,17 @@ export class ExportComponent implements OnInit {
       fileName = 'export';
     }
     const doc = new jsPDF();
-    doc.setFontSize(18);
+    doc.setFontSize(12);
     const cleanText = cleanSpaces(this.words.map(transform).join(' '));
     const title = `<h2>${fileName.replace(/[_]/g, ' ')}</h2>`;
     const text = `<p style="text-align: justify">${cleanText}</p>`;
-    doc.html([title, text].join('<br>'));
-    doc.save(fileName);
+    const saveText = title + '<br>' + text;
+    console.error("error-calling");
+    doc.html(saveText, {callback: function (doc){ doc.save();}})
+    //doc.html([title, text].join('<br>'), {callback: function (doc){ doc.save();}})
+    //doc.addPage();
+    //doc.text(cleanText, 18, 18);
+    //doc.save(fileName);
     return;
   }
 
@@ -200,7 +206,7 @@ export class ExportComponent implements OnInit {
       fileName = 'export';
     }
     const text = fileName.replace(/[_]/g, ' ') + '\r\n' + cleanSpaces(this.words.map(transform).join(' '));
-    const blob: Blob = new Blob([new Buffer(text)], { type: 'text/plain; charset=utf-8'});
+    const blob: Blob = new Blob([text], { type: 'text/plain; charset=utf-8'});
     const download = document.createElement('a');
     download.setAttribute('href', URL.createObjectURL(blob)),
     download.setAttribute('download', (fileName + '.txt'));
@@ -229,7 +235,7 @@ export class ExportComponent implements OnInit {
     const content = [preamble, title, cleanSpaces(taskText), taskPostfix, solutions, end].join('\n');
 
     // provide as downloadable file
-    const blob = new Blob([new Buffer(content, 'latin1')], { type: 'text/xml;charset=iso-8859-1' });
+    const blob = new Blob([content], { type: 'text/xml;charset=iso-8859-1' });
     const download = document.createElement('a');
     download.setAttribute('href', window.URL.createObjectURL(blob));
     download.setAttribute('download', `stage${stage}.xml`);

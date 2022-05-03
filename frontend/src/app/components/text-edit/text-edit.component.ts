@@ -12,6 +12,7 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import { HelpPageComponent } from './help-page/help-page.component';
 import { environment } from '../../../environments/environment';
 
+
 @Component({
   selector: 'app-text-edit',
   templateUrl: './text-edit.component.html',

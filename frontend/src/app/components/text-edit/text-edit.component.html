@@ -124,20 +124,16 @@
       </mat-form-field>
     </ng-template>
 
-    <div class="ngx-dnd-container"
+    <div class="drop-container"
       *ngIf="!showPreview"
-      ngxDroppable
-      (drop)="this.onDrop($event)">
+  	>
 
       <!-- Draggable Words  -->
       <ng-container *ngFor="let word of words">
         <app-token
           [token]="word"
           [showDifficulty]="showDifficulty"
-          (gapChange)="onGapChange($event)"
-          (modify)="onTokenModification($event)"
-          (delete)="onTokenDeletion($event)"
-          ngxDraggable>
+        >
         </app-token>
       </ng-container>
 
